@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.5'
+    }
+}
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+group = 'com.github.lkishalmi.gradle'
+version = '0.1'
+
+sourceCompatibility = '1.7'
+
+dependencies {
+    testCompile gradleTestKit()
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        gradlePlugin(MavenPublication) {
+            from components.java
+            
+            artifact sourceJar {
+                classifier 'sources'
+            }
+        }
+    }
+}
+
+bintray {
+    user = bintray_user
+    key = bintray_api_key
+
+    publications = ['gradlePlugin']
+    dryRun = false 
+    publish = true 
+    pkg {
+        repo = 'maven'
+        name = 'gradle-gatling-plugin'
+        desc = 'Plugin for Gradle to compile and execute Gatling Simulations.'
+        websiteUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
+        issueTrackerUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin/issues'
+        vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin.git'
+        licenses = ['Apache-2.0']
+        labels = ['gradle-plugin', 'gatling', 'load test', 'stress test', 'preformance test', 'scala']
+        publicDownloadNumbers = true
+        version {
+            name = "${project.version}" 
+            vcsTag = "${project.version}"
+            attributes = ['gradle-plugin': 'com.github.lkishalmi.gatling:com.github.lkishalmi.gradle:gradle-gatling-plugin'] 
+        }
+    }
+}
