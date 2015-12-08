@@ -24,6 +24,10 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+test {
+    systemProperty 'pluginClasspath', "${sourceSets.main.output.classesDir}:${sourceSets.main.output.resourcesDir}"
+}
+
 publishing {
     publications {
         gradlePlugin(MavenPublication) {
