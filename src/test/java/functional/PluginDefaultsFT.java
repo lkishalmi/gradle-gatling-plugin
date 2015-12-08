@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +33,7 @@ public class PluginDefaultsFT {
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     private static List<File> pluginClasspath;
+    private static File testResources;
     private File buildFile;
 
     @BeforeClass
@@ -42,6 +44,11 @@ public class PluginDefaultsFT {
         for (String entry : pcp) {
             pluginClasspath.add(new File(entry));
         }
+    }
+
+    @BeforeClass
+    public static void initTestResources() {
+        testResources = new File(System.getProperty("testResources"));
     }
 
     @Before
@@ -62,6 +69,27 @@ public class PluginDefaultsFT {
                 .withArguments("tasks")
                 .build();
 
+    }
+
+    @Test
+    public void testGatlingCompile() throws IOException {
+        FileUtils.copyDirectory(new File(testResources, "gatling-sample"), testProjectDir.getRoot());
+
+        String buildFileContent = "plugins {\n"
+                + "            id 'com.github.lkishalmi.gatling'\n"
+                + "        }\n"
+                + "repositories {\n"
+                + "    jcenter()\n"
+                + "}";
+        writeFile(buildFile, buildFileContent);
+
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(testProjectDir.getRoot())
+                .withPluginClasspath(pluginClasspath)
+                .withArguments("gatlingCompile")
+                .build();
+
+        assertEquals(result.task(":gatlingCompile").getOutcome(), SUCCESS);
     }
 
     private void writeFile(File destination, String content) throws IOException {

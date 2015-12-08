@@ -26,6 +26,7 @@ task sourceJar(type: Jar) {
 
 test {
     systemProperty 'pluginClasspath', "${sourceSets.main.output.classesDir}:${sourceSets.main.output.resourcesDir}"
+    systemProperty 'testResources', "${sourceSets.test.output.resourcesDir}"
 }
 
 publishing {
