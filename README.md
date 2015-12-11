@@ -31,21 +31,34 @@ Gatling plugin - default project layout
 | `src/gatling/conf`         | Configuration dir for gatling (optional) |
 
 ## Dependency Management
-## Gatling Extension
 
-### Gatling Task
+This plugin defines a `gatling` configuration which by default contains the whole Gattling runtime.
+Required dependencies shall be added to this configuration. It would be used both for compile and
+execution of Gatling Simulations.
+
+The used Gatling version can be configured in the project's Gatling Extension:
+
+```groovy
+gatling.toolVersion = '2.1.7'
+```
+
+## Gatling Task
+Gatling Task is very similar task to JavaExec task. It executes a Gatling simulation by calling 
+`io.gatling.app.Gatling` task according to the specified properties.
 
 Properties
 
 | Name           | Type    | Default                       | Description |
 | -------------- | ------- | ----------------------------- | -----------
-| classesDir     | File    | gatlingCompile.destinationDir | Path of the compiled simulations |
-| dataDir        | File    | src/gatling/data              | Path for the simulation data     |
 | bodiesDir      | File    | src/gatling/bodies            | Path for the request bodies      |
-| reportsDir     | File    | $buildDir/reports/gatling     | Path to create reports.
-| simulationsDir | File    | src/gatling/simulations       |
-| confDir        | File    | src/gatling/conf              |
-| runDescription | String  | (null)                        |
-| simulation     | String  | (null)                        |
-| mute           | boolean | true                          |
+| classesDir     | File    | gatlingCompile.destinationDir | Path of the compiled simulations |
+| confDir        | File    | src/gatling/conf              | Path to Gatling configuration files. (Optional) |
+| dataDir        | File    | src/gatling/data              | Path for the simulation data     |
+| mute           | boolean | true                          | Interactive mode switch.         |
+| reportsDir     | File    | $buildDir/reports/gatling     | Path to create reports.          |
+| runDescription | String  | (null)                        | The description for this Gatling run. |
+| simulation     | String  | (null)                        | The simulation to be executed.   |
+| simulationsDir | File    | src/gatling/simulations       | Path to the simulation scripts   |
 
+#####The default values of these properties can be configured throughout the project's gatling extension using the
+same property names.
