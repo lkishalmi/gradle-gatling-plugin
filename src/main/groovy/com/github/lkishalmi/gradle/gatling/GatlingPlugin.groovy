@@ -27,7 +27,7 @@ class GatlingPlugin implements Plugin<Project> {
         gatling.simulationsDir = "$project.projectDir/src/gatling/simulations" as File
         gatling.dataDir = "$project.projectDir/src/gatling/data" as File
         gatling.bodiesDir = "$project.projectDir/src/gatling/bodies" as File
-        gatling.reportsDir = "$project.buildDir/reposrts/gatling/" as File
+        gatling.reportsDir = "$project.buildDir/reports/gatling/" as File
         gatling.confDir = "$project.projectDir/src/gatling/conf" as File
         
         createConfiguration()
