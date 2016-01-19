@@ -4,7 +4,7 @@ Gatling Plugin for Gradle
 ## Usage
 ```groovy
 plugins {
-  id "com.github.lkishalmi.gatling" version "0.1"
+  id "com.github.lkishalmi.gatling" version "0.1.1"
 }
 ```
 
