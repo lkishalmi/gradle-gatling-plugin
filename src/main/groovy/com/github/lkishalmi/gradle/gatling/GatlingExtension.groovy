@@ -34,6 +34,7 @@ class GatlingExtension {
     File bodiesDir
     File reportsDir
     File confDir
+    String runDescription
 
     boolean mute = true
 }
