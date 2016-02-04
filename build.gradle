@@ -13,7 +13,7 @@ apply plugin: 'groovy'
 apply plugin: "com.gradle.plugin-publish"
 
 group = 'com.github.lkishalmi.gradle'
-version = '0.1.1'
+version = '0.1.2'
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
