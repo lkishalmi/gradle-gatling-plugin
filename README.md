@@ -17,7 +17,7 @@ This plugin does not use source sets at the moment. It uses the `simulationsDir`
 | ----------------------- | -------------- | ------------ | ---------------------------------------- |
 | gatling                 | gatlingCompile | Gatling      | Starts the default Gatling simulation(s) |
 | gatlingCompile          | All tasks which produce the gatling classpath. This includes the jar task for project dependencies included in the gatling configuration. | ScalaCompile | Compiles the Gatling simulation scripts  |
-| getling*SimulationName* | gatlingCompile | Gatling      | Starts the named Gatling simulation      |
+| gatling*SimulationName* | gatlingCompile | Gatling      | Starts the named Gatling simulation      |
 
 ## Project Layout
 
@@ -25,7 +25,7 @@ Gatling plugin - default project layout
 
 | Directory                  | Meaning                                  |
 | -------------------------- | ---------------------------------------- |
-| `src/gattling/simulations` | Gatling simulation sources               |
+| `src/gatling/simulations` | Gatling simulation sources               |
 | `src/gatling/data`         | Simulation data                          |
 | `src/gatling/bodies`       | Request bodies                           |
 | `src/gatling/conf`         | Configuration dir for gatling (optional) |
@@ -43,6 +43,7 @@ gatling.toolVersion = '2.1.7'
 ```
 
 ## Gatling Task
+
 Gatling Task is very similar task to JavaExec task. It executes a Gatling simulation by calling 
 `io.gatling.app.Gatling` task according to the specified properties.
 
@@ -60,5 +61,4 @@ Properties
 | simulation     | String  | (null)                        | The simulation to be executed.   |
 | simulationsDir | File    | src/gatling/simulations       | Path to the simulation scripts   |
 
-#####The default values of these properties can be configured throughout the project's gatling extension using the
-same property names.
+#####The default values of these properties can be configured throughout the project's gatling extension using the same property names.
