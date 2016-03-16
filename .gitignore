@@ -1,3 +1,5 @@
+/.idea
+/gradle-gatling-plugin.iml
 .gradle
 build/
 

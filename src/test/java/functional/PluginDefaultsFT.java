@@ -1,6 +1,7 @@
 package functional;
 
 import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.Before;
 import org.junit.Rule;
@@ -86,10 +87,10 @@ public class PluginDefaultsFT {
         BuildResult result = GradleRunner.create()
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
-                .withArguments("gatlingCompile")
+                .withArguments("clean", "gatlingClasses")
                 .build();
 
-        assertEquals(result.task(":gatlingCompile").getOutcome(), SUCCESS);
+        assertEquals(result.task(":gatlingClasses").getOutcome(), SUCCESS);
     }
 
     private void writeFile(File destination, String content) throws IOException {

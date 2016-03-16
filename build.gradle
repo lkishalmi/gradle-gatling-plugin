@@ -25,6 +25,9 @@ dependencies {
 test {
     systemProperty 'pluginClasspath', "${sourceSets.main.output.classesDir}:${sourceSets.main.output.resourcesDir}"
     systemProperty 'testResources', "${sourceSets.test.output.resourcesDir}"
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 pluginBundle {
