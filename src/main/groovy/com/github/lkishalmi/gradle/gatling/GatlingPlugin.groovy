@@ -66,7 +66,7 @@ class GatlingPlugin implements Plugin<Project> {
         }
     }
 
-    protected void createConfiguration(GatlingExtension gatlingExtension) {
+    def createConfiguration(GatlingExtension gatlingExtension) {
         project.configurations {
             gatlingCompile {
                 visible = false
