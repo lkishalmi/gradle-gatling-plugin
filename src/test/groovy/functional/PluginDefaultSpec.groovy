@@ -81,7 +81,7 @@ repositories {
                 .withArguments("gatling-computerdatabase.BasicSimulation")
                 .build()
 
-        then: "custom task was run succesfully"
+        then: "custom task was run successfully"
         result.task(":gatling-computerdatabase.BasicSimulation").outcome == SUCCESS
 
         and: "only one simulation was executed"
