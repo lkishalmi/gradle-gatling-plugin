@@ -27,7 +27,6 @@ dependencies {
 }
 
 test {
-    systemProperty 'pluginClasspath', "${sourceSets.main.output.classesDir}:${sourceSets.main.output.resourcesDir}"
     testLogging {
         showStandardStreams = true
     }

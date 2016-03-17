@@ -1,10 +1,9 @@
 package functional
 
-import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -19,18 +18,19 @@ class PluginDefaultSpec extends Specification {
     @Shared
     List<File> pluginClasspath
 
-    static File sampleProject = new File(PluginDefaultSpec.class.getResource("/gatling-sample").file)
-
     File buildFile
 
     File testProjectBuildDir
 
     def setupSpec() {
-        pluginClasspath = System.getProperty("pluginClasspath", "").split(":").collect { new File(it) }
+        def current = getClass().getResource("/").file
+        pluginClasspath = [current.replace("classes/test", "classes/main"),
+                           current.replace("classes/test", "resources/main")].collect { new File(it) }
     }
 
     def setup() {
-        copyDirectory(sampleProject, testProjectDir.root)
+        copyDirectory(new File(PluginDefaultSpec.class.getResource("/gatling-sample").file), testProjectDir.root)
+
         buildFile = testProjectDir.newFile("build.gradle")
         testProjectBuildDir = new File(testProjectDir.root, "build")
     }
@@ -46,7 +46,7 @@ repositories {
 }
 """
         when:
-        BuildResult result = GradleRunner.create()
+        BuildResult result = GradleRunner.create().forwardOutput()
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
                 .withArguments("gatling")
@@ -75,7 +75,7 @@ repositories {
 }
 """
         when:
-        BuildResult result = GradleRunner.create()
+        BuildResult result = GradleRunner.create().forwardOutput()
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
                 .withArguments("gatling-computerdatabase.BasicSimulation")
