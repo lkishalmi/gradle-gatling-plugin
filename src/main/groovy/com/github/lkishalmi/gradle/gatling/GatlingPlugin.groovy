@@ -29,7 +29,6 @@ class GatlingPlugin implements Plugin<Project> {
         def gatlingExt = project.extensions.create('gatling', GatlingExtension)
 
         createConfiguration(gatlingExt)
-        configureGatlingCompile(gatlingExt)
 
         createGatlingTask(GATLING_TASK_NAME, gatlingExt,
                 project.sourceSets.gatling.allScala.matching(gatlingExt.simulations).collect { File simu ->
@@ -88,20 +87,6 @@ class GatlingPlugin implements Plugin<Project> {
 
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
-        }
-    }
-
-    def configureGatlingCompile(GatlingExtension gatling) {
-        def scalaCompile = project.tasks["compileGatlingScala"]
-        scalaCompile.conventionMapping.with {
-            description = { "Compiles Gatling simulations." }
-        }
-        project.gradle.projectsEvaluated {
-            scalaCompile.scalaCompileOptions.incrementalOptions.with {
-                if (!analysisFile) {
-                    analysisFile = new File("$project.buildDir/tmp/scala/compilerAnalysis/${scalaCompile.name}.analysis")
-                }
-            }
         }
     }
 

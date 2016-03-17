@@ -5,6 +5,7 @@ import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -32,6 +33,7 @@ class PluginDefaultSpec extends Specification {
         buildFile = testProjectDir.newFile("build.gradle");
     }
 
+    @Ignore
     def testLoadPlugin() throws IOException {
         given:
         buildFile << """
@@ -50,6 +52,7 @@ plugins {
         result.output.contains("gatling - Execute Gatling simulation")
     }
 
+    @Ignore
     def testGatlingCompile() {
         given:
         FileUtils.copyDirectory(new File(testResources, "gatling-sample"), testProjectDir.getRoot());
@@ -71,6 +74,32 @@ repositories {
 
         then:
         result.task(":gatlingClasses").outcome == SUCCESS
+    }
+
+    def "should execute all simulations by default"() {
+        given:
+        FileUtils.copyDirectory(new File(testResources, "gatling-sample"), testProjectDir.getRoot());
+
+        buildFile << """
+plugins {
+    id 'com.github.lkishalmi.gatling'
+}
+repositories {
+    jcenter()
+}
+"""
+        when:
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(testProjectDir.getRoot())
+                .withPluginClasspath(pluginClasspath)
+                .withArguments("gatling")
+                .build()
+        def testProjectBuildDir = new File(testProjectDir.root, "build")
+
+        then:
+        result.task(":gatling").outcome == SUCCESS
+        and:
+        new File(testProjectBuildDir, "reports/gatling").exists()
     }
 
 }
