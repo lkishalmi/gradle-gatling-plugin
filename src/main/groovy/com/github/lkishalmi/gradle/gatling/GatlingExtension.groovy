@@ -26,6 +26,6 @@ class GatlingExtension {
     ]
 
     def simulations = {
-        include "**/*Simulation.scala"
+        include "**/*Simulation*.scala"
     }
 }

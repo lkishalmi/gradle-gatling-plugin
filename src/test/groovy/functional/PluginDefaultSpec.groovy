@@ -24,56 +24,16 @@ class PluginDefaultSpec extends Specification {
 
     File buildFile
 
+    File testProjectBuildDir
+
     def setupSpec() {
         pluginClasspath = System.getProperty("pluginClasspath", "").split(":").collect { new File(it) }
         testResources = new File(System.getProperty("testResources"))
     }
 
     def setup() {
-        buildFile = testProjectDir.newFile("build.gradle");
-    }
-
-    @Ignore
-    def testLoadPlugin() throws IOException {
-        given:
-        buildFile << """
-plugins {
-    id 'com.github.lkishalmi.gatling'
-}
-"""
-        when:
-        BuildResult result = GradleRunner.create()
-                .withProjectDir(testProjectDir.getRoot())
-                .withPluginClasspath(pluginClasspath)
-                .withArguments("tasks")
-                .build()
-
-        then:
-        result.output.contains("gatling - Execute Gatling simulation")
-    }
-
-    @Ignore
-    def testGatlingCompile() {
-        given:
-        FileUtils.copyDirectory(new File(testResources, "gatling-sample"), testProjectDir.getRoot());
-
-        buildFile << """
-plugins {
-    id 'com.github.lkishalmi.gatling'
-}
-repositories {
-    jcenter()
-}
-"""
-        when:
-        BuildResult result = GradleRunner.create()
-                .withProjectDir(testProjectDir.getRoot())
-                .withPluginClasspath(pluginClasspath)
-                .withArguments("clean", "gatlingClasses")
-                .build()
-
-        then:
-        result.task(":gatlingClasses").outcome == SUCCESS
+        buildFile = testProjectDir.newFile("build.gradle")
+        testProjectBuildDir = new File(testProjectDir.root, "build")
     }
 
     def "should execute all simulations by default"() {
@@ -94,12 +54,15 @@ repositories {
                 .withPluginClasspath(pluginClasspath)
                 .withArguments("gatling")
                 .build()
-        def testProjectBuildDir = new File(testProjectDir.root, "build")
 
         then:
         result.task(":gatling").outcome == SUCCESS
+        result.task(":gatlingClasses").outcome == SUCCESS
         and:
         new File(testProjectBuildDir, "reports/gatling").exists()
+        new File(testProjectBuildDir, "classes/gatling").exists()
+        and:
+        new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 6
     }
 
 }
