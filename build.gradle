@@ -28,7 +28,6 @@ dependencies {
 
 test {
     systemProperty 'pluginClasspath', "${sourceSets.main.output.classesDir}:${sourceSets.main.output.resourcesDir}"
-    systemProperty 'testResources', "${sourceSets.test.output.resourcesDir}"
     testLogging {
         showStandardStreams = true
     }
@@ -38,7 +37,7 @@ pluginBundle {
     website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
     vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
     description = 'Gatling Simulation Execution'
-    tags = ['gradle-plugin', 'gatling', 'load test', 'stress test', 'preformance test', 'scala']
+    tags = ['gradle-plugin', 'gatling', 'load test', 'stress test', 'performance test', 'scala']
 
     plugins {
         gatlingPlugin {

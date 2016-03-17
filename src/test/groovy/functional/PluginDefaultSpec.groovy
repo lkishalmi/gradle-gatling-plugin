@@ -1,6 +1,5 @@
-package functional;
+package functional
 
-import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
@@ -9,6 +8,7 @@ import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 
+import static org.apache.commons.io.FileUtils.copyDirectory
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class PluginDefaultSpec extends Specification {
@@ -19,8 +19,7 @@ class PluginDefaultSpec extends Specification {
     @Shared
     List<File> pluginClasspath
 
-    @Shared
-    File testResources
+    static File sampleProject = new File(PluginDefaultSpec.class.getResource("/gatling-sample").file)
 
     File buildFile
 
@@ -28,18 +27,16 @@ class PluginDefaultSpec extends Specification {
 
     def setupSpec() {
         pluginClasspath = System.getProperty("pluginClasspath", "").split(":").collect { new File(it) }
-        testResources = new File(System.getProperty("testResources"))
     }
 
     def setup() {
+        copyDirectory(sampleProject, testProjectDir.root)
         buildFile = testProjectDir.newFile("build.gradle")
         testProjectBuildDir = new File(testProjectDir.root, "build")
     }
 
     def "should execute all simulations by default"() {
         given:
-        FileUtils.copyDirectory(new File(testResources, "gatling-sample"), testProjectDir.getRoot());
-
         buildFile << """
 plugins {
     id 'com.github.lkishalmi.gatling'
@@ -69,8 +66,6 @@ repositories {
 
     def "should execute single simulation when initiated by rule"() {
         given:
-        FileUtils.copyDirectory(new File(testResources, "gatling-sample"), testProjectDir.getRoot());
-
         buildFile << """
 plugins {
     id 'com.github.lkishalmi.gatling'
@@ -88,6 +83,7 @@ repositories {
 
         then: "custom task was run succesfully"
         result.task(":gatling-computerdatabase.BasicSimulation").outcome == SUCCESS
+
         and: "only one simulation was executed"
         new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1
     }
