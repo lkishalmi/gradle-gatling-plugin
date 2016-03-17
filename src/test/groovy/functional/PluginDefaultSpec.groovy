@@ -24,16 +24,11 @@ class PluginDefaultSpec extends Specification {
     File buildFile
 
     def setupSpec() {
-        String[] pcp = System.getProperty("pluginClasspath", "").split(":");
-
-        pluginClasspath = new LinkedList<>();
-        for (String entry : pcp) {
-            pluginClasspath.add(new File(entry));
-        }
-        testResources = new File(System.getProperty("testResources"));
+        pluginClasspath = System.getProperty("pluginClasspath", "").split(":").collect { new File(it) }
+        testResources = new File(System.getProperty("testResources"))
     }
 
-    def setup() throws IOException {
+    def setup() {
         buildFile = testProjectDir.newFile("build.gradle");
     }
 
