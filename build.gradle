@@ -12,14 +12,18 @@ apply plugin: 'java-gradle-plugin'
 apply plugin: 'groovy'
 apply plugin: "com.gradle.plugin-publish"
 
-group = 'com.github.lkishalmi.gradle'
-version = '0.1.2'
-
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     testCompile gradleTestKit()
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+        exclude module: "groovy-all"
+    }
 }
 
 test {
