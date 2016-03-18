@@ -56,8 +56,9 @@ repositories {
         result.task(":gatling").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == SUCCESS
 
-        and: "simulations were compiled"
+        and: "simulations were compiled and resources are copied"
         new File(testProjectBuildDir, "classes/gatling").exists()
+        new File(testProjectBuildDir, "resources/gatling").exists()
 
         and: "all simulations were run"
         def reports = new File(testProjectBuildDir, "reports/gatling")
