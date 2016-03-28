@@ -1,4 +1,7 @@
 package com.github.lkishalmi.gradle.gatling
+
+import org.gradle.api.Project
+
 /**
  *
  * @author Laszlo Kishalmi
@@ -27,5 +30,28 @@ class GatlingExtension {
 
     def simulations = {
         include "**/*Simulation.scala"
+    }
+
+    private final boolean isGatlingLayout
+
+    GatlingExtension(Project project) {
+        this.isGatlingLayout = project.file("src/gatling/simulations").exists() && project.file("src/gatling/data").exists() && project.file("src/gatling/bodies").exists()
+    }
+
+    String simulationsDir() {
+        "src/gatling/${ isGatlingLayout ? "simulations" : "scala" }"
+    }
+
+    String dataDir() {
+        "src/gatling/${ isGatlingLayout ? "data" : "resources" }"
+    }
+
+    String bodiesDir() {
+        "src/gatling/${ isGatlingLayout ? "bodies" : "resources" }"
+    }
+
+    List<String> gatlingArgs(Project project) {
+        ["-df", "${project.sourceSets.gatling.output.resourcesDir}${ isGatlingLayout ? "" : "/data" }",
+            "-bdf", "${project.sourceSets.gatling.output.resourcesDir}${ isGatlingLayout ? "" : "/bodies" }"]
     }
 }

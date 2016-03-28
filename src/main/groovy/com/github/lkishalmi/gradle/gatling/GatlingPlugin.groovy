@@ -26,13 +26,13 @@ class GatlingPlugin implements Plugin<Project> {
         project.pluginManager.apply ScalaBasePlugin
         project.pluginManager.apply JavaPlugin
 
-        def gatlingExt = project.extensions.create('gatling', GatlingExtension)
+        def gatlingExt = project.extensions.create('gatling', GatlingExtension, project)
 
         createConfiguration(gatlingExt)
 
         createGatlingTask(GATLING_TASK_NAME, gatlingExt,
                 project.sourceSets.gatling.allScala.matching(gatlingExt.simulations).collect { File simu ->
-                    (simu.absolutePath - (project.projectDir.absolutePath + "/src/gatling/scala/") - ".scala").replaceAll("/", ".")
+                    (simu.absolutePath - (project.projectDir.absolutePath + "/" + gatlingExt.simulationsDir() + "/") - ".scala").replaceAll("/", ".")
                 }
         )
 
@@ -56,8 +56,9 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.sourceSets {
             gatling {
-                scala.srcDirs 'src/gatling/scala'
-                resources.srcDirs 'src/gatling/resources'
+                scala.srcDirs gatlingExtension.simulationsDir()
+                resources.srcDirs gatlingExtension.dataDir()
+                resources.srcDirs gatlingExtension.bodiesDir()
             }
         }
 
@@ -80,8 +81,7 @@ class GatlingPlugin implements Plugin<Project> {
                     args "-m"
                     args "-bf", "${project.sourceSets.gatling.output.classesDir}"
                     args "-s", simu
-                    args "-df", "${project.sourceSets.gatling.output.resourcesDir}/data"
-                    args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}/bodies"
+                    args gatlingExt.gatlingArgs(project)
                     args "-rf", "${project.reportsDir}/gatling"
 
                     jvmArgs = gatlingExt.jvmArgs

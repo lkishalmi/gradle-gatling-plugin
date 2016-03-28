@@ -8,13 +8,10 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.nio.file.Files
-import java.nio.file.Paths
-
 import static org.apache.commons.io.FileUtils.copyDirectory
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class PluginDefaultSpec extends Specification {
+class GradleLayoutSpec extends Specification {
 
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -33,7 +30,7 @@ class PluginDefaultSpec extends Specification {
     }
 
     def setup() {
-        copyDirectory(new File(PluginDefaultSpec.class.getResource("/gradle-layout").file), testProjectDir.root)
+        copyDirectory(new File(GradleLayoutSpec.class.getResource("/gradle-layout").file), testProjectDir.root)
 
         buildFile = testProjectDir.newFile("build.gradle")
         testProjectBuildDir = new File(testProjectDir.root, "build")
