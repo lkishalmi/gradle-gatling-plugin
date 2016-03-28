@@ -74,7 +74,7 @@ repositories {
 
         where:
         layout      || simulationPart   || resourceFile
-        "gradle"    | "1Simulation"     | "data/search1.csv"
+        "gradle"    | "1Simulation"     | "search1.csv"
         "gatling"   | "2Simulation"     | "search2.csv"
     }
 

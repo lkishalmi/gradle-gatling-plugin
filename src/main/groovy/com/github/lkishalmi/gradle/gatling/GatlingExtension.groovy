@@ -43,15 +43,11 @@ class GatlingExtension {
     }
 
     String dataDir() {
-        "src/gatling/${ isGatlingLayout ? "data" : "resources" }"
+        "src/gatling/${ isGatlingLayout ? "" : "resources" }/data"
     }
 
     String bodiesDir() {
-        "src/gatling/${ isGatlingLayout ? "bodies" : "resources" }"
+        "src/gatling/${ isGatlingLayout ? "" : "resources" }/bodies"
     }
 
-    List<String> gatlingArgs(Project project) {
-        ["-df", "${project.sourceSets.gatling.output.resourcesDir}${ isGatlingLayout ? "" : "/data" }",
-            "-bdf", "${project.sourceSets.gatling.output.resourcesDir}${ isGatlingLayout ? "" : "/bodies" }"]
-    }
 }

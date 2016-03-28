@@ -58,9 +58,8 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.sourceSets {
             gatling {
-                scala.srcDirs gatlingExtension.simulationsDir()
-                resources.srcDirs gatlingExtension.dataDir()
-                resources.srcDirs gatlingExtension.bodiesDir()
+                scala.srcDirs       = [gatlingExtension.simulationsDir()]
+                resources.srcDirs   = [gatlingExtension.dataDir(), gatlingExtension.bodiesDir()]
             }
         }
 
@@ -83,7 +82,8 @@ class GatlingPlugin implements Plugin<Project> {
                     args "-m"
                     args "-bf", "${project.sourceSets.gatling.output.classesDir}"
                     args "-s", simu
-                    args gatlingExt.gatlingArgs(project)
+                    args "-df", "${project.sourceSets.gatling.output.resourcesDir}"
+                    args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}"
                     args "-rf", "${project.reportsDir}/gatling"
 
                     jvmArgs = gatlingExt.jvmArgs
