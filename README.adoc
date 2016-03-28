@@ -45,7 +45,7 @@ Plugin auto-detects layout during examination of project's folder structure.
 
 == Tasks
 
-[options="header"]
+[cols="2,3", options="header"]
 |===
 |Task name                  | Description
 |`gatlingClasses`           | Compiles `Gatling` simulation and copies resources
@@ -57,9 +57,11 @@ _SimulationFQN_ should be replaced by fully qualified simulation class name.
 Examples::
 +
 . Run all simulations
+
   $ gradle gatling
 +
 . Run single simulation implemented in `com.project.simu.MySimulation` class
+
   $ gradle gatling-com.project.simu.MySimulation
 
 == Plugin configuration
