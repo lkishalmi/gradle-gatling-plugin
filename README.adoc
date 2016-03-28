@@ -1,0 +1,68 @@
+= gradle-gatling-plugin
+
+Gatling Plugin for Gradle
+
+== Installation
+
+Add following to `build.gradle`
+
+[source,groovy]
+----
+plugins {
+  id "com.github.lkishalmi.gatling" version "0.1.2"
+}
+----
+
+== Project Layout
+
+Plugin supports two source files layouts for `Gatling` simulations and related data.
+
+* Standard Gradle/Maven layout
+* Gatling-like layout
+
+There's no need to explicitely setup one of those.
+Plugin auto-detects used layout by checking folder structure.
+
+=== Standard Gradle/Maven layout
+
+|===
+|Directory                      |   Meaning
+|`src/gatling/scala`            |   Gatling simulation sources
+|`src/gatling/resources/data`   |   Simulation data
+|`src/gatling/resources/bodies` |   Request bodies
+|===
+
+=== Gatling-like layout
+
+|===
+|Directory                  |   Meaning
+|`src/gatling/simulations`  |   Gatling simulation sources
+|`src/gatling/data`         |   Simulation data
+|`src/gatling/bodies`       |   Request bodies
+|===
+
+
+== Tasks
+
+|===
+|Task Name                          | Description
+|`gatling`                          | Starts the default Gatling simulation(s)
+|`gatlingClasses`                   | Compiles the Gatling simulation scripts
+|`gatling-*${SimulationFQN}*` <1>   | Starts the named Gatling simulation
+|===
+<1> *${SimulationFQN}* should be replaced to fully qualified name of simulation class to be run.
+
+== Plugin configuration
+
+The used Gatling version can be configured in the project's Gatling Extension:
+
+[source,groovy]
+----
+gatling.toolVersion = '2.1.7'
+----
+
+== Dependency Management
+
+This plugin defines a `gatling` configuration which by default contains the whole `Gatling` runtime.
+Required dependencies shall be added to this configuration. It would be used both for compile and
+execution of Gatling Simulations.
