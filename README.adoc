@@ -63,7 +63,30 @@ The plugin defines the following extension properties in the `gatling` closure
 |===
 |Property name      |Type           |Default value                              |Description
 |toolVersion        |String         |'2.7.1'                                    | qwe
-|jvmArgs            |List<String>   |'2.7.1'                                    | qwe
+
+|jvmArgs
+|List<String>
+|
+[source]
+----
+['-server',
+             '-XX:+UseThreadPriorities',
+             '-XX:ThreadPriorityPolicy=42',
+             '-Xms512M',
+             '-Xmx512M',
+             '-Xmn100M',
+             '-XX:+HeapDumpOnOutOfMemoryError',
+             '-XX:+AggressiveOpts',
+             '-XX:+OptimizeStringConcat',
+             '-XX:+UseFastAccessorMethods',
+             '-XX:+UseParNewGC',
+             '-XX:+UseConcMarkSweepGC',
+             '-XX:+CMSParallelRemarkEnabled',
+             '-Djava.net.preferIPv4Stack=true',
+             '-Djava.net.preferIPv6Addresses=false'
+     ]
+----
+| qwe
 
 |simulations
 |Closure
@@ -74,7 +97,7 @@ The plugin defines the following extension properties in the `gatling` closure
     include "**/*Simulation.scala"
 }
 ----
-| https://docs.gradle.org/current/userguide/working_with_files.html[Check File Tree documentation of Gradle]
+| https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs]
 |===
 
 Example::
@@ -110,3 +133,18 @@ dependencies {
 ----
 <1> adding `commons-lang3` to compile classpath for `Gatling` simulations
 <2> adding `cglib` to runtime classpath fot `Gatling` simulations
+
+
+[cols="2,2,5a"]
+|===
+|Firefox
+|Browser
+|
+
+[source,ruby]
+----
+puts "qwe"
+puts "asd"
+----
+
+|===
