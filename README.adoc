@@ -45,7 +45,7 @@ Plugin auto-detects layout during examination of project's folder structure.
 
 == Tasks
 
-[cols="2,3", options="header"]
+[cols="3,2", options="header"]
 |===
 |Task name                  | Description
 |`gatlingClasses`           | Compiles `Gatling` simulation and copies resources
