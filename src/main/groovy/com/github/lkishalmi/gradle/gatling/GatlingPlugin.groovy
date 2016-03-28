@@ -4,7 +4,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.scala.ScalaBasePlugin
-import org.gradle.plugins.ide.idea.IdeaPlugin
+
+import java.nio.file.Paths
 
 /**
  *
@@ -32,7 +33,8 @@ class GatlingPlugin implements Plugin<Project> {
 
         createGatlingTask(GATLING_TASK_NAME, gatlingExt,
                 project.sourceSets.gatling.allScala.matching(gatlingExt.simulations).collect { File simu ->
-                    (simu.absolutePath - (project.projectDir.absolutePath + "/" + gatlingExt.simulationsDir() + "/") - ".scala").replaceAll("/", ".")
+                    Paths.get(new File(project.projectDir, gatlingExt.simulationsDir()).toURI())
+                        .relativize(Paths.get(simu.toURI())).join(".") - ".scala"
                 }
         )
 
