@@ -1,11 +1,15 @@
 package functional
 
+import groovy.io.FileType
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.nio.file.Files
+import java.nio.file.Paths
 
 import static org.apache.commons.io.FileUtils.copyDirectory
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -56,9 +60,17 @@ repositories {
         result.task(":gatling").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == SUCCESS
 
-        and: "simulations were compiled and resources are copied"
-        new File(testProjectBuildDir, "classes/gatling").exists()
-        new File(testProjectBuildDir, "resources/gatling").exists()
+        and: "only gradle-layout simulations were compiled"
+        def classesDir = new File(testProjectBuildDir, "classes/gatling")
+        classesDir.exists()
+        classesDir.eachFileRecurse(FileType.FILES) {
+            assert it.name.contains("1Simulation") && !it.name.contains("2Simulation")
+        }
+
+        and: "only gradle-layout resources are copied"
+        def resourcesDir = new File(testProjectBuildDir, "resources/gatling")
+        resourcesDir.exists()
+        new File(resourcesDir, "data").list() == ["search1.csv"] as String[]
 
         and: "all simulations were run"
         def reports = new File(testProjectBuildDir, "reports/gatling")

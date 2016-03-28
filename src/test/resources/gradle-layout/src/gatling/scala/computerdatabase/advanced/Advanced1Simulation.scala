@@ -22,41 +22,6 @@ class Advanced1Simulation extends Simulation {
       .pause(1)
   }
 
-  object Browse {
-
-    val browse = exec(http("Home")
-        .get("/"))
-      .pause(2)
-      .exec(http("Page 1")
-       .get("/computers?p=1"))
-      .pause(670 milliseconds)
-      .exec(http("Page 2")
-        .get("/computers?p=2"))
-      .pause(629 milliseconds)
-      .exec(http("Page 3")
-        .get("/computers?p=3"))
-      .pause(734 milliseconds)
-      .exec(http("Page 4")
-        .get("/computers?p=4"))
-      .pause(5)
-  }
-
-  object Edit {
-
-    val headers_10 = Map("Content-Type" -> "application/x-www-form-urlencoded")
-
-    val edit = exec(http("Form")
-       .get("/computers/new"))
-      .pause(1)
-      .exec(http("Post")
-        .post("/computers")
-        .headers(headers_10)
-        .formParam("name", "Beautiful Computer")
-        .formParam("introduced", "2012-05-30")
-        .formParam("discontinued", "")
-        .formParam("company", "37"))
-  }
-
   val httpConf = http
     .baseURL("http://computer-database.gatling.io")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -66,7 +31,7 @@ class Advanced1Simulation extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
   // Now, we can write the scenario as a composition
-  val scn = scenario("Scenario Name").exec(Search.search, Browse.browse, Edit.edit)
+  val scn = scenario("Scenario Name").exec(Search.search)
 
   setUp(scn.inject(atOnceUsers(1)).protocols(httpConf))
 }
