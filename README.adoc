@@ -45,12 +45,12 @@ Plugin auto-detects layout during examination of project's folder structure.
 
 == Tasks
 
-[cols="3,2", options="header"]
+[options="header"]
 |===
-|Task name                  | Description
-|`gatlingClasses`           | Compiles `Gatling` simulation and copies resources
-|`gatling`                  | Executes all `Gatling` simulations
-|`gatling-SimulationFQN`    | Executes the named `Gatling` simulation,
+|Task name                  |Description
+|`gatlingClasses`           |Compiles `Gatling` simulation and copies resources
+|`gatling`                  |Executes all `Gatling` simulations
+|`gatling-SimulationFQN`    |Executes the named `Gatling` simulation, +
 _SimulationFQN_ should be replaced by fully qualified simulation class name.
 |===
 
