@@ -124,7 +124,6 @@ repositories {
         !new File(testProjectBuildDir, "resources/gatling").exists()
 
         and: "no simulations run"
-        new File(testProjectBuildDir, "reports/gatling").exists()
-        //reports.exists() && reports.listFiles().size() == 2
+        !new File(testProjectBuildDir, "reports/gatling").exists()
     }
 }

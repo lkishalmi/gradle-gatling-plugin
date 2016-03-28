@@ -1,6 +1,6 @@
 = Gatling Plugin for Gradle
 
-image:http://gatling.io/images/gatling-logo.png[Gatling Logo]
+image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/docs/2.1.7"]
 
 == Installation
 
@@ -51,9 +51,9 @@ Plugin auto-detects used layout by checking folder structure.
 |Task name | Description
 |`gatlingClasses` | Compiles `Gatling` simulation and copies resources
 |`gatling`                          | Executes all `Gatling` simulations
-|`gatling-*${SimulationFQN}*` <1> | Starts the named `Gatling` simulation
+|`gatling-${SimulationFQN}` <1> | Starts the named `Gatling` simulation
 |===
-<1> *${SimulationFQN}* should be replaced to fully qualified name of simulation class to be run.
+<1> _${SimulationFQN}_ should be replaced by fully qualified name of simulation class.
 
 == Plugin configuration
 
@@ -102,8 +102,8 @@ gatling {
     }
 }
 ----
-<1> all `Scala` files from `folder1` ending with `Simu`
-<2> all `Scala` files from `folder2` ending with `Simulation`
+<1> all `Scala` files from `folder1` ending with `Simu`.
+<2> all `Scala` files from `folder2` ending with `Simulation`.
 
 == Dependency Management
 
@@ -120,5 +120,5 @@ dependencies {
     gatlingRuntime 'cglib:cglib-nodep:3.2.0' <2>
 }
 ----
-<1> adding `commons-lang3` to compile classpath for `Gatling` simulations
-<2> adding `cglib` to runtime classpath fot `Gatling` simulations
+<1> adding `commons-lang3` to compile classpath for `Gatling` simulations.
+<2> adding `cglib` to runtime classpath fot `Gatling` simulations.
