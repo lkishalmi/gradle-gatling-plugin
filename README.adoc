@@ -25,6 +25,7 @@ Plugin auto-detects used layout by checking folder structure.
 
 === Standard Gradle/Maven layout
 
+[options="header"]
 |===
 |Directory                      |   Meaning
 |`src/gatling/scala`            |   Gatling simulation sources
@@ -34,6 +35,7 @@ Plugin auto-detects used layout by checking folder structure.
 
 === Gatling-like layout
 
+[options="header"]
 |===
 |Directory                  |   Meaning
 |`src/gatling/simulations`  |   Gatling simulation sources
@@ -44,6 +46,7 @@ Plugin auto-detects used layout by checking folder structure.
 
 == Tasks
 
+[options="header"]
 |===
 |Task Name                          | Description
 |`gatling`                          | Starts the default Gatling simulation(s)
@@ -54,11 +57,28 @@ Plugin auto-detects used layout by checking folder structure.
 
 == Plugin configuration
 
-The used Gatling version can be configured in the project's Gatling Extension:
+The plugin defines the following extension properties in the `gatling` closure
 
+[options="header"]
+|===
+|Property name      |Type           |Default value                              |Description
+|toolVersion        |String         |'2.7.1'                                    | qwe
+|jvmArgs            |List<String>   |'2.7.1'                                    | qwe
+|simulations        |Closure        |'2.7.1'                                    | qwe
+|===
+
+Example
+
+.build.gradle
 [source,groovy]
 ----
-gatling.toolVersion = '2.1.7'
+gatling {
+    toolVersion = 'https://192.168.59.103:2376'
+    jvmArgs = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
+    simulations = {
+
+    }
+}
 ----
 
 == Dependency Management
