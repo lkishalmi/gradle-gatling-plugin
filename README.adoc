@@ -20,8 +20,8 @@ Plugin supports two source files layouts for `Gatling` simulations and related d
 * Standard Gradle/Maven layout
 * Gatling-like layout
 
-There's no need to explicitely setup one of those.
-Plugin auto-detects used layout by checking folder structure.
+There's no need to explicitly setup any of those.
+Plugin auto-detects layout during examination of project's folder structure.
 
 === Standard Gradle/Maven layout
 
