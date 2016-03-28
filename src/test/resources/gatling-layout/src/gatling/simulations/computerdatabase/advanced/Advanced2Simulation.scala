@@ -6,19 +6,19 @@ import scala.concurrent.duration._
 
 class Advanced2Simulation extends Simulation {
 
+  val feeder = csv("search2.csv").random
+
   // Let's split this big scenario into composable business processes, like one would do with PageObject pattern with Selenium
 
   // object are native Scala singletons
   object Search {
 
-    val search = exec(http("Home") // let's give proper names, they are displayed in the reports, and used as keys
-        .get("/"))
-      .pause(1) // let's set the pauses to 1 sec for demo purpose
-      .exec(http("Search")
-        .get("/computers?f=macbook"))
+    val search = exec(http("Home").get("/"))
+      .feed(feeder)
       .pause(1)
-      .exec(http("Select")
-        .get("/computers/6"))
+      .exec(http("Search").get("/computers?f=${searchCriterion}"))
+      .pause(1)
+      .exec(http("Select").get("/computers/6"))
       .pause(1)
   }
 
