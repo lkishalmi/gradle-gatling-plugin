@@ -62,14 +62,19 @@ The plugin defines the following extension properties in the `gatling` closure
 [options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
-
 |toolVersion        |String         |'2.7.1'                                    | qwe
 |jvmArgs            |List<String>   |'2.7.1'                                    | qwe
 
 |simulations
 |Closure
-| `{ include "**/*Simulation.scala" }`
-| https://docs.gradle.org/current/userguide/working_with_files.htmlCheck File Tree documentation of Gradle]
+|qwe
+[source,groovy]
+----
+{
+    include "**/*Simulation.scala"
+}
+----
+| https://docs.gradle.org/current/userguide/working_with_files.html[Check File Tree documentation of Gradle]
 |===
 
 Example::
