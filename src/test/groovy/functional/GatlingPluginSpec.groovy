@@ -11,6 +11,7 @@ import spock.lang.Unroll
 
 import static org.apache.commons.io.FileUtils.copyDirectory
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class GatlingPluginSpec extends Specification {
 
@@ -28,7 +29,7 @@ class GatlingPluginSpec extends Specification {
                            current.replace("classes/test", "resources/main")].collect { new File(it) }
     }
 
-    def createDir(String layout) {
+    def buildDirFromLayout(String layout) {
         copyDirectory(new File(GatlingPluginSpec.class.getResource("/$layout-layout").file), testProjectDir.root)
         testProjectBuildDir = new File(testProjectDir.root, "build")
         testProjectDir.newFile("build.gradle") << """
@@ -44,7 +45,7 @@ repositories {
     @Unroll
     def "should execute all simulations by default, layout `#layout`"() {
         setup:
-        createDir(layout)
+        buildDirFromLayout(layout)
 
         when:
         BuildResult result = GradleRunner.create().forwardOutput()
@@ -80,7 +81,7 @@ repositories {
     @Unroll
     def "should execute only #simulation when initiated by rule, layout `#layout`"() {
         setup:
-        createDir(layout)
+        buildDirFromLayout(layout)
 
         when:
         BuildResult result = GradleRunner.create().forwardOutput()
@@ -99,5 +100,31 @@ repositories {
         layout      || simulation
         "gradle"    | "computerdatabase.Basic1Simulation"
         "gatling"   | "computerdatabase.Basic2Simulation"
+    }
+
+    def "should not fail when layout is incorrect"() {
+        setup:
+        buildDirFromLayout("empty")
+
+        when:
+        BuildResult result = GradleRunner.create().forwardOutput()
+                .withProjectDir(testProjectDir.getRoot())
+                .withPluginClasspath(pluginClasspath)
+                .withArguments("gatling")
+                .build()
+
+        then: "default tasks were executed succesfully"
+        result.task(":gatling").outcome == SUCCESS
+        result.task(":gatlingClasses").outcome == UP_TO_DATE
+
+        and: "no simulations compiled"
+        !new File(testProjectBuildDir, "classes/gatling").exists()
+
+        and: "not resources copied"
+        !new File(testProjectBuildDir, "resources/gatling").exists()
+
+        and: "no simulations run"
+        new File(testProjectBuildDir, "reports/gatling").exists()
+        //reports.exists() && reports.listFiles().size() == 2
     }
 }
