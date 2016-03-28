@@ -59,45 +59,34 @@ Plugin auto-detects used layout by checking folder structure.
 
 The plugin defines the following extension properties in the `gatling` closure
 
-[options="header"]
+[cols="1,1,4a,1a", options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
-|toolVersion        |String         |'2.7.1'                                    | qwe
+|toolVersion        |String         |'2.7.1'                                    |`Gatling` version
 
 |jvmArgs
 |List<String>
-|
-[source]
+|[source,groovy]
 ----
-['-server',
-             '-XX:+UseThreadPriorities',
-             '-XX:ThreadPriorityPolicy=42',
-             '-Xms512M',
-             '-Xmx512M',
-             '-Xmn100M',
-             '-XX:+HeapDumpOnOutOfMemoryError',
-             '-XX:+AggressiveOpts',
-             '-XX:+OptimizeStringConcat',
-             '-XX:+UseFastAccessorMethods',
-             '-XX:+UseParNewGC',
-             '-XX:+UseConcMarkSweepGC',
-             '-XX:+CMSParallelRemarkEnabled',
-             '-Djava.net.preferIPv4Stack=true',
-             '-Djava.net.preferIPv6Addresses=false'
-     ]
+['-server', '-XX:+UseThreadPriorities',
+'-XX:ThreadPriorityPolicy=42',
+'-Xms512M', '-Xmx512M', '-Xmn100M',
+'-XX:+HeapDumpOnOutOfMemoryError',
+'-XX:+AggressiveOpts', '-XX:+OptimizeStringConcat',
+'-XX:+UseFastAccessorMethods',
+'-XX:+UseParNewGC', '-XX:+UseConcMarkSweepGC',
+'-XX:+CMSParallelRemarkEnabled',
+'-Djava.net.preferIPv4Stack=true', '-Djava.net.preferIPv6Addresses=false']
 ----
-| qwe
+| Additional arguments passed to JVM when executing `Gatling` simulations
 
 |simulations
 |Closure
-|qwe
-[source,groovy]
+|[source,groovy]
 ----
-{
-    include "**/*Simulation.scala"
-}
+{ include "**/*Simulation.scala" }
 ----
-| https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs]
+| Simulations filter. https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs]
 |===
 
 Example::
@@ -133,18 +122,3 @@ dependencies {
 ----
 <1> adding `commons-lang3` to compile classpath for `Gatling` simulations
 <2> adding `cglib` to runtime classpath fot `Gatling` simulations
-
-
-[cols="2,2,5a"]
-|===
-|Firefox
-|Browser
-|
-
-[source,ruby]
-----
-puts "qwe"
-puts "asd"
-----
-
-|===
