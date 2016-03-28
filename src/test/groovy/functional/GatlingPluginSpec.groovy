@@ -12,15 +12,13 @@ import spock.lang.Unroll
 import static org.apache.commons.io.FileUtils.copyDirectory
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class GradleLayoutSpec extends Specification {
+class GatlingPluginSpec extends Specification {
 
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
 
     @Shared
     List<File> pluginClasspath
-
-    File buildFile
 
     File testProjectBuildDir
 
@@ -31,14 +29,9 @@ class GradleLayoutSpec extends Specification {
     }
 
     def createDir(String layout) {
-        copyDirectory(new File(GradleLayoutSpec.class.getResource("/$layout-layout").file), testProjectDir.root)
+        copyDirectory(new File(GatlingPluginSpec.class.getResource("/$layout-layout").file), testProjectDir.root)
         testProjectBuildDir = new File(testProjectDir.root, "build")
-        testProjectDir.newFile("build.gradle")
-    }
-
-    def "should execute all simulations by default"() {
-        setup:
-        createDir("gradle") << """
+        testProjectDir.newFile("build.gradle") << """
 plugins {
     id 'com.github.lkishalmi.gatling'
 }
@@ -46,6 +39,13 @@ repositories {
     jcenter()
 }
 """
+    }
+
+    @Unroll
+    def "should execute all simulations by default, layout `#layout`"() {
+        setup:
+        createDir(layout)
+
         when:
         BuildResult result = GradleRunner.create().forwardOutput()
                 .withProjectDir(testProjectDir.getRoot())
@@ -57,34 +57,31 @@ repositories {
         result.task(":gatling").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == SUCCESS
 
-        and: "only gradle-layout simulations were compiled"
+        and: "only layout specific simulations were compiled"
         def classesDir = new File(testProjectBuildDir, "classes/gatling")
+        classesDir.eachFileRecurse(FileType.FILES) { assert it.name.contains(simulationPart) }
         classesDir.exists()
-        classesDir.eachFileRecurse(FileType.FILES) {
-            assert it.name.contains("1Simulation") && !it.name.contains("2Simulation")
-        }
 
-        and: "only gradle-layout resources are copied"
+        and: "only layout specific resources are copied"
         def resourcesDir = new File(testProjectBuildDir, "resources/gatling")
         resourcesDir.exists()
-        new File(resourcesDir, "data").list() == ["search1.csv"] as String[]
+        new File(resourcesDir, resourceFile).exists()
 
         and: "all simulations were run"
         def reports = new File(testProjectBuildDir, "reports/gatling")
         reports.exists() && reports.listFiles().size() == 2
+
+        where:
+        layout      || simulationPart   || resourceFile
+        "gradle"    | "1Simulation"     | "data/search1.csv"
+        "gatling"   | "2Simulation"     | "search2.csv"
     }
 
     @Unroll
-    def "should execute only #simulation when initiated by rule, layout #{layout}"() {
+    def "should execute only #simulation when initiated by rule, layout `#layout`"() {
         setup:
-        createDir(layout) << """
-plugins {
-    id 'com.github.lkishalmi.gatling'
-}
-repositories {
-    jcenter()
-}
-"""
+        createDir(layout)
+
         when:
         BuildResult result = GradleRunner.create().forwardOutput()
                 .withProjectDir(testProjectDir.getRoot())
