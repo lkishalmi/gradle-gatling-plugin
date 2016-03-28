@@ -1,6 +1,6 @@
-= gradle-gatling-plugin
+= Gatling Plugin for Gradle
 
-Gatling Plugin for Gradle
+image:http://gatling.io/images/gatling-logo.png[Gatling Logo]
 
 == Installation
 
