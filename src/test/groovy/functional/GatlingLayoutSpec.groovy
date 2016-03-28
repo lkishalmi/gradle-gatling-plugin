@@ -73,28 +73,4 @@ repositories {
         def reports = new File(testProjectBuildDir, "reports/gatling")
         reports.exists() && reports.listFiles().size() == 2
     }
-
-    def "should execute single simulation when initiated by rule"() {
-        given:
-        buildFile << """
-plugins {
-    id 'com.github.lkishalmi.gatling'
-}
-repositories {
-    jcenter()
-}
-"""
-        when:
-        BuildResult result = GradleRunner.create().forwardOutput()
-                .withProjectDir(testProjectDir.getRoot())
-                .withPluginClasspath(pluginClasspath)
-                .withArguments("gatling-computerdatabase.Basic2Simulation")
-                .build()
-
-        then: "custom task was run successfully"
-        result.task(":gatling-computerdatabase.Basic2Simulation").outcome == SUCCESS
-
-        and: "only one simulation was executed"
-        new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1
-    }
 }

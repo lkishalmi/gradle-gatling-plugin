@@ -7,6 +7,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static org.apache.commons.io.FileUtils.copyDirectory
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -29,16 +30,15 @@ class GradleLayoutSpec extends Specification {
                            current.replace("classes/test", "resources/main")].collect { new File(it) }
     }
 
-    def setup() {
-        copyDirectory(new File(GradleLayoutSpec.class.getResource("/gradle-layout").file), testProjectDir.root)
-
-        buildFile = testProjectDir.newFile("build.gradle")
+    def createDir(String layout) {
+        copyDirectory(new File(GradleLayoutSpec.class.getResource("/$layout-layout").file), testProjectDir.root)
         testProjectBuildDir = new File(testProjectDir.root, "build")
+        testProjectDir.newFile("build.gradle")
     }
 
     def "should execute all simulations by default"() {
-        given:
-        buildFile << """
+        setup:
+        createDir("gradle") << """
 plugins {
     id 'com.github.lkishalmi.gatling'
 }
@@ -74,9 +74,10 @@ repositories {
         reports.exists() && reports.listFiles().size() == 2
     }
 
-    def "should execute single simulation when initiated by rule"() {
-        given:
-        buildFile << """
+    @Unroll
+    def "should execute only #simulation when initiated by rule, layout #{layout}"() {
+        setup:
+        createDir(layout) << """
 plugins {
     id 'com.github.lkishalmi.gatling'
 }
@@ -88,13 +89,18 @@ repositories {
         BuildResult result = GradleRunner.create().forwardOutput()
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
-                .withArguments("gatling-computerdatabase.Basic1Simulation")
+                .withArguments("gatling-$simulation")
                 .build()
 
         then: "custom task was run successfully"
-        result.task(":gatling-computerdatabase.Basic1Simulation").outcome == SUCCESS
+        result.task(":gatling-$simulation").outcome == SUCCESS
 
         and: "only one simulation was executed"
         new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1
+
+        where:
+        layout      || simulation
+        "gradle"    | "computerdatabase.Basic1Simulation"
+        "gatling"   | "computerdatabase.Basic2Simulation"
     }
 }
