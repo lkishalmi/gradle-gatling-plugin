@@ -43,7 +43,6 @@ Plugin auto-detects layout during examination of project's folder structure.
 |`src/gatling/bodies`       |   Request bodies
 |===
 
-
 == Tasks
 
 [options="header"]
@@ -54,6 +53,9 @@ Plugin auto-detects layout during examination of project's folder structure.
 |`gatling-${SimulationFQN}` <1> | Starts the named `Gatling` simulation
 |===
 <1> _${SimulationFQN}_ should be replaced by fully qualified name of simulation class.
+
+Run all `Gatling` simulations::
+  ./gradle gatling
 
 == Plugin configuration
 
