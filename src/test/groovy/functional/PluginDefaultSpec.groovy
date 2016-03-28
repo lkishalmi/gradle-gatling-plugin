@@ -29,7 +29,7 @@ class PluginDefaultSpec extends Specification {
     }
 
     def setup() {
-        copyDirectory(new File(PluginDefaultSpec.class.getResource("/gatling-sample").file), testProjectDir.root)
+        copyDirectory(new File(PluginDefaultSpec.class.getResource("/gradle-layout").file), testProjectDir.root)
 
         buildFile = testProjectDir.newFile("build.gradle")
         testProjectBuildDir = new File(testProjectDir.root, "build")
@@ -79,11 +79,11 @@ repositories {
         BuildResult result = GradleRunner.create().forwardOutput()
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
-                .withArguments("gatling-computerdatabase.BasicSimulation")
+                .withArguments("gatling-computerdatabase.Basic1Simulation")
                 .build()
 
         then: "custom task was run successfully"
-        result.task(":gatling-computerdatabase.BasicSimulation").outcome == SUCCESS
+        result.task(":gatling-computerdatabase.Basic1Simulation").outcome == SUCCESS
 
         and: "only one simulation was executed"
         new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1

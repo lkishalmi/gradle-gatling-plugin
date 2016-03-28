@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
-class AdvancedSimulation extends Simulation {
+class Advanced2Simulation extends Simulation {
 
   // Let's split this big scenario into composable business processes, like one would do with PageObject pattern with Selenium
 
