@@ -28,8 +28,8 @@ Plugin auto-detects used layout by checking folder structure.
 [options="header"]
 |===
 |Directory                      |   Meaning
-|`src/gatling/scala`            |   Gatling simulation sources
-|`src/gatling/resources/data`   |   Simulation data
+|`src/gatling/scala`            |   Simulation sources
+|`src/gatling/resources/data`   |   Feeder data
 |`src/gatling/resources/bodies` |   Request bodies
 |===
 
@@ -38,8 +38,8 @@ Plugin auto-detects used layout by checking folder structure.
 [options="header"]
 |===
 |Directory                  |   Meaning
-|`src/gatling/simulations`  |   Gatling simulation sources
-|`src/gatling/data`         |   Simulation data
+|`src/gatling/simulations`  |   Simulation sources
+|`src/gatling/data`         |   Feeder data
 |`src/gatling/bodies`       |   Request bodies
 |===
 
@@ -49,9 +49,9 @@ Plugin auto-detects used layout by checking folder structure.
 [options="header"]
 |===
 |Task Name                          | Description
-|`gatling`                          | Starts the default Gatling simulation(s)
-|`gatlingClasses`                   | Compiles the Gatling simulation scripts
-|`gatling-*${SimulationFQN}*` <1>   | Starts the named Gatling simulation
+|`gatling`                          | Starts the default `Gatling` simulation(s)
+|`gatlingClasses`                   | Compiles the `Gatling` simulation scripts
+|`gatling-*${SimulationFQN}*` <1>   | Starts the named `Gatling` simulation
 |===
 <1> *${SimulationFQN}* should be replaced to fully qualified name of simulation class to be run.
 
@@ -62,27 +62,46 @@ The plugin defines the following extension properties in the `gatling` closure
 [options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
+
 |toolVersion        |String         |'2.7.1'                                    | qwe
 |jvmArgs            |List<String>   |'2.7.1'                                    | qwe
-|simulations        |Closure        |'2.7.1'                                    | qwe
+
+|simulations
+|Closure
+| `{ include "**/*Simulation.scala" }`
+| https://docs.gradle.org/current/userguide/working_with_files.htmlCheck File Tree documentation of Gradle]
 |===
 
-Example
-
-.build.gradle
+Example::
++
 [source,groovy]
 ----
 gatling {
-    toolVersion = 'https://192.168.59.103:2376'
-    jvmArgs = new File(System.properties['user.home'], '.boot2docker/certs/boot2docker-vm')
+    toolVersion = '2.7.1'
+    jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
     simulations = {
-
+        include "**/folder1/*Simu.scala"    <1>
+        include "**/folder2/*Simulation.scala"  <2>
     }
 }
 ----
+<1> all `Scala` files from `folder1` ending with `Simu`
+<2> all `Scala` files from `folder2` ending with `Simulation`
 
 == Dependency Management
 
-This plugin defines a `gatling` configuration which by default contains the whole `Gatling` runtime.
-Required dependencies shall be added to this configuration. It would be used both for compile and
-execution of Gatling Simulations.
+This plugin defines two configurations `gatlingCompile` and `gatlingRuntime`.
+By default plugins adds `gatling` libraries and project's classes and tests classes to `gatlingCompile` configurations
+Additional dependencies can be added by plugin's users.
+
+Example::
++
+[source,groovy]
+----
+dependencies {
+    gatlingCompile 'org.apache.commons:commons-lang3:3.4' <1>
+    gatlingRuntime 'cglib:cglib-nodep:3.2.0' <2>
+}
+----
+<1> adding `commons-lang3` to compile classpath for `Gatling` simulations
+<2> adding `cglib` to runtime classpath fot `Gatling` simulations
