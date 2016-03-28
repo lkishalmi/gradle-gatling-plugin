@@ -48,10 +48,10 @@ Plugin auto-detects used layout by checking folder structure.
 
 [options="header"]
 |===
-|Task Name                          | Description
-|`gatling`                          | Starts the default `Gatling` simulation(s)
-|`gatlingClasses`                   | Compiles the `Gatling` simulation scripts
-|`gatling-*${SimulationFQN}*` <1>   | Starts the named `Gatling` simulation
+|Task name | Description
+|`gatlingClasses` | Compiles `Gatling` simulation and copies resources
+|`gatling`                          | Executes all `Gatling` simulations
+|`gatling-*${SimulationFQN}*` <1> | Starts the named `Gatling` simulation
 |===
 <1> *${SimulationFQN}* should be replaced to fully qualified name of simulation class to be run.
 
