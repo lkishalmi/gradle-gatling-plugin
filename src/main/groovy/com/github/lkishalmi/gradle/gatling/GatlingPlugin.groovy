@@ -48,12 +48,12 @@ class GatlingPlugin implements Plugin<Project> {
 
     protected void createConfiguration(GatlingExtension gatlingExtension) {
         project.configurations {
-            gatlingCompile {
-                visible = false
+            ['gatling', 'gatlingCompile', 'gatlingRuntime'].each() { confName ->
+                create(confName) {
+                    visible = false
+                }
             }
-            gatlingRuntime {
-                visible = false
-            }
+            gatlingCompile.extendsFrom(gatling)
         }
 
         project.sourceSets {
@@ -64,8 +64,8 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            gatlingCompile "io.gatling.highcharts:gatling-charts-highcharts:${gatlingExtension.toolVersion}"
-
+            gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingExtension.toolVersion}"
+            
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
         }
