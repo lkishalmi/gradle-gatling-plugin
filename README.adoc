@@ -1,0 +1,133 @@
+= Gatling Plugin for Gradle
+
+image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
+
+== Installation
+
+Add following to `build.gradle`
+
+[source,groovy]
+----
+plugins {
+  id "com.github.lkishalmi.gatling" version "0.1.2"
+}
+----
+
+== Project Layout
+
+Plugin supports two source files layouts for `Gatling` simulations and related data.
+
+* Standard Gradle/Maven layout
+* Gatling-like layout
+
+There's no need to explicitly setup any of those.
+Plugin auto-detects layout during examination of project's folder structure.
+
+=== Standard Gradle/Maven layout
+
+[options="header"]
+|===
+|Directory                      |   Meaning
+|`src/gatling/scala`            |   Simulation sources
+|`src/gatling/resources/data`   |   Feeder data
+|`src/gatling/resources/bodies` |   Request bodies
+|===
+
+=== Gatling-like layout
+
+[options="header"]
+|===
+|Directory                  |   Meaning
+|`src/gatling/simulations`  |   Simulation sources
+|`src/gatling/data`         |   Feeder data
+|`src/gatling/bodies`       |   Request bodies
+|===
+
+== Tasks
+
+[options="header"]
+|===
+|Task name                  |Description
+|`gatlingClasses`           |Compiles `Gatling` simulation and copies resources
+|`gatling`                  |Executes all `Gatling` simulations
+|`gatling-SimulationFQN`    |Executes single `Gatling` simulation, +
+_SimulationFQN_ should be replaced by fully qualified simulation class name.
+|===
+
+Examples::
++
+. Run all simulations
+
+  $ gradle gatling
++
+. Run single simulation implemented in `com.project.simu.MySimulation` class
+
+  $ gradle gatling-com.project.simu.MySimulation
+
+== Plugin configuration
+
+The plugin defines the following extension properties in the `gatling` closure
+
+[cols="1,1,4a,1a", options="header"]
+|===
+|Property name      |Type           |Default value                              |Description
+|toolVersion        |String         |'2.7.1'                                    |`Gatling` version
+
+|jvmArgs
+|List<String>
+|[source,groovy]
+----
+['-server', '-XX:+UseThreadPriorities',
+'-XX:ThreadPriorityPolicy=42',
+'-Xms512M', '-Xmx512M', '-Xmn100M',
+'-XX:+HeapDumpOnOutOfMemoryError',
+'-XX:+AggressiveOpts', '-XX:+OptimizeStringConcat',
+'-XX:+UseFastAccessorMethods',
+'-XX:+UseParNewGC', '-XX:+UseConcMarkSweepGC',
+'-XX:+CMSParallelRemarkEnabled',
+'-Djava.net.preferIPv4Stack=true', '-Djava.net.preferIPv6Addresses=false']
+----
+| Additional arguments passed to JVM when executing `Gatling` simulations
+
+|simulations
+|Closure
+|[source,groovy]
+----
+{ include "**/*Simulation.scala" }
+----
+| Simulations filter. https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs]
+|===
+
+Example::
++
+[source,groovy]
+----
+gatling {
+    toolVersion = '2.7.1'
+    jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
+    simulations = {
+        include "**/folder1/*Simu.scala"    <1>
+        include "**/folder2/*Simulation.scala"  <2>
+    }
+}
+----
+<1> all `Scala` files from `folder1` ending with `Simu`.
+<2> all `Scala` files from `folder2` ending with `Simulation`.
+
+== Dependency Management
+
+This plugin defines two configurations `gatlingCompile` and `gatlingRuntime`.
+By default plugins adds `gatling` libraries and project's classes and tests classes to `gatlingCompile` configurations
+Additional dependencies can be added by plugin's users.
+
+Example::
++
+[source,groovy]
+----
+dependencies {
+    gatlingCompile 'org.apache.commons:commons-lang3:3.4' <1>
+    gatlingRuntime 'cglib:cglib-nodep:3.2.0' <2>
+}
+----
+<1> adding `commons-lang3` to compile classpath for `Gatling` simulations.
+<2> adding `cglib` to runtime classpath fot `Gatling` simulations.

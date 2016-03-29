@@ -4,7 +4,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.scala.ScalaBasePlugin
-import org.gradle.plugins.ide.idea.IdeaPlugin
+
+import java.nio.file.Paths
 
 /**
  *
@@ -26,13 +27,14 @@ class GatlingPlugin implements Plugin<Project> {
         project.pluginManager.apply ScalaBasePlugin
         project.pluginManager.apply JavaPlugin
 
-        def gatlingExt = project.extensions.create('gatling', GatlingExtension)
+        def gatlingExt = project.extensions.create('gatling', GatlingExtension, project)
 
         createConfiguration(gatlingExt)
 
         createGatlingTask(GATLING_TASK_NAME, gatlingExt,
                 project.sourceSets.gatling.allScala.matching(gatlingExt.simulations).collect { File simu ->
-                    (simu.absolutePath - (project.projectDir.absolutePath + "/src/gatling/scala/") - ".scala").replaceAll("/", ".")
+                    Paths.get(new File(project.projectDir, gatlingExt.simulationsDir()).toURI())
+                        .relativize(Paths.get(simu.toURI())).join(".") - ".scala"
                 }
         )
 
@@ -56,8 +58,8 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.sourceSets {
             gatling {
-                scala.srcDirs 'src/gatling/scala'
-                resources.srcDirs 'src/gatling/resources'
+                scala.srcDirs       = [gatlingExtension.simulationsDir()]
+                resources.srcDirs   = [gatlingExtension.dataDir(), gatlingExtension.bodiesDir()]
             }
         }
 
@@ -80,8 +82,8 @@ class GatlingPlugin implements Plugin<Project> {
                     args "-m"
                     args "-bf", "${project.sourceSets.gatling.output.classesDir}"
                     args "-s", simu
-                    args "-df", "${project.sourceSets.gatling.output.resourcesDir}/data"
-                    args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}/bodies"
+                    args "-df", "${project.sourceSets.gatling.output.resourcesDir}"
+                    args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}"
                     args "-rf", "${project.reportsDir}/gatling"
 
                     jvmArgs = gatlingExt.jvmArgs
