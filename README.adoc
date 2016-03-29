@@ -11,7 +11,7 @@ Add following to `build.gradle`
 [source,groovy]
 ----
 plugins {
-  id "com.github.lkishalmi.gatling" version "0.1.2"
+  id "com.github.lkishalmi.gatling" version "0.2.0"
 }
 ----
 
@@ -83,11 +83,14 @@ The plugin defines the following extension properties in the `gatling` closure
 '-XX:ThreadPriorityPolicy=42',
 '-Xms512M', '-Xmx512M', '-Xmn100M',
 '-XX:+HeapDumpOnOutOfMemoryError',
-'-XX:+AggressiveOpts', '-XX:+OptimizeStringConcat',
+'-XX:+AggressiveOpts',
+'-XX:+OptimizeStringConcat',
 '-XX:+UseFastAccessorMethods',
-'-XX:+UseParNewGC', '-XX:+UseConcMarkSweepGC',
+'-XX:+UseParNewGC',
+'-XX:+UseConcMarkSweepGC',
 '-XX:+CMSParallelRemarkEnabled',
-'-Djava.net.preferIPv4Stack=true', '-Djava.net.preferIPv6Addresses=false']
+'-Djava.net.preferIPv4Stack=true',
+'-Djava.net.preferIPv6Addresses=false']
 ----
 | Additional arguments passed to JVM when executing `Gatling` simulations
 
