@@ -2,6 +2,8 @@
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
 
+*Master branch* image:https://api.travis-ci.org/lkishalmi/gradle-gatling-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin"]
+
 == Installation
 
 Add following to `build.gradle`
