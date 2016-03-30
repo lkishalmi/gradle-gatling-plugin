@@ -73,7 +73,7 @@ The plugin defines the following extension properties in the `gatling` closure
 [cols="1,1,4a,1a", options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
-|toolVersion        |String         |'2.7.1'                                    |`Gatling` version
+|toolVersion        |String         |'2.1.7'                                    |`Gatling` version
 
 |jvmArgs
 |List<String>
@@ -108,7 +108,7 @@ Example::
 [source,groovy]
 ----
 gatling {
-    toolVersion = '2.7.1'
+    toolVersion = '2.1.7'
     jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
     simulations = {
         include "**/folder1/*Simu.scala"    <1>
