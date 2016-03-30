@@ -1,4 +1,5 @@
 = Gatling Plugin for Gradle
+:gatlingToolVersion: 2.1.7
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
 
@@ -73,7 +74,7 @@ The plugin defines the following extension properties in the `gatling` closure
 [cols="1,1,4a,1a", options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
-|toolVersion        |String         |'2.7.1'                                    |`Gatling` version
+|toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
 
 |jvmArgs
 |List<String>
@@ -105,10 +106,10 @@ The plugin defines the following extension properties in the `gatling` closure
 
 Example::
 +
-[source,groovy]
+[source,groovy,subs="attributes"]
 ----
 gatling {
-    toolVersion = '2.7.1'
+    toolVersion = '{gatlingToolVersion}'
     jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
     simulations = {
         include "**/folder1/*Simu.scala"    <1>
