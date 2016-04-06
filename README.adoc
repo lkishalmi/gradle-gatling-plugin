@@ -126,6 +126,7 @@ This plugin defines two configurations `gatlingCompile` and `gatlingRuntime`.
 By default plugins adds `gatling` libraries and project's classes and tests classes to `gatlingCompile` configurations
 Additional dependencies can be added by plugin's users.
 
+
 Example::
 +
 [source,groovy]
