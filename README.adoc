@@ -34,6 +34,7 @@ Plugin auto-detects layout during examination of project's folder structure.
 |`src/gatling/scala`            |   Simulation sources
 |`src/gatling/resources/data`   |   Feeder data
 |`src/gatling/resources/bodies` |   Request bodies
+|`src/gatling/resources/conf`   |   Custom gatling configurations
 |===
 
 === Gatling-like layout
@@ -44,6 +45,7 @@ Plugin auto-detects layout during examination of project's folder structure.
 |`src/gatling/simulations`  |   Simulation sources
 |`src/gatling/data`         |   Feeder data
 |`src/gatling/bodies`       |   Request bodies
+|`src/gatling/conf`         |   Custom gatling configurations
 |===
 
 == Tasks

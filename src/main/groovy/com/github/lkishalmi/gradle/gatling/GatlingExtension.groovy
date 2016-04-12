@@ -50,4 +50,8 @@ class GatlingExtension {
         "src/gatling${ isGatlingLayout ? "" : "/resources" }/bodies"
     }
 
+    String confDir() {
+        "src/gatling${ isGatlingLayout ? "" : "/resources" }/conf"
+    }
+
 }
