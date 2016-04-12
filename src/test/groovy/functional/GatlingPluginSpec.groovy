@@ -60,13 +60,18 @@ repositories {
 
         and: "only layout specific simulations were compiled"
         def classesDir = new File(testProjectBuildDir, "classes/gatling")
-        classesDir.eachFileRecurse(FileType.FILES) { assert it.name.contains(simulationPart) }
+        classesDir.eachFileRecurse(FileType.FILES) {
+            assert it.name.contains(simulationPart)
+        }
         classesDir.exists()
 
         and: "only layout specific resources are copied"
         def resourcesDir = new File(testProjectBuildDir, "resources/gatling")
         resourcesDir.exists()
         new File(resourcesDir, resourceFile).exists()
+
+        and: "results where sent to graphite"
+        result.output.contains("graphiteSender")
 
         and: "all simulations were run"
         def reports = new File(testProjectBuildDir, "reports/gatling")
@@ -92,6 +97,9 @@ repositories {
 
         then: "custom task was run successfully"
         result.task(":gatling-$simulation").outcome == SUCCESS
+
+        and: "results where sent to graphite"
+        result.output.contains("graphiteSender")
 
         and: "only one simulation was executed"
         new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1
