@@ -27,7 +27,7 @@ class GatlingPlugin implements Plugin<Project> {
         project.pluginManager.apply ScalaBasePlugin
         project.pluginManager.apply JavaPlugin
 
-        def gatlingExt = project.extensions.create('gatling', GatlingExtension, project)
+        def gatlingExt = project.extensions.create('gatling', GatlingPluginExtension, project)
 
         createConfiguration(gatlingExt)
 
@@ -46,7 +46,7 @@ class GatlingPlugin implements Plugin<Project> {
         }
     }
 
-    protected void createConfiguration(GatlingExtension gatlingExtension) {
+    protected void createConfiguration(GatlingPluginExtension gatlingExt) {
         project.configurations {
             ['gatling', 'gatlingCompile', 'gatlingRuntime'].each() { confName ->
                 create(confName) {
@@ -58,23 +58,23 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.sourceSets {
             gatling {
-                scala.srcDirs       = [gatlingExtension.simulationsDir()]
-                resources.srcDirs   = [gatlingExtension.dataDir(),
-                                       gatlingExtension.bodiesDir(),
-                                       gatlingExtension.confDir()]
+                scala.srcDirs       = [gatlingExt.simulationsDir()]
+                resources.srcDirs   = [gatlingExt.dataDir(),
+                                       gatlingExt.bodiesDir(),
+                                       gatlingExt.confDir()]
             }
         }
 
         project.dependencies {
-            gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingExtension.toolVersion}"
-            
+            gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingExt.toolVersion}"
+
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
-            gatlingRuntime project.files(gatlingExtension.confDir())
+            gatlingRuntime project.files(gatlingExt.confDir())
         }
     }
 
-    def createGatlingTask(String taskName, GatlingExtension gatlingExt, Collection<String> simulations) {
+    def createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Collection<String> simulations) {
         project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
                 description: "Execute Gatling simulation", group: "Gatling") << {
 

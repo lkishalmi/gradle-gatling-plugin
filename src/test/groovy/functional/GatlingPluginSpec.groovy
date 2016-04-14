@@ -70,9 +70,6 @@ repositories {
         resourcesDir.exists()
         new File(resourcesDir, resourceFile).exists()
 
-        and: "results where sent to graphite"
-        result.output.contains("graphiteSender")
-
         and: "all simulations were run"
         def reports = new File(testProjectBuildDir, "reports/gatling")
         reports.exists() && reports.listFiles().size() == 2
@@ -90,6 +87,7 @@ repositories {
 
         when:
         BuildResult result = GradleRunner.create().forwardOutput()
+                .withDebug(true)
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
                 .withArguments("gatling-$simulation")
@@ -98,9 +96,6 @@ repositories {
         then: "custom task was run successfully"
         result.task(":gatling-$simulation").outcome == SUCCESS
 
-        and: "results where sent to graphite"
-        result.output.contains("graphiteSender")
-
         and: "only one simulation was executed"
         new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1
 
@@ -108,6 +103,37 @@ repositories {
         layout      || simulation
         "gradle"    | "computerdatabase.Basic1Simulation"
         "gatling"   | "computerdatabase.Basic2Simulation"
+    }
+
+    @Unroll
+    def "should allow Gatling config override, layout `#layout`"() {
+        given:
+        buildDirFromLayout(layout)
+        and: "override config by disabling reports"
+        new File(new File(testProjectDir.root, configLocation), "gatling.conf") << """
+gatling {
+  data {
+    writers = []
+  }
+}
+"""
+        when:
+        BuildResult result = GradleRunner.create().forwardOutput()
+            .withProjectDir(testProjectDir.getRoot())
+            .withPluginClasspath(pluginClasspath)
+            .withArguments("gatling")
+            .build()
+
+        then: "task executed successfully"
+        result.task(":gatling").outcome == SUCCESS
+
+        and: "no reports generated"
+        !new File(testProjectBuildDir, "reports/gatling").exists()
+
+        where:
+        layout      || configLocation
+        "gradle"    | "src/gatling/resources/conf"
+        "gatling"   | "src/gatling/conf"
     }
 
     def "should not fail when layout is incorrect"() {
