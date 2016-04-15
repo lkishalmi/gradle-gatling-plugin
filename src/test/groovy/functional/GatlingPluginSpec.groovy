@@ -87,7 +87,6 @@ repositories {
 
         when:
         BuildResult result = GradleRunner.create().forwardOutput()
-                .withDebug(true)
                 .withProjectDir(testProjectDir.getRoot())
                 .withPluginClasspath(pluginClasspath)
                 .withArguments("gatling-$simulation")

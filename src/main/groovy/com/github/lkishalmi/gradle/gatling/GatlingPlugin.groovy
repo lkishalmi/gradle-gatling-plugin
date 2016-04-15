@@ -99,6 +99,8 @@ class GatlingPlugin implements Plugin<Project> {
 
                     jvmArgs = gatlingExt.jvmArgs
 
+                    systemProperties = System.properties
+
                     standardInput = System.in
                 }
             }
