@@ -31,12 +31,15 @@ class GatlingPlugin implements Plugin<Project> {
 
         createConfiguration(gatlingExt)
 
-        createGatlingTask(GATLING_TASK_NAME, gatlingExt,
-                project.sourceSets.gatling.allScala.matching(gatlingExt.simulations).collect { File simu ->
-                    Paths.get(new File(project.projectDir, gatlingExt.simulationsDir()).toURI())
+
+        project.afterEvaluate { p ->
+            createGatlingTask(GATLING_TASK_NAME, gatlingExt,
+                p.sourceSets.gatling.allScala.matching(p.gatling.simulations).collect { File simu ->
+                    Paths.get(new File(p.projectDir, p.gatling.simulationsDir()).toURI())
                         .relativize(Paths.get(simu.toURI())).join(".") - ".scala"
                 }
-        )
+            )
+        }
 
         project.tasks.addRule('Pattern: gatling-<SimulationClass>: Executes single Gatling simulation.') {
             def taskName ->
@@ -79,9 +82,10 @@ class GatlingPlugin implements Plugin<Project> {
     }
 
     def createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Collection<String> simulations) {
-        project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
-                description: "Execute Gatling simulation", group: "Gatling") << {
-
+        def task = project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
+                description: "Execute Gatling simulation", group: "Gatling")
+        task.ext.simulations = simulations
+        task.doLast {
             simulations.each { String simu ->
                 project.javaexec {
                     main = GATLING_MAIN_CLASS
