@@ -138,4 +138,4 @@ dependencies {
 }
 ----
 <1> adding `commons-lang3` to compile classpath for `Gatling` simulations.
-<2> adding `cglib` to runtime classpath fot `Gatling` simulations.
+<2> adding `cglib` to runtime classpath for `Gatling` simulations.
