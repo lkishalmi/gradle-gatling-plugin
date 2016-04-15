@@ -66,7 +66,11 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingExt.toolVersion}"
+            project.afterEvaluate { p ->
+                p.dependencies {
+                    gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.gatling.toolVersion}"
+                }
+            }
 
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
