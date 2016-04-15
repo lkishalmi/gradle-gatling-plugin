@@ -1,5 +1,5 @@
 = Gatling Plugin for Gradle
-:gatlingToolVersion: 2.1.7
+:gatlingToolVersion: 2.2.0
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
 
@@ -12,9 +12,15 @@ Add following to `build.gradle`
 [source,groovy]
 ----
 plugins {
-  id "com.github.lkishalmi.gatling" version "0.2.1"
+  id "com.github.lkishalmi.gatling" version "0.3.0"
 }
 ----
+
+Java 8 Upgrade::
+* Due to a bug Gatling 2.2.0 is supported only from gradle-gatling-plugin version 0.3.0
+* JDK 8 is required for Gatling 2.2.0, so this plugin is also require JDK8
+
+For whatever reason you stuck with JDK 7, please keep using the 0.2.x series of this plugin.
 
 == Project Layout
 
