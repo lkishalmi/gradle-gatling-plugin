@@ -6,9 +6,9 @@ import org.gradle.api.Project
  *
  * @author Laszlo Kishalmi
  */
-class GatlingExtension {
+class GatlingPluginExtension {
 
-    def toolVersion = '2.1.7'
+    def toolVersion = '2.2.0'
 
     def jvmArgs = [
             '-server',
@@ -34,7 +34,7 @@ class GatlingExtension {
 
     private final boolean isGatlingLayout
 
-    GatlingExtension(Project project) {
+    GatlingPluginExtension(Project project) {
         this.isGatlingLayout = project.file("src/gatling/simulations").exists() && project.file("src/gatling/data").exists() && project.file("src/gatling/bodies").exists()
     }
 

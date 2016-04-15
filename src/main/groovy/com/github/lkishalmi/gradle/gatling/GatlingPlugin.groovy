@@ -27,16 +27,19 @@ class GatlingPlugin implements Plugin<Project> {
         project.pluginManager.apply ScalaBasePlugin
         project.pluginManager.apply JavaPlugin
 
-        def gatlingExt = project.extensions.create('gatling', GatlingExtension, project)
+        def gatlingExt = project.extensions.create('gatling', GatlingPluginExtension, project)
 
         createConfiguration(gatlingExt)
 
-        createGatlingTask(GATLING_TASK_NAME, gatlingExt,
-                project.sourceSets.gatling.allScala.matching(gatlingExt.simulations).collect { File simu ->
-                    Paths.get(new File(project.projectDir, gatlingExt.simulationsDir()).toURI())
+
+        project.afterEvaluate { p ->
+            createGatlingTask(GATLING_TASK_NAME, gatlingExt,
+                p.sourceSets.gatling.allScala.matching(p.gatling.simulations).collect { File simu ->
+                    Paths.get(new File(p.projectDir, p.gatling.simulationsDir()).toURI())
                         .relativize(Paths.get(simu.toURI())).join(".") - ".scala"
                 }
-        )
+            )
+        }
 
         project.tasks.addRule('Pattern: gatling-<SimulationClass>: Executes single Gatling simulation.') {
             def taskName ->
@@ -46,7 +49,7 @@ class GatlingPlugin implements Plugin<Project> {
         }
     }
 
-    protected void createConfiguration(GatlingExtension gatlingExtension) {
+    protected void createConfiguration(GatlingPluginExtension gatlingExt) {
         project.configurations {
             ['gatling', 'gatlingCompile', 'gatlingRuntime'].each() { confName ->
                 create(confName) {
@@ -58,26 +61,31 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.sourceSets {
             gatling {
-                scala.srcDirs       = [gatlingExtension.simulationsDir()]
-                resources.srcDirs   = [gatlingExtension.dataDir(),
-                                       gatlingExtension.bodiesDir(),
-                                       gatlingExtension.confDir()]
+                scala.srcDirs       = [gatlingExt.simulationsDir()]
+                resources.srcDirs   = [gatlingExt.dataDir(),
+                                       gatlingExt.bodiesDir(),
+                                       gatlingExt.confDir()]
             }
         }
 
         project.dependencies {
-            gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingExtension.toolVersion}"
-            
+            project.afterEvaluate { p ->
+                p.dependencies {
+                    gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.gatling.toolVersion}"
+                }
+            }
+
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
-            gatlingRuntime project.files(gatlingExtension.confDir())
+            gatlingRuntime project.files(gatlingExt.confDir())
         }
     }
 
-    def createGatlingTask(String taskName, GatlingExtension gatlingExt, Collection<String> simulations) {
-        project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
-                description: "Execute Gatling simulation", group: "Gatling") << {
-
+    def createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Collection<String> simulations) {
+        def task = project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
+                description: "Execute Gatling simulation", group: "Gatling")
+        task.ext.simulations = simulations
+        task.doLast {
             simulations.each { String simu ->
                 project.javaexec {
                     main = GATLING_MAIN_CLASS
@@ -90,6 +98,8 @@ class GatlingPlugin implements Plugin<Project> {
                     args "-rf", "${project.reportsDir}/gatling"
 
                     jvmArgs = gatlingExt.jvmArgs
+
+                    systemProperties = System.properties
 
                     standardInput = System.in
                 }

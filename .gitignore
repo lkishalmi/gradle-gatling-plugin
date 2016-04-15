@@ -1,3 +1,4 @@
+/src/test/resources/gradle-layout/userHome
 /.idea
 /gradle-gatling-plugin.iml
 .gradle
