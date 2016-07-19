@@ -12,7 +12,7 @@ Add following to `build.gradle`
 [source,groovy]
 ----
 plugins {
-  id "com.github.lkishalmi.gatling" version "0.3.0"
+  id "com.github.lkishalmi.gatling" version "0.3.1"
 }
 ----
 
@@ -83,6 +83,8 @@ The plugin defines the following extension properties in the `gatling` closure
 |===
 |Property name      |Type           |Default value                              |Description
 |toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
+|logLevel           |String         |'WARN'
+|The default Gatling console log level if no `logback.xml` present in the configutation folder
 
 |jvmArgs
 |List<String>

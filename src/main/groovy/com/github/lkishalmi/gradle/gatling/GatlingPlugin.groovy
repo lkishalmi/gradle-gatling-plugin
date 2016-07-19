@@ -85,6 +85,11 @@ class GatlingPlugin implements Plugin<Project> {
         def task = project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
                 description: "Execute Gatling simulation", group: "Gatling")
         task.ext.simulations = simulations
+        File logConf = project.file(new File(gatlingExt.confDir(), 'logback.xml'))
+        File logback = project.file("${project.buildDir}/gatling/logback.xml")
+        task.doFirst {
+            generateLogConfig(gatlingExt, logback)
+        }
         task.doLast {
             simulations.each { String simu ->
                 project.javaexec {
@@ -99,12 +104,34 @@ class GatlingPlugin implements Plugin<Project> {
 
                     jvmArgs = gatlingExt.jvmArgs
 
-                    systemProperties = System.properties
+                    systemProperties(System.properties)
+                    if (!logConf.isFile()) {
+                        systemProperty('logback.configurationFile', logback.absolutePath)
+                    }
+
 
                     standardInput = System.in
                 }
             }
         }
+    }
+
+    def generateLogConfig(GatlingPluginExtension gatlingExt, File logback) {
+        def template = """<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{15} - %msg%n%rEx</pattern>
+            <immediateFlush>false</immediateFlush>
+        </encoder>
+    </appender>
+    <root level="${gatlingExt.logLevel}">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
+"""
+        logback.parentFile.mkdirs()
+        logback.text = template
     }
 }
 

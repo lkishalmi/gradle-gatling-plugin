@@ -74,6 +74,10 @@ repositories {
         def reports = new File(testProjectBuildDir, "reports/gatling")
         reports.exists() && reports.listFiles().size() == 2
 
+        and: "logback.xml were generated"
+        def logback = new File(testProjectBuildDir, "gatling/logback.xml")
+        logback.exists()
+
         where:
         layout      || simulationPart   || resourceFile
         "gradle"    | "1Simulation"     | "search1.csv"
