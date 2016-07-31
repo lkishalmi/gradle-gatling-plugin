@@ -1,5 +1,7 @@
 package computerdatabase.advanced
 
+import org.apache.commons.lang.StringUtils.lowerCase
+
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
@@ -23,7 +25,7 @@ class Advanced2Simulation extends Simulation {
   }
 
   val httpConf = http
-    .baseURL("http://computer-database.gatling.io")
+    .baseURL(lowerCase(computerdatabase.TestUtils.hostName()))
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .doNotTrackHeader("1")
     .acceptLanguageHeader("en-US,en;q=0.5")
