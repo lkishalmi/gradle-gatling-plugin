@@ -1,17 +1,8 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.5"
-    }
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy'
+    id "com.gradle.plugin-publish" version "0.9.5"
 }
-
-apply plugin: 'java-gradle-plugin'
-apply plugin: 'groovy'
-apply plugin: "com.gradle.plugin-publish"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -22,8 +13,8 @@ repositories {
 
 dependencies {
     testCompile gradleTestKit()
-    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
-        exclude module: "groovy-all"
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: 'groovy-all'
     }
     testCompile 'commons-io:commons-io:2.5'
 }
