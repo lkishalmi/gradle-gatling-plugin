@@ -2,10 +2,9 @@ package com.github.lkishalmi.gradle.gatling
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.internal.ConventionTask
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.scala.ScalaBasePlugin
-
-import java.nio.file.Paths
 
 /**
  *
@@ -13,11 +12,11 @@ import java.nio.file.Paths
  */
 class GatlingPlugin implements Plugin<Project> {
 
-    private final String GATLING_TASK_NAME = 'gatling'
+    public static def GATLING_EXTENSION_NAME = 'gatling'
 
-    private final String GATLING_TASK_NAME_PREFIX = "$GATLING_TASK_NAME-"
+    public static def GATLING_RUN_TASK_NAME = 'gatlingRun'
 
-    private final String GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
+    static String GATLING_TASK_NAME_PREFIX = "$GATLING_RUN_TASK_NAME-"
 
     private Project project
 
@@ -27,29 +26,39 @@ class GatlingPlugin implements Plugin<Project> {
         project.pluginManager.apply ScalaBasePlugin
         project.pluginManager.apply JavaPlugin
 
-        def gatlingExt = project.extensions.create('gatling', GatlingPluginExtension, project)
+        def gatlingExt = project.extensions.create(GATLING_EXTENSION_NAME, GatlingPluginExtension, project)
 
         createConfiguration(gatlingExt)
 
+        createGatlingTask(GATLING_RUN_TASK_NAME, gatlingExt)
 
-        project.afterEvaluate { p ->
-            createGatlingTask(GATLING_TASK_NAME, gatlingExt,
-                p.sourceSets.gatling.allScala.matching(p.gatling.simulations).collect { File simu ->
-                    Paths.get(new File(p.projectDir, p.gatling.simulationsDir()).toURI())
-                        .relativize(Paths.get(simu.toURI())).join(".") - ".scala"
-                }
-            )
-        }
+        project.tasks.getByName("processGatlingResources").doLast(new LogbackConfigTaskAction())
 
-        project.tasks.addRule('Pattern: gatling-<SimulationClass>: Executes single Gatling simulation.') {
-            def taskName ->
+        project.tasks.addRule("Pattern: $GATLING_RUN_TASK_NAME-<SimulationClass>: Executes single Gatling simulation.") {
+            String taskName ->
                 if (taskName.startsWith(GATLING_TASK_NAME_PREFIX)) {
-                    createGatlingTask(taskName, gatlingExt, [taskName - GATLING_TASK_NAME_PREFIX])
+                    createGatlingTask(taskName, gatlingExt, [(taskName - GATLING_TASK_NAME_PREFIX)])
                 }
         }
     }
 
-    protected void createConfiguration(GatlingPluginExtension gatlingExt) {
+    void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
+        def task = project.tasks.create(name: taskName,
+            dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
+            description: "Execute Gatling simulation", group: "Gatling",
+        ) as ConventionTask
+
+        task.convention.plugins["gatling"] = gatlingExt
+        task.conventionMapping["jvmArgs"] = { gatlingExt.jvmArgs }
+
+        if (predefinedSimulations) {
+            task.configure { simulations = predefinedSimulations }
+        } else {
+            task.conventionMapping["simulations"] = { gatlingExt.simulations }
+        }
+    }
+
+    void createConfiguration(GatlingPluginExtension gatlingExt) {
         project.configurations {
             ['gatling', 'gatlingCompile', 'gatlingRuntime'].each() { confName ->
                 create(confName) {
@@ -69,69 +78,18 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            project.afterEvaluate { p ->
-                p.dependencies {
-                    gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.gatling.toolVersion}"
-                }
-            }
-
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
-            gatlingRuntime project.files(gatlingExt.confDir())
+
+            gatlingRuntime project.sourceSets.gatling.output
+            gatlingRuntime project.sourceSets.gatling.output
         }
-    }
 
-    def createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Collection<String> simulations) {
-        def task = project.tasks.create(name: taskName, dependsOn: project.tasks.gatlingClasses,
-                description: "Execute Gatling simulation", group: "Gatling")
-        task.ext.simulations = simulations
-        File logConf = project.file(new File(gatlingExt.confDir(), 'logback.xml'))
-        File logback = project.file("${project.buildDir}/gatling/logback.xml")
-        task.doFirst {
-            generateLogConfig(gatlingExt, logback)
-        }
-        task.doLast {
-            simulations.each { String simu ->
-                project.javaexec {
-                    main = GATLING_MAIN_CLASS
-                    classpath = project.configurations.gatlingRuntime
-                    args "-m"
-                    args "-bf", "${project.sourceSets.gatling.output.classesDir}"
-                    args "-s", simu
-                    args "-df", "${project.sourceSets.gatling.output.resourcesDir}"
-                    args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}"
-                    args "-rf", "${project.reportsDir}/gatling"
-
-                    jvmArgs = gatlingExt.jvmArgs
-
-                    systemProperties(System.properties)
-                    if (!logConf.isFile()) {
-                        systemProperty('logback.configurationFile', logback.absolutePath)
-                    }
-
-
-                    standardInput = System.in
-                }
+        project.afterEvaluate { Project p ->
+            p.dependencies {
+                gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.extensions.getByType(GatlingPluginExtension).toolVersion}"
             }
         }
-    }
-
-    def generateLogConfig(GatlingPluginExtension gatlingExt, File logback) {
-        def template = """<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{15} - %msg%n%rEx</pattern>
-            <immediateFlush>false</immediateFlush>
-        </encoder>
-    </appender>
-    <root level="${gatlingExt.logLevel}">
-        <appender-ref ref="CONSOLE" />
-    </root>
-</configuration>
-"""
-        logback.parentFile.mkdirs()
-        logback.text = template
     }
 }
 

@@ -1,16 +1,9 @@
 package com.github.lkishalmi.gradle.gatling
 
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Specification
+class GatlingPluginTest extends GatlingUnitSpec {
 
-class GatlingPluginTest extends Specification {
-    def "should create custom configurations"() {
-        when:
-        Project project = ProjectBuilder.builder().build()
-        project.pluginManager.apply 'com.github.lkishalmi.gatling'
-
-        then:
+    def "should create gatling configurations"() {
+        expect:
         ['gatling', 'gatlingCompile', 'gatlingRuntime'].every {
             project.configurations.getByName(it) != null
         }
@@ -18,11 +11,7 @@ class GatlingPluginTest extends Specification {
 
     def "should add gatling dependencies"() {
         when:
-        Project project = ProjectBuilder.builder().build()
-        project.pluginManager.apply 'com.github.lkishalmi.gatling'
-        and:
         project.evaluate()
-
         then:
         def gatlingExt = project.extensions.findByType(GatlingPluginExtension)
         project.configurations.getByName("gatling").allDependencies.find {
@@ -32,12 +21,7 @@ class GatlingPluginTest extends Specification {
 
     def "should allow overriding gatling version via extension"() {
         when:
-        Project project = ProjectBuilder.builder().build()
-        project.pluginManager.apply 'com.github.lkishalmi.gatling'
-        and:
-        project.gatling {
-            toolVersion = '1.1.1'
-        }
+        project.gatling { toolVersion = '1.1.1' }
         and:
         project.evaluate()
 
@@ -47,41 +31,19 @@ class GatlingPluginTest extends Specification {
         }
     }
 
-    def "should store filtered simulations as a task property"() {
-        when:
-        Project project = ProjectBuilder.builder()
-            .withProjectDir(new File("src/test/resources/gradle-layout")).build()
-        project.pluginManager.apply 'com.github.lkishalmi.gatling'
-        and:
-        project.evaluate()
-
-        then:
-        Collection<String> simulations = project.tasks["gatling"].simulations
-        simulations.size() == 2
-        and:
-        simulations.any { it.endsWith("Advanced1Simulation") }
-        and:
-        simulations.any { it.endsWith("Basic1Simulation") }
+    def "should create gatlingRun task"() {
+        expect:
+        with(gatlingRunTask) {
+            it instanceof GatlingRunTask
+            it.simulations == gatlingExt.simulations
+            it.jvmArgs == gatlingExt.jvmArgs
+        }
     }
 
-    def "should allow overriding simulations filter via extension"() {
-        when:
-        Project project = ProjectBuilder.builder()
-            .withProjectDir(new File("src/test/resources/gradle-layout")).build()
-        project.pluginManager.apply 'com.github.lkishalmi.gatling'
+    def "should create processGatlingResources task"() {
+        expect:
+        project.tasks.getByName("processGatlingResources") != null
         and:
-        project.gatling {
-            simulations = {
-                include "**/*Advanced1Simulation*"
-            }
-        }
-        and:
-        project.evaluate()
-
-        then:
-        Collection<String> simulations = project.tasks["gatling"].simulations
-        simulations.size() == 1
-        and:
-        simulations.every { it.endsWith("Advanced1Simulation") }
+        project.tasks.getByName("processGatlingResources").actions.find { it.action instanceof LogbackConfigTaskAction}
     }
 }
