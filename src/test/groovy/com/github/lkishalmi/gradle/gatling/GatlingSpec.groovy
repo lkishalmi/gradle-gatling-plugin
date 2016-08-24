@@ -2,7 +2,6 @@ package com.github.lkishalmi.gradle.gatling
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Shared
 import spock.lang.Specification
 
 import static org.apache.commons.io.FileUtils.copyDirectory
