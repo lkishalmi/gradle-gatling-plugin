@@ -88,4 +88,29 @@ repositories {
         where:
         layout << [ 'gradle', 'gatling']
     }
+
+    @Unroll
+    def "should compile simulations without `bodies` folder, layout `#layout`"() {
+        setup:
+        prepareTest(layout)
+        and: "remove `bodies` folder"
+        assert new File(testProjectDir.root, "src/gatling/$bodiesFolder").deleteDir()
+
+        when:
+        BuildResult result = executeGradle(GATLING_CLASSES_TASK_NAME)
+
+        then:
+        result.task(":$GATLING_CLASSES_TASK_NAME").outcome == SUCCESS
+
+        and: "only layout specific simulations were compiled"
+        def classesDir = new File(testProjectBuildDir, "classes/gatling")
+        classesDir.exists()
+        and:
+        classesDir.eachFileRecurse(FileType.FILES) { assert it.name.contains(simulationPart) }
+
+        where:
+        layout    | bodiesFolder                   | simulationPart
+        'gradle'  | 'resources/bodies' | '1Simulation'
+        'gatling' | 'bodies'           | '2Simulation'
+    }
 }
