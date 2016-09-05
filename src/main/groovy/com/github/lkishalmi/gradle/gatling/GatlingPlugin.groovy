@@ -3,8 +3,7 @@ package com.github.lkishalmi.gradle.gatling
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.ConventionTask
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.scala.ScalaBasePlugin
+import org.gradle.api.plugins.scala.ScalaPlugin
 
 /**
  *
@@ -23,8 +22,7 @@ class GatlingPlugin implements Plugin<Project> {
     void apply(Project project) {
         this.project = project
 
-        project.pluginManager.apply ScalaBasePlugin
-        project.pluginManager.apply JavaPlugin
+        project.pluginManager.apply ScalaPlugin
 
         def gatlingExt = project.extensions.create(GATLING_EXTENSION_NAME, GatlingPluginExtension, project)
 
@@ -78,6 +76,8 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
+            gatlingCompile 'org.scala-lang:scala-library:2.11.8'
+
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
 

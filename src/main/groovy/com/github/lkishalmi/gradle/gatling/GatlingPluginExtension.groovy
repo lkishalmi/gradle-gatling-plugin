@@ -38,7 +38,7 @@ class GatlingPluginExtension {
 
     GatlingPluginExtension(Project project) {
         this.project = project
-        this.isGatlingLayout = project.file("src/gatling/simulations").exists() && project.file("src/gatling/data").exists() && project.file("src/gatling/bodies").exists()
+        this.isGatlingLayout = project.file("src/gatling/simulations").exists()
     }
 
     String simulationsDir() {

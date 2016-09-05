@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     testCompile gradleTestKit()
-    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+    testCompile('org.spockframework:spock-core:1.1-groovy-2.4-rc-2') {
         exclude module: 'groovy-all'
     }
     testCompile 'commons-io:commons-io:2.5'
@@ -29,7 +29,7 @@ pluginBundle {
     website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
     vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
     description = 'Gatling Simulation Execution'
-    tags = ['gradle-plugin', 'gatling', 'load test', 'stress test', 'performance test', 'scala']
+    tags = ['gatling', 'load test', 'stress test', 'performance test', 'scala']
 
     plugins {
         gatlingPlugin {
