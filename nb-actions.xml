@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE actions SYSTEM "action-mapping.dtd">
+<actions>
+    <action name="custom-1" displayName="Publish Plugin">
+        <args>-Pversion=${input:Version,0.4.x}
+clean 
+publishPlugins</args>
+    </action>
+</actions>
