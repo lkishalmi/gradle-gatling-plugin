@@ -1,9 +1,12 @@
 = Gatling Plugin for Gradle
 :gatlingToolVersion: 2.2.2
+:toc: macro
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
 
 *Master branch* image:https://api.travis-ci.org/lkishalmi/gradle-gatling-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin"]
+
+toc::[]
 
 == Installation
 
@@ -17,7 +20,17 @@ For whatever reason you stuck with JDK 7, please keep using the 0.2.x series of 
 
 == Project Layout
 
-Plugin supports two source files layouts for `Gatling` simulations and related data.
+=== Folders overview
+
+The plugin uses `src/gatling` as its source root.
+There are several folders serving different purposes under the source root.
+
+* Simulation sources direcrory
+* Feeder data directory
+* Request bodies directory
+* Configuration directory
+
+This plugin supports two project layouts.
 
 * Standard Gradle/Maven layout
 * Gatling-like layout
@@ -29,22 +42,22 @@ Plugin auto-detects layout during examination of project's folder structure.
 
 [options="header"]
 |===
-|Directory                      |   Meaning
+|Directory                      |   Purpose
 |`src/gatling/scala`            |   Simulation sources
 |`src/gatling/resources/data`   |   Feeder data
 |`src/gatling/resources/bodies` |   Request bodies
-|`src/gatling/resources/conf`   |   Custom gatling configurations
+|`src/gatling/resources/conf`   |   Configuration
 |===
 
 === Gatling-like layout
 
 [options="header"]
 |===
-|Directory                  |   Meaning
+|Directory                  |   Purpose
 |`src/gatling/simulations`  |   Simulation sources
 |`src/gatling/data`         |   Feeder data
 |`src/gatling/bodies`       |   Request bodies
-|`src/gatling/conf`         |   Custom gatling configurations
+|`src/gatling/conf`         |   Configuration
 |===
 
 == Plugin configuration
@@ -90,19 +103,89 @@ otherwise an Iterable of simulations fully qualified names.
 
 === Examples
 
+Overriding Gatling version and JVM arguments::
++
 [source,groovy,subs="attributes"]
 ----
 gatling {
     toolVersion = '{gatlingToolVersion}'
     jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
+}
+----
+
+Filtering simulations using FQN list::
++
+[source,groovy]
+----
+gatling {
+    simulations = [ 'com.package1.MySimu', 'com.package2.advanced.MySimulation' ] <1>
+}
+----
+<1> only execute `com.package1.MySimu` and `com.package2.advanced.MySimulation` simulations.
+
+Filtering simulations using Groovy closure::
++
+[source,groovy]
+----
+gatling {
     simulations = {
-        include "**/folder1/*Simu.scala"    <1>
-        include "**/folder2/*Simulation.scala"  <2>
+        include "**/package1/*Simu.scala"    <1>
+        include "**/package2/*Simulation.scala"  <2>
     }
 }
 ----
-<1> all `Scala` files from `folder1` ending with `Simu`.
-<2> all `Scala` files from `folder2` ending with `Simulation`.
+<1> all `Scala` files from plugin simulation dir subfolder `package1` ending with `Simu`.
+<2> all `Scala` files from plugin simulation dir subfolder `package2` ending with `Simulation`.
+
+== Logging
+
+`Gatling` uses `logback` to customize its output.
+To change logging behaviour, put your `logback.xml` into configuration folder,
+i.e. `src/gatling/resources/conf` or `src/gatling/conf` depending on choosen project layout.
+
+If no custom `logback.xml` provided,
+by default plugin will implicitly use following configuration.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <immediateFlush>false</immediateFlush>
+    </encoder>
+  </appender>
+  <root level="${logLevel}"> <1>
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>
+----
+<1> `logLevel` is configured via plugin extension, `WARN` by default.
+
+== Dependency Management
+
+This plugin defines three configurations `gatling`, `gatlingCompile` and `gatlingRuntime`.
+By default plugin adds `Gatling` libraries to `gatling` configuration.
+Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all dependencies declared in `gatling` will be inherited.
+
+Also project classes (`src/main`) and tests classes (`src/test`) are added to `gatlingCompile` and `gatlingRuntime` classpath,
+so you can reuse existing production and test code in your simulations.
+
+Additional dependencies can be added by plugin's users to any of configurations mentioned above.
+
+Example::
+[source,groovy]
+----
+dependencies {
+    gatling 'com.google.code.gson:gson:2.8.0' <1>
+    gatlingCompile 'org.apache.commons:commons-lang3:3.4' <2>
+    gatlingRuntime 'cglib:cglib-nodep:3.2.0' <3>
+}
+----
+<1> adding `gson` library, available both in compile and runtime classpath.
+<2> adding `commons-lang3` to compile classpath for simulations.
+<3> adding `cglib` to runtime classpath for simulations.
 
 == Tasks
 
@@ -136,28 +219,10 @@ _SimulationFQN_ should be replaced by fully qualified simulation class name.
 
 === Examples
 
-. Run all simulations
-
+Run all simulations::
++
   $ gradle gatlingRun
 
-. Run single simulation implemented in `com.project.simu.MySimulation` class
-
+Run single simulation implemented in `com.project.simu.MySimulation` class::
++
   $ gradle gatlingRun-com.project.simu.MySimulation
-
-== Dependency Management
-
-This plugin defines two configurations `gatlingCompile` and `gatlingRuntime`.
-By default plugins adds `gatling` libraries and project's classes and tests classes to `gatlingCompile` configurations
-Additional dependencies can be added by plugin's users.
-
-=== Examples
-
-[source,groovy]
-----
-dependencies {
-    gatlingCompile 'org.apache.commons:commons-lang3:3.4' <1>
-    gatlingRuntime 'cglib:cglib-nodep:3.2.0' <2>
-}
-----
-<1> adding `commons-lang3` to compile classpath for `Gatling` simulations.
-<2> adding `cglib` to runtime classpath for `Gatling` simulations.
