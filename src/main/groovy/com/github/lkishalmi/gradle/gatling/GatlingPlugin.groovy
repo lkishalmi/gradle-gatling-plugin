@@ -29,6 +29,7 @@ class GatlingPlugin implements Plugin<Project> {
         createConfiguration(gatlingExt)
 
         createGatlingTask(GATLING_RUN_TASK_NAME, gatlingExt)
+        createGatlingTask2("gatlingGenerateReport", gatlingExt)
 
         project.tasks.getByName("processGatlingResources").doLast(new LogbackConfigTaskAction())
 
@@ -43,12 +44,13 @@ class GatlingPlugin implements Plugin<Project> {
                 println "Hello from the GreetingPlugin"
             }
         }
+
     }
 
     void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
         def task = project.tasks.create(name: taskName,
-            dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
-            description: "Execute Gatling simulation", group: "Gatling",
+                dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
+                description: "Execute Gatling simulation", group: "Gatling",
         ) as ConventionTask
 
         task.convention.plugins["gatling"] = gatlingExt
@@ -59,6 +61,16 @@ class GatlingPlugin implements Plugin<Project> {
         } else {
             task.conventionMapping["simulations"] = { gatlingExt.simulations }
         }
+    }
+
+    void createGatlingTask2(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
+        def task = project.tasks.create(name: taskName,
+                dependsOn: project.tasks.gatlingClasses, type: GatlingGenerateReportTask,
+                description: "Generate Gatling simulation", group: "Gatling",
+        ) as ConventionTask
+
+        task.convention.plugins["gatling"] = gatlingExt
+        task.conventionMapping["jvmArgs"] = { gatlingExt.jvmArgs }
     }
 
     void createConfiguration(GatlingPluginExtension gatlingExt) {
