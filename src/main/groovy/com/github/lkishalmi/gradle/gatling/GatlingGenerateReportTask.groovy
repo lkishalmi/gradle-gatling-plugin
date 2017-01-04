@@ -16,7 +16,11 @@ class GatlingGenerateReportTask extends JavaExec {
             classpath = this.getClasspath()
 
             def folder = System.getProperty("resultFolder")
-            args "-ro", folder
+            if( folder != null ) {
+                args "-ro", folder
+            } else {
+                throw new IllegalArgumentException("`resultFolder` needs to be provided")
+            }
         }
     }
 }
