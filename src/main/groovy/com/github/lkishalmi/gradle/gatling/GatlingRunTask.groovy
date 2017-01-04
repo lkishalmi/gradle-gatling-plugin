@@ -4,15 +4,13 @@ import org.gradle.api.tasks.JavaExec
 
 class GatlingRunTask extends JavaExec {
 
-    private final String GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
-
     def simulations
 
     List<String> jvmArgs
 
     public GatlingRunTask() {
 
-        main = GATLING_MAIN_CLASS
+        main = GatlingPlugin.GATLING_MAIN_CLASS
         classpath = project.configurations.gatlingRuntime
 
         args "-m"

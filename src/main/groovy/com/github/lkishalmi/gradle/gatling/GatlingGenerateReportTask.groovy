@@ -4,10 +4,8 @@ import org.gradle.api.tasks.JavaExec
 
 class GatlingGenerateReportTask extends JavaExec {
 
-    private final String GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
-
     public GatlingGenerateReportTask() {
-        main = GATLING_MAIN_CLASS
+        main = GatlingPlugin.GATLING_MAIN_CLASS
         classpath = project.configurations.gatlingRuntime
     }
 

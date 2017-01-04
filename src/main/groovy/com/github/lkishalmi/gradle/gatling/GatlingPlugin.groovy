@@ -11,9 +11,13 @@ import org.gradle.api.plugins.scala.ScalaPlugin
  */
 class GatlingPlugin implements Plugin<Project> {
 
+    public static final def GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
+
     public static def GATLING_EXTENSION_NAME = 'gatling'
 
     public static def GATLING_RUN_TASK_NAME = 'gatlingRun'
+
+    public static def GATLING_GENERATE_REPORT_TASK_NAME = 'gatlingGenerateReport'
 
     static String GATLING_TASK_NAME_PREFIX = "$GATLING_RUN_TASK_NAME-"
 
@@ -29,7 +33,11 @@ class GatlingPlugin implements Plugin<Project> {
         createConfiguration(gatlingExt)
 
         createGatlingTask(GATLING_RUN_TASK_NAME, gatlingExt)
-        createGatlingTask2("gatlingGenerateReport", gatlingExt)
+
+        project.tasks.create(name: GATLING_GENERATE_REPORT_TASK_NAME,
+                dependsOn: project.tasks.gatlingClasses, type: GatlingGenerateReportTask,
+                description: "Generate Gatling simulation", group: "Gatling",
+        )
 
         project.tasks.getByName("processGatlingResources").doLast(new LogbackConfigTaskAction())
 
@@ -39,12 +47,6 @@ class GatlingPlugin implements Plugin<Project> {
                     createGatlingTask(taskName, gatlingExt, [(taskName - GATLING_TASK_NAME_PREFIX)])
                 }
         }
-        project.task('hello') {
-            doLast {
-                println "Hello from the GreetingPlugin"
-            }
-        }
-
     }
 
     void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
@@ -61,16 +63,6 @@ class GatlingPlugin implements Plugin<Project> {
         } else {
             task.conventionMapping["simulations"] = { gatlingExt.simulations }
         }
-    }
-
-    void createGatlingTask2(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
-        def task = project.tasks.create(name: taskName,
-                dependsOn: project.tasks.gatlingClasses, type: GatlingGenerateReportTask,
-                description: "Generate Gatling simulation", group: "Gatling",
-        ) as ConventionTask
-
-        task.convention.plugins["gatling"] = gatlingExt
-        task.conventionMapping["jvmArgs"] = { gatlingExt.jvmArgs }
     }
 
     void createConfiguration(GatlingPluginExtension gatlingExt) {
