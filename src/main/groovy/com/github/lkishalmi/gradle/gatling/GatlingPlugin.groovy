@@ -36,7 +36,7 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.tasks.create(name: GATLING_GENERATE_REPORT_TASK_NAME,
                 dependsOn: project.tasks.gatlingClasses, type: GatlingGenerateReportTask,
-                description: "Generate Gatling simulation", group: "Gatling",
+                description: "Generate report", group: "Gatling",
         )
 
         project.tasks.getByName("processGatlingResources").doLast(new LogbackConfigTaskAction())
