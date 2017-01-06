@@ -30,6 +30,8 @@ class GatlingPluginExtension {
         include "**/*Simulation.scala"
     }
 
+    def resultFolder
+
     String logLevel = "WARN"
 
     private final boolean isGatlingLayout
