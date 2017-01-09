@@ -6,9 +6,6 @@ import spock.lang.Unroll
 import static com.github.lkishalmi.gradle.gatling.GatlingPlugin.GATLING_GENERATE_REPORT_TASK_NAME
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-/**
- * Created by pedrogonzalezgutierrez on 09/01/2017.
- */
 public class WhenGenerateReportsSpec extends GatlingFuncSpec {
 
     @Unroll
