@@ -37,7 +37,7 @@ plugins {
     id 'com.github.lkishalmi.gatling'
 }
 gatling {
-    resultFolder = new File("$testProjectDir.root/reports/generateReport/")
+    simulationLogFolder = new File("$testProjectDir.root/reports/generateReport/")
 }
 repositories {
     jcenter()

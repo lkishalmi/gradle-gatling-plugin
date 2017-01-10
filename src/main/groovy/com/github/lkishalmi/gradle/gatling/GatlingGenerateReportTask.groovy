@@ -11,8 +11,8 @@ class GatlingGenerateReportTask extends JavaExec {
     }
 
     @InputDirectory
-    File getResultFolder() {
-        project.extensions.getByType(GatlingPluginExtension).resultFolder
+    File getSimulationLogFolder() {
+        project.extensions.getByType(GatlingPluginExtension).simulationLogFolder
     }
 
     @Override
@@ -21,13 +21,13 @@ class GatlingGenerateReportTask extends JavaExec {
             main = this.getMain()
             classpath = this.getClasspath()
 
-            if( getResultFolder() == null ) {
-                throw new IllegalArgumentException("`resultFolder` needs to be defined in the Closure")
-            } else if( !getResultFolder().exists() ) {
-                throw new IllegalArgumentException("The folder '"+resultFolder+"' does not exist")
+            if( getSimulationLogFolder() == null ) {
+                throw new IllegalArgumentException("`simulationLogFolder` needs to be defined in the Closure")
+            } else if( !getSimulationLogFolder().exists() ) {
+                throw new IllegalArgumentException("The folder '"+simulationLogFolder+"' does not exist")
             }
             // Generate reports
-            args "-ro", resultFolder
+            args "-ro", simulationLogFolder
         }
     }
 }

@@ -30,7 +30,7 @@ class GatlingPluginExtension {
         include "**/*Simulation.scala"
     }
 
-    File resultFolder
+    File simulationLogFolder
 
     String logLevel = "WARN"
 
