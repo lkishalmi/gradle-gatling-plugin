@@ -67,7 +67,7 @@ The plugin defines the following extension properties in the `gatling` closure
 [cols="1,1,4a,1a", options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
-|toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
+|toolVersion        |String         |'{gatlxingToolVersion}'                     |`Gatling` version
 |logLevel           |String         |'WARN'
 |The default Gatling console log level if no `logback.xml` present in the configutation folder
 
@@ -99,6 +99,8 @@ The plugin defines the following extension properties in the `gatling` closure
 | Simulations filter. +
 If closure then https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs] for details,
 otherwise an Iterable of simulations fully qualified names.
+
+|simulationLogFolder        |FILE         |`null`                     |Full path of the folder that contains the `.log` files
 |===
 
 === Examples
@@ -136,6 +138,15 @@ gatling {
 ----
 <1> all `Scala` files from plugin simulation dir subfolder `package1` ending with `Simu`.
 <2> all `Scala` files from plugin simulation dir subfolder `package2` ending with `Simulation`.
+
+Defining where are your `.log` files::
++
+[source,groovy,subs="attributes"]
+----
+gatling {
+    simulationLogFolder = new File("/home/user/simulationLogFolder/")
+}
+----
 
 == Logging
 
@@ -215,6 +226,10 @@ Additionally plugin creates several default tasks
 |Executes single `Gatling` simulation, +
 _SimulationFQN_ should be replaced by fully qualified simulation class name.
 
+|`gatlingGenerateReport`
+|GatlingGenerateReportTask
+|Generate the report given a folder (specified in `simulationLogFolder`) witch contains `.log` files
+
 |===
 
 === Examples
@@ -226,3 +241,7 @@ Run all simulations::
 Run single simulation implemented in `com.project.simu.MySimulation` class::
 +
   $ gradle gatlingRun-com.project.simu.MySimulation
+
+Generate the report::
++
+  $ gradle gatlingGenerateReport
