@@ -67,7 +67,7 @@ The plugin defines the following extension properties in the `gatling` closure
 [cols="1,1,4a,1a", options="header"]
 |===
 |Property name      |Type           |Default value                              |Description
-|toolVersion        |String         |'{gatlxingToolVersion}'                     |`Gatling` version
+|toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
 |logLevel           |String         |'WARN'
 |The default Gatling console log level if no `logback.xml` present in the configutation folder
 
