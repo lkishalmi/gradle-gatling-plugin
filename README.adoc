@@ -228,7 +228,7 @@ _SimulationFQN_ should be replaced by fully qualified simulation class name.
 
 |`gatlingGenerateReport`
 |GatlingGenerateReportTask
-|Generate the report given a folder (specified in `simulationLogFolder`) witch contains `.log` files
+|Generate the report given a folder (specified in `simulationLogFolder`) which contains `.log` files
 
 |===
 
