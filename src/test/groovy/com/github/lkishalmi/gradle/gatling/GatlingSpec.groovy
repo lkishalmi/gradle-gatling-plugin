@@ -31,7 +31,7 @@ dependencies {
 """
     }
 
-    def generateBuildScriptWithResultFolder() {
+    def generateBuildScriptWithSimulationLogFolder() {
         testProjectDir.newFile("build.gradle") << """
 plugins {
     id 'com.github.lkishalmi.gatling'
