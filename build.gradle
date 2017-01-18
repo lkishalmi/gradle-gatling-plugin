@@ -2,6 +2,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'groovy'
     id 'com.gradle.plugin-publish' version '0.9.5'
+    id 'maven'
 }
 
 sourceCompatibility = '1.8'
