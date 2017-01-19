@@ -11,9 +11,13 @@ import org.gradle.api.plugins.scala.ScalaPlugin
  */
 class GatlingPlugin implements Plugin<Project> {
 
+    public static final def GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
+
     public static def GATLING_EXTENSION_NAME = 'gatling'
 
     public static def GATLING_RUN_TASK_NAME = 'gatlingRun'
+
+    public static def GATLING_GENERATE_REPORT_TASK_NAME = 'gatlingGenerateReport'
 
     static String GATLING_TASK_NAME_PREFIX = "$GATLING_RUN_TASK_NAME-"
 
@@ -30,6 +34,12 @@ class GatlingPlugin implements Plugin<Project> {
 
         createGatlingTask(GATLING_RUN_TASK_NAME, gatlingExt)
 
+        project.tasks.create(name: GATLING_GENERATE_REPORT_TASK_NAME,
+                type: GatlingGenerateReportTask,
+                description: "Generate report",
+                group: "Gatling",
+        )
+
         project.tasks.getByName("processGatlingResources").doLast(new LogbackConfigTaskAction())
 
         project.tasks.addRule("Pattern: $GATLING_RUN_TASK_NAME-<SimulationClass>: Executes single Gatling simulation.") {
@@ -42,8 +52,8 @@ class GatlingPlugin implements Plugin<Project> {
 
     void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
         def task = project.tasks.create(name: taskName,
-            dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
-            description: "Execute Gatling simulation", group: "Gatling",
+                dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
+                description: "Execute Gatling simulation", group: "Gatling",
         ) as ConventionTask
 
         task.convention.plugins["gatling"] = gatlingExt

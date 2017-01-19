@@ -30,4 +30,21 @@ dependencies {
 }
 """
     }
+
+    def generateBuildScriptWithSimulationLogFolder() {
+        testProjectDir.newFile("build.gradle") << """
+plugins {
+    id 'com.github.lkishalmi.gatling'
+}
+gatling {
+    simulationLogFolder = new File("$testProjectDir.root/reports/generateReport/")
+}
+repositories {
+    jcenter()
+}
+dependencies {
+    gatling group: 'commons-lang', name: 'commons-lang', version: '2.6'
+}
+"""
+    }
 }

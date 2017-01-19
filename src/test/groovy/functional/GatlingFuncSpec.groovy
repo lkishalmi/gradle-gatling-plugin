@@ -23,6 +23,11 @@ abstract class GatlingFuncSpec extends GatlingSpec {
         generateBuildScript()
     }
 
+    File prepareGenerateReportTest(String layout) {
+        createBuildFolder(layout)
+        generateBuildScriptWithSimulationLogFolder()
+    }
+
     BuildResult executeGradle(String task) {
         GradleRunner.create().forwardOutput()
             .withProjectDir(testProjectDir.getRoot())
