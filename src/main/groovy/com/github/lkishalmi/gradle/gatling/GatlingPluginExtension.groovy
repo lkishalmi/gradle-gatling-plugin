@@ -6,7 +6,8 @@ import java.nio.file.Paths
 
 class GatlingPluginExtension {
 
-    def toolVersion = '2.2.2'
+    def toolVersion = '2.3.0'
+    def scalaVersion = '2.12.3'
 
     def jvmArgs = [
         '-server',
@@ -30,31 +31,59 @@ class GatlingPluginExtension {
         include "**/*Simulation.scala"
     }
 
+    def sourceRoot = ''
+    def simulationsDir = 'simulations'
+    def confDir = 'conf'
+    def dataDir = 'data'
+    def bodiesDir = 'bodies'
+
     String logLevel = "WARN"
 
     private final boolean isGatlingLayout
+    private final boolean isAutoDetect
 
     private final Project project
 
     GatlingPluginExtension(Project project) {
         this.project = project
         this.isGatlingLayout = project.file("src/gatling/simulations").exists()
+        this.isAutoDetect = sourceRoot.isEmpty()
+
     }
 
     String simulationsDir() {
-        "src/gatling/${isGatlingLayout ? "simulations" : "scala"}"
+        if (isAutoDetect) {
+            "src/gatling/${isGatlingLayout ? "simulations" : "scala"}"
+        } else {
+            "${sourceRoot}/${simulationsDir}"
+        }
+
     }
 
     String dataDir() {
-        "src/gatling${isGatlingLayout ? "" : "/resources"}/data"
+        if (isAutoDetect) {
+            "src/gatling${isGatlingLayout ? "" : "/resources"}/data"
+        } else {
+            "${sourceRoot}/${dataDir}"
+        }
+
     }
 
     String bodiesDir() {
-        "src/gatling${isGatlingLayout ? "" : "/resources"}/bodies"
+        if (isAutoDetect) {
+            "src/gatling${isGatlingLayout ? "" : "/resources"}/bodies"
+        } else {
+            "${sourceRoot}/${bodiesDir}"
+        }
+
     }
 
     String confDir() {
-        "src/gatling${isGatlingLayout ? "" : "/resources"}/conf"
+        if (isAutoDetect) {
+            "src/gatling${isGatlingLayout ? "" : "/resources"}/conf"
+        } else {
+            "${sourceRoot}/${confDir}"
+        }
     }
 
     Iterable<String> resolveSimulations(Closure simulationFilter = getSimulations()) {

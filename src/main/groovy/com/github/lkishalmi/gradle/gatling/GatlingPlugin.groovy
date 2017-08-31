@@ -76,7 +76,7 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            gatlingCompile 'org.scala-lang:scala-library:2.11.8'
+            gatlingCompile "org.scala-lang:scala-library:${project.extensions.getByType(GatlingPluginExtension).scalaVersion}"
 
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output

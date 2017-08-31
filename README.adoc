@@ -1,5 +1,5 @@
 = Gatling Plugin for Gradle
-:gatlingToolVersion: 2.2.2
+:gatlingToolVersion: 2.3.0
 :toc: macro
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
