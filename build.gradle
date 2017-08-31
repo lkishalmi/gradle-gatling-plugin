@@ -17,7 +17,6 @@ dependencies {
         exclude module: 'groovy-all'
     }
     testCompile 'commons-io:commons-io:2.5'
-    testCompile group: 'commons-lang', name: 'commons-lang', version: '2.6'
 }
 
 test {
