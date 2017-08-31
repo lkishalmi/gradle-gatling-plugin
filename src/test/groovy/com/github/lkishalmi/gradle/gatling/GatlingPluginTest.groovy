@@ -31,6 +31,80 @@ class GatlingPluginTest extends GatlingUnitSpec {
         }
     }
 
+    def "should allow overriding scala version via extension"() {
+        when:
+        project.gatling { scalaVersion = '2.11.3' }
+        and:
+        project.evaluate()
+
+        then:
+        project.configurations.getByName("gatlingCompile").allDependencies.find {
+            it.name == "scala-library" && it.version == "2.11.3"
+        }
+    }
+
+    def "should allow overwriting source root via extension"() {
+        when:
+        project.gatling { sourceRoot = 'src/test/scala'}
+        and:
+        project.evaluate()
+
+        then:
+        gatlingExt.simulationsDir() == "src/test/scala/simulations"
+    }
+
+    def "should allow overwriting simulations dir via extension"() {
+        when:
+        project.gatling {
+            sourceRoot = 'src/test/scala'
+            simulationsDir = "user-files/simulations"
+        }
+        and:
+        project.evaluate()
+
+        then:
+        gatlingExt.simulationsDir() == "src/test/scala/user-files/simulations"
+    }
+
+    def "should allow overwriting data dir via extension"() {
+        when:
+        project.gatling {
+            sourceRoot = 'src/test/scala'
+            dataDir = "user-files/data"
+        }
+        and:
+        project.evaluate()
+
+        then:
+        gatlingExt.dataDir() == "src/test/scala/user-files/data"
+    }
+
+    def "should allow overwriting bodies dir via extension"() {
+        when:
+        project.gatling {
+            sourceRoot = 'src/test/scala'
+            dataDir = "user-files/bodies"
+        }
+        and:
+        project.evaluate()
+
+        then:
+        gatlingExt.dataDir() == "src/test/scala/user-files/bodies"
+    }
+
+    def "should allow overwriting conf dir via extension"() {
+        when:
+        project.gatling {
+            sourceRoot = 'src/test/scala'
+            dataDir = "user-files/conf"
+        }
+        and:
+        project.evaluate()
+
+        then:
+        gatlingExt.dataDir() == "src/test/scala/user-files/conf"
+    }
+
     def "should create gatlingRun task"() {
         expect:
         with(gatlingRunTask) {
