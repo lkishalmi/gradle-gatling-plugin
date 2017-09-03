@@ -1,5 +1,6 @@
 = Gatling Plugin for Gradle
 :gatlingToolVersion: 2.3.0
+:scalaVersion: 2.12.3
 :toc: macro
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
@@ -70,7 +71,7 @@ The plugin defines the following extension properties in the `gatling` closure
 |toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
 |logLevel           |String         |'WARN'
 |The default Gatling console log level if no `logback.xml` present in the configutation folder
-
+|scalaVersion       |String         |'{scalaVersion}'                           |`scala` version that fits your `Gatling` tool version
 |jvmArgs
 |List<String>
 |[source,groovy]
