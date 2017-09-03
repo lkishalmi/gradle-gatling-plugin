@@ -101,6 +101,26 @@ If closure then https://docs.gradle.org/current/userguide/working_with_files.htm
 otherwise an Iterable of simulations fully qualified names.
 |===
 
+=== Custom source folder
+
+If you have a special layout you can configured the source root folder and all gatling specific folders:
+
++
+[source,groovy]
+----
+gatling {
+    sourceRoot = 'src/test/gatling'
+    simulationsDir = 'user-files/simulations' <1>
+    dataDir = 'user-files/data' <2>
+    bodiesDir = 'user-files/bodies' <3>
+    confDir = 'conf' <4>
+}
+----
+<1> the plugin looks for simulations in `src/test/gatling/user-files/simulations`
+<2> data is located in `src/test/gatling/user-files/data`
+<3> request bodies are be placed in `src/test/gatling/user-files/bodies`
+<4> gatling configuration is located in `src/test/gatling/conf`
+
 === Examples
 
 Overriding Gatling version and JVM arguments::
