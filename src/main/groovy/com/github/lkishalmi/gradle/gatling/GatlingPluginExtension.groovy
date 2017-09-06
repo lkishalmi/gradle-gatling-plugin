@@ -6,29 +6,36 @@ import java.nio.file.Paths
 
 class GatlingPluginExtension {
 
-    def toolVersion = '2.2.2'
+    def toolVersion = '2.3.0'
+    def scalaVersion = '2.11.8'
 
     def jvmArgs = [
-        '-server',
-        '-XX:+UseThreadPriorities',
-        '-XX:ThreadPriorityPolicy=42',
-        '-Xms512M',
-        '-Xmx512M',
-        '-Xmn100M',
-        '-XX:+HeapDumpOnOutOfMemoryError',
-        '-XX:+AggressiveOpts',
-        '-XX:+OptimizeStringConcat',
-        '-XX:+UseFastAccessorMethods',
-        '-XX:+UseParNewGC',
-        '-XX:+UseConcMarkSweepGC',
-        '-XX:+CMSParallelRemarkEnabled',
-        '-Djava.net.preferIPv4Stack=true',
-        '-Djava.net.preferIPv6Addresses=false'
+            '-server',
+            '-XX:+UseThreadPriorities',
+            '-XX:ThreadPriorityPolicy=42',
+            '-Xms512M',
+            '-Xmx512M',
+            '-Xmn100M',
+            '-XX:+HeapDumpOnOutOfMemoryError',
+            '-XX:+AggressiveOpts',
+            '-XX:+OptimizeStringConcat',
+            '-XX:+UseFastAccessorMethods',
+            '-XX:+UseParNewGC',
+            '-XX:+UseConcMarkSweepGC',
+            '-XX:+CMSParallelRemarkEnabled',
+            '-Djava.net.preferIPv4Stack=true',
+            '-Djava.net.preferIPv6Addresses=false'
     ]
 
     def simulations = {
         include "**/*Simulation.scala"
     }
+
+    def sourceRoot = ''
+    def simulationsDir = 'simulations'
+    def dataDir = 'data'
+    def bodiesDir = 'bodies'
+    def confDir = 'conf'
 
     String logLevel = "WARN"
 
@@ -42,19 +49,46 @@ class GatlingPluginExtension {
     }
 
     String simulationsDir() {
-        "src/gatling/${isGatlingLayout ? "simulations" : "scala"}"
+        if (isAutoDetect()) {
+            "src/gatling/${isGatlingLayout ? "simulations" : "scala"}"
+        } else {
+            "${sourceRoot}/${simulationsDir}"
+        }
     }
 
     String dataDir() {
-        "src/gatling${isGatlingLayout ? "" : "/resources"}/data"
+        if (isAutoDetect()) {
+            "src/gatling${isGatlingLayout ? "" : "/resources"}/data"
+        } else {
+            "${sourceRoot}/${dataDir}"
+        }
+
     }
 
     String bodiesDir() {
-        "src/gatling${isGatlingLayout ? "" : "/resources"}/bodies"
+        if (isAutoDetect()) {
+            "src/gatling${isGatlingLayout ? "" : "/resources"}/bodies"
+        } else {
+            "${sourceRoot}/${bodiesDir}"
+        }
+
     }
 
     String confDir() {
-        "src/gatling${isGatlingLayout ? "" : "/resources"}/conf"
+        if (isAutoDetect()) {
+            "src/gatling${isGatlingLayout ? "" : "/resources"}/conf"
+        } else {
+            "${sourceRoot}/${confDir}"
+        }
+    }
+
+    String scalaVersion() {
+
+        "${scalaVersion}"
+    }
+
+    boolean isAutoDetect() {
+        sourceRoot == null || sourceRoot.isEmpty()
     }
 
     Iterable<String> resolveSimulations(Closure simulationFilter = getSimulations()) {

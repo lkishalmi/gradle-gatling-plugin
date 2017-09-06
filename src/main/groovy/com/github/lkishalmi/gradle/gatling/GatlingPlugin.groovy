@@ -42,8 +42,8 @@ class GatlingPlugin implements Plugin<Project> {
 
     void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
         def task = project.tasks.create(name: taskName,
-            dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
-            description: "Execute Gatling simulation", group: "Gatling",
+                dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
+                description: "Execute Gatling simulation", group: "Gatling",
         ) as ConventionTask
 
         task.convention.plugins["gatling"] = gatlingExt
@@ -76,7 +76,7 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            gatlingCompile 'org.scala-lang:scala-library:2.11.8'
+
 
             gatlingCompile project.sourceSets.main.output
             gatlingCompile project.sourceSets.test.output
@@ -87,6 +87,7 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.afterEvaluate { Project p ->
             p.dependencies {
+                gatlingCompile "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion()}"
                 gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.extensions.getByType(GatlingPluginExtension).toolVersion}"
             }
         }

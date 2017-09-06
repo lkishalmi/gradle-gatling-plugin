@@ -1,5 +1,6 @@
 = Gatling Plugin for Gradle
-:gatlingToolVersion: 2.2.2
+:gatlingToolVersion: 2.3.0
+:scalaVersion: 2.12.3
 :toc: macro
 
 image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
@@ -70,7 +71,7 @@ The plugin defines the following extension properties in the `gatling` closure
 |toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
 |logLevel           |String         |'WARN'
 |The default Gatling console log level if no `logback.xml` present in the configutation folder
-
+|scalaVersion       |String         |'{scalaVersion}'                           |`scala` version that fits your `Gatling` tool version
 |jvmArgs
 |List<String>
 |[source,groovy]
@@ -100,6 +101,26 @@ The plugin defines the following extension properties in the `gatling` closure
 If closure then https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs] for details,
 otherwise an Iterable of simulations fully qualified names.
 |===
+
+=== Custom source folder
+
+If you have a special layout you can configured the source root folder and all gatling specific folders:
+
++
+[source,groovy]
+----
+gatling {
+    sourceRoot = 'src/test/gatling'
+    simulationsDir = 'user-files/simulations' <1>
+    dataDir = 'user-files/data' <2>
+    bodiesDir = 'user-files/bodies' <3>
+    confDir = 'conf' <4>
+}
+----
+<1> the plugin looks for simulations in `src/test/gatling/user-files/simulations`
+<2> data is located in `src/test/gatling/user-files/data`
+<3> request bodies are be placed in `src/test/gatling/user-files/bodies`
+<4> gatling configuration is located in `src/test/gatling/conf`
 
 === Examples
 
