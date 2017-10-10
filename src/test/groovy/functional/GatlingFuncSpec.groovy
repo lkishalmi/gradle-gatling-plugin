@@ -20,7 +20,7 @@ abstract class GatlingFuncSpec extends GatlingSpec {
 
     File prepareTest(String layout) {
         createBuildFolder(layout)
-        generateBuildScript()
+        generateBuildScripts()
     }
 
     BuildResult executeGradle(String task) {
@@ -28,6 +28,7 @@ abstract class GatlingFuncSpec extends GatlingSpec {
             .withProjectDir(testProjectDir.getRoot())
             .withPluginClasspath(pluginClasspath)
             .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
+            .withDebug(true)
             .build()
     }
 }

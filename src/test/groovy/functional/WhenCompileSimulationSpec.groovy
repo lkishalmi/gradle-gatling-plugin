@@ -23,7 +23,7 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
         result.task(":$GATLING_CLASSES_TASK_NAME").outcome == SUCCESS
 
         and: "only layout specific simulations were compiled"
-        def classesDir = new File(testProjectBuildDir, "classes/gatling")
+        def classesDir = new File(testProjectBuildDir, "classes/scala/gatling")
         classesDir.exists()
         and:
         classesDir.eachFileRecurse(FileType.FILES) { assert it.name.contains(simulationPart) }
@@ -34,11 +34,11 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
         new File(resourcesDir, resourceFile).exists()
 
         and: "main classes are compiled"
-        def mainDir = new File(testProjectBuildDir, "classes/main")
+        def mainDir = new File(testProjectBuildDir, "classes/java/main")
         mainDir.exists()
 
         and: "test classes are compiled"
-        def testDir = new File(testProjectBuildDir, "classes/test")
+        def testDir = new File(testProjectBuildDir, "classes/java/test")
         testDir.exists()
 
         where:
@@ -103,7 +103,7 @@ repositories {
         result.task(":$GATLING_CLASSES_TASK_NAME").outcome == SUCCESS
 
         and: "only layout specific simulations were compiled"
-        def classesDir = new File(testProjectBuildDir, "classes/gatling")
+        def classesDir = new File(testProjectBuildDir, "classes/scala/gatling")
         classesDir.exists()
         and:
         classesDir.eachFileRecurse(FileType.FILES) { assert it.name.contains(simulationPart) }
