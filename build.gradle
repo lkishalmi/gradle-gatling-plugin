@@ -24,6 +24,8 @@ test {
     testLogging {
         showStandardStreams = true
     }
+    dependsOn("publishToMavenLocal")
+    systemProperty "com.github.lkishalmi.gatling.version", project.version
 }
 
 pluginBundle {
@@ -38,9 +40,4 @@ pluginBundle {
             displayName = 'Gatling Simulation Execution'
         }
     }
-}
-
-test {
-    dependsOn("publishToMavenLocal")
-    systemProperty "com.github.lkishalmi.gatling.version", project.version
 }

@@ -24,7 +24,7 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.pluginManager.apply ScalaPlugin
 
-        def gatlingExt = project.extensions.create(GATLING_EXTENSION_NAME, GatlingPluginExtension, project)
+        GatlingPluginExtension gatlingExt = project.extensions.create(GATLING_EXTENSION_NAME, GatlingPluginExtension, project)
 
         createConfiguration(gatlingExt)
 
