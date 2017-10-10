@@ -1,7 +1,8 @@
 plugins {
     id 'java-gradle-plugin'
     id 'groovy'
-    id 'com.gradle.plugin-publish' version '0.9.5'
+    id 'com.gradle.plugin-publish' version '0.9.8'
+    id 'maven-publish'
 }
 
 sourceCompatibility = '1.8'
@@ -13,7 +14,7 @@ repositories {
 
 dependencies {
     testCompile gradleTestKit()
-    testCompile('org.spockframework:spock-core:1.1-groovy-2.4-rc-2') {
+    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude module: 'groovy-all'
     }
     testCompile 'commons-io:commons-io:2.5'
@@ -37,4 +38,9 @@ pluginBundle {
             displayName = 'Gatling Simulation Execution'
         }
     }
+}
+
+test {
+    dependsOn("publishToMavenLocal")
+    systemProperty "com.github.lkishalmi.gatling.version", project.version
 }

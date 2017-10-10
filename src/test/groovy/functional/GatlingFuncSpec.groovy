@@ -20,7 +20,7 @@ abstract class GatlingFuncSpec extends GatlingSpec {
 
     File prepareTest(String layout) {
         createBuildFolder(layout)
-        generateBuildScript()
+        generateBuildScripts()
     }
 
     BuildResult executeGradle(String task) {
