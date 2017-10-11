@@ -16,7 +16,11 @@ class GatlingRunTask extends JavaExec {
         classpath = project.configurations.gatlingRuntime
 
         args "-m"
-        args "-bf", "${project.sourceSets.gatling.output.classesDirs[1]}" //TODO remove this hacky way of getting single output directory
+        if (project.sourceSets.gatling.output.hasProperty("classesDirs")) {
+            args "-bf", "${project.sourceSets.gatling.output.classesDirs[1]}" //TODO remove this hacky way of getting single output directory
+        } else {
+            args "-bf", "${project.sourceSets.gatling.output.classesDir}"
+        }
         args "-df", "${project.sourceSets.gatling.output.resourcesDir}"
         args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}"
         args "-rf", "${project.reportsDir}/gatling"
