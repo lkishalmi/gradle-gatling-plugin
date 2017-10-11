@@ -7,7 +7,7 @@ import java.nio.file.Paths
 class GatlingPluginExtension {
 
     def toolVersion = '2.3.0'
-    def scalaVersion = '2.11.8'
+    def scalaVersion = '2.12.3'
 
     def jvmArgs = [
             '-server',
