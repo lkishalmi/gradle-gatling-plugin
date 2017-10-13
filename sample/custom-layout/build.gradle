@@ -1,0 +1,22 @@
+plugins {
+    id 'com.github.lkishalmi.gatling' version '0.7.1'
+}
+
+project.sourceSets {
+    gatling {
+        scala.srcDirs = ['src/test/gatling']
+        resources.srcDirs = ['src/test/gatling/data', 'src/test/gatling/bodies', 'src/test/gatling/conf']
+    }
+}
+
+gatling {
+    sourceRoot = 'src/test/gatling'
+    simulationsDir = 'simulations'
+    dataDir = 'data'
+    bodiesDir = 'bodies'
+    confDir = 'conf'
+}
+
+repositories {
+    jcenter()
+}

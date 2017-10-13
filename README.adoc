@@ -104,11 +104,19 @@ otherwise an Iterable of simulations fully qualified names.
 
 === Custom source folder
 
-If you have a special layout you can configured the source root folder and all gatling specific folders:
+If you have a special layout you can configure the source root folder and all gatling specific folders.
+Currently you have to set the source sets accordingly.
 
 +
 [source,groovy]
 ----
+project.sourceSets {
+    gatling {
+        scala.srcDirs = ['src/test/gatling']
+        resources.srcDirs = ['src/test/gatling/user-files/simulations', 'src/test/gatling/user-files/data', 'src/test/gatling/user-files/body', 'src/test/gatling/conf']
+    }
+}
+
 gatling {
     sourceRoot = 'src/test/gatling'
     simulationsDir = 'user-files/simulations' <1>
