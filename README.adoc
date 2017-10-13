@@ -104,7 +104,7 @@ otherwise an Iterable of simulations fully qualified names.
 
 === Custom source folder
 
-If you have a special layout you can configured the source root folder and all gatling specific folders.
+If you have a special layout you can configure the source root folder and all gatling specific folders.
 Currently you have to set the source sets accordingly.
 
 +
