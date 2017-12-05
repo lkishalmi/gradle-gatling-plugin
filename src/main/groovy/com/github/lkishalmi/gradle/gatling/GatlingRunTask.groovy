@@ -1,6 +1,8 @@
 package com.github.lkishalmi.gradle.gatling
 
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.JavaExec
+import org.gradle.util.GradleVersion
 
 class GatlingRunTask extends JavaExec {
 
@@ -16,8 +18,12 @@ class GatlingRunTask extends JavaExec {
         classpath = project.configurations.gatlingRuntime
 
         args "-m"
-        if (project.sourceSets.gatling.output.hasProperty("classesDirs")) {
-            args "-bf", "${project.sourceSets.gatling.output.classesDirs[1]}" //TODO remove this hacky way of getting single output directory
+        if (GradleVersion.current() >= GradleVersion.version('4.0')) {
+            File scalaClasses = project.sourceSets.gatling.output.classesDirs.filter {
+                it.parentFile.name == 'scala'
+            }.singleFile
+
+            args '-bf', scalaClasses.absolutePath
         } else {
             args "-bf", "${project.sourceSets.gatling.output.classesDir}"
         }
