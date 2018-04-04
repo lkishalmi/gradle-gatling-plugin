@@ -3,7 +3,7 @@
 :scalaVersion: 2.12.3
 :toc: macro
 
-image:http://gatling.io/images/gatling-logo.png[Gatling, 100, 90, link="http://gatling.io/"]
+image:https://gatling.io/wp-content/uploads/2017/02/Gatling-logo.png[Gatling,link="http://gatling.io/"]
 
 *Master branch* image:https://api.travis-ci.org/lkishalmi/gradle-gatling-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin"]
 
