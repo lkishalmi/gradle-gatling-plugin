@@ -11,19 +11,17 @@ class GatlingPluginExtension {
 
     def jvmArgs = [
             '-server',
-            '-XX:+UseThreadPriorities',
-            '-XX:ThreadPriorityPolicy=42',
-            '-Xms512M',
-            '-Xmx512M',
-            '-Xmn100M',
-            '-XX:+HeapDumpOnOutOfMemoryError',
+            '-Xmx1G',
+            '-XX:+UseG1GC', 
+            '-XX:MaxGCPauseMillis=30', 
+            '-XX:G1HeapRegionSize=16m',
+            '-XX:InitiatingHeapOccupancyPercent=75', 
+            '-XX:+ParallelRefProcEnabled',
+            '-XX:+PerfDisableSharedMem', 
             '-XX:+AggressiveOpts',
             '-XX:+OptimizeStringConcat',
-            '-XX:+UseFastAccessorMethods',
-            '-XX:+UseParNewGC',
-            '-XX:+UseConcMarkSweepGC',
-            '-XX:+CMSParallelRemarkEnabled',
-            '-Djava.net.preferIPv4Stack=true',
+            '-XX:+HeapDumpOnOutOfMemoryError',
+            '-Djava.net.preferIPv4Stack=true', 
             '-Djava.net.preferIPv6Addresses=false'
     ]
 
