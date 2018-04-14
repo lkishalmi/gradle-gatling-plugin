@@ -78,10 +78,14 @@ The plugin defines the following extension properties in the `gatling` closure
 ----
 ['-server', '-Xmx1G',
 '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=30', 
-'-XX:G1HeapRegionSize=16m', '-XX:InitiatingHeapOccupancyPercent=75', 
-'-XX:+ParallelRefProcEnabled', '-XX:+PerfDisableSharedMem', 
-'-XX:+AggressiveOpts', '-XX:+OptimizeStringConcat',
-'-XX:+HeapDumpOnOutOfMemoryError', '-Djava.net.preferIPv4Stack=true', 
+'-XX:G1HeapRegionSize=16m',
+'-XX:InitiatingHeapOccupancyPercent=75', 
+'-XX:+ParallelRefProcEnabled', 
+'-XX:+PerfDisableSharedMem', 
+'-XX:+AggressiveOpts', 
+'-XX:+OptimizeStringConcat',
+'-XX:+HeapDumpOnOutOfMemoryError', 
+'-Djava.net.preferIPv4Stack=true', 
 '-Djava.net.preferIPv6Addresses=false']
 ----
 | Additional arguments passed to JVM when executing `Gatling` simulations
