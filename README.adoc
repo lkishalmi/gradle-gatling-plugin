@@ -5,7 +5,7 @@
 
 image:https://gatling.io/wp-content/uploads/2017/02/Gatling-logo.png[Gatling,link="http://gatling.io/"]
 
-*Master branch* image:https://api.travis-ci.org/lkishalmi/gradle-gatling-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin"]
+image:https://api.travis-ci.org/lkishalmi/gradle-gatling-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin"]
 
 image:https://img.shields.io/gitter/room/nwjs/nw.js.svg["Gitter",link="https://gitter.im/gradle-gatling-plugin/Lobby"]
 
