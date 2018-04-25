@@ -1,7 +1,7 @@
 package com.github.lkishalmi.gradle.gatling
 
-import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.util.GradleVersion
 
 class GatlingRunTask extends JavaExec {
@@ -48,19 +48,29 @@ class GatlingRunTask extends JavaExec {
             throw new IllegalArgumentException("`simulations` property neither Closure nor Iterable<String>")
         }
 
+        def exceptions = [:]
+
         actualSimulations.each { def simu ->
-            project.javaexec {
-                main = self.getMain()
-                classpath = self.getClasspath()
+            try {
+                project.javaexec {
+                    main = self.getMain()
+                    classpath = self.getClasspath()
 
-                jvmArgs = self.getJvmArgs()
+                    jvmArgs = self.getJvmArgs()
 
-                args self.getArgs()
-                args "-s", simu
+                    args self.getArgs()
+                    args "-s", simu
 
-                systemProperties = self.getSystemProperties()
-                standardInput = self.getStandardInput()
+                    systemProperties = self.getSystemProperties()
+                    standardInput = self.getStandardInput()
+                }
+            } catch (Exception e) {
+                exceptions << [simu: e]
             }
+        }
+
+        if (exceptions.size() > 0) {
+            throw new TaskExecutionException(this, new RuntimeException("Some simulations failed : ${exceptions.keySet().join(", ")}"))
         }
     }
 }
