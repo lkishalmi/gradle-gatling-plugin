@@ -17,7 +17,6 @@ class GatlingRunTask extends JavaExec {
         main = GATLING_MAIN_CLASS
         classpath = project.configurations.gatlingRuntime
 
-        args "-m"
         if (GradleVersion.current() >= GradleVersion.version('4.0')) {
             File scalaClasses = project.sourceSets.gatling.output.classesDirs.filter {
                 it.parentFile.name == 'scala'
@@ -27,8 +26,8 @@ class GatlingRunTask extends JavaExec {
         } else {
             args "-bf", "${project.sourceSets.gatling.output.classesDir}"
         }
-        args "-df", "${project.sourceSets.gatling.output.resourcesDir}"
-        args "-bdf", "${project.sourceSets.gatling.output.resourcesDir}"
+
+        args "-rsf", "${project.sourceSets.gatling.output.resourcesDir}"
         args "-rf", "${project.reportsDir}/gatling"
 
         systemProperties = System.properties as Map

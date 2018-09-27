@@ -1,5 +1,5 @@
 = Gatling Plugin for Gradle
-:gatlingToolVersion: 2.3.1
+:gatlingToolVersion: 3.0.0-RC2
 :scalaVersion: 2.12.3
 :toc: macro
 
@@ -15,52 +15,26 @@ toc::[]
 
 Follow the steps described at https://plugins.gradle.org/plugin/com.github.lkishalmi.gatling[Gradle Plugin Portal page].
 
-Java 8 Upgrade::
-* Due to a bug Gatling 2.2.0 is supported only from gradle-gatling-plugin version 0.3.0
-* JDK 8 is required for Gatling 2.2.0, so this plugin is also require JDK8
-
+JDK 8::
+* JDK 8 is required for Gatling 2.2.0 and above, so this plugin is also require JDK8
+* Gatling 2.2.0 is supported only from `gradle-gatling-plugin` v0.3.0
++
 For whatever reason you stuck with JDK 7, please keep using the 0.2.x series of this plugin.
 
-== Project Layout
+Source code layout::
+Since `Gatling` v3.0.0 and corresponding plugin version `v0.8.0`
+there were breaking changes introduced for source code layout.
 
-=== Folders overview
+== Source files layout
 
 The plugin uses `src/gatling` as its source root.
-There are several folders serving different purposes under the source root.
-
-* Simulation sources direcrory
-* Feeder data directory
-* Request bodies directory
-* Configuration directory
-
-This plugin supports two project layouts.
-
-* Standard Gradle/Maven layout
-* Gatling-like layout
-
-There's no need to explicitly setup any of those.
-Plugin auto-detects layout during examination of project's folder structure.
-
-=== Standard Gradle/Maven layout
+There're following directories available for putting corresponding files.
 
 [options="header"]
 |===
 |Directory                      |   Purpose
-|`src/gatling/scala`            |   Simulation sources
-|`src/gatling/resources/data`   |   Feeder data
-|`src/gatling/resources/bodies` |   Request bodies
-|`src/gatling/resources/conf`   |   Configuration
-|===
-
-=== Gatling-like layout
-
-[options="header"]
-|===
-|Directory                  |   Purpose
-|`src/gatling/simulations`  |   Simulation sources
-|`src/gatling/data`         |   Feeder data
-|`src/gatling/bodies`       |   Request bodies
-|`src/gatling/conf`         |   Configuration
+|`src/gatling/simulations`      |   Simulation sources (Scala code)
+|`src/gatling/resources`        |   Resources (feeders, configuration)
 |===
 
 == Plugin configuration
@@ -98,40 +72,12 @@ The plugin defines the following extension properties in the `gatling` closure
 |Closure or Iterable<String>
 |[source,groovy]
 ----
-{ include "**/*Simulation.scala" }
+{ include "**/*Simulation*.scala" }
 ----
 | Simulations filter. +
 If closure then https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs] for details,
 otherwise an Iterable of simulations fully qualified names.
 |===
-
-=== Custom source folder
-
-If you have a special layout you can configure the source root folder and all gatling specific folders.
-Currently you have to set the source sets accordingly.
-
-+
-[source,groovy]
-----
-project.sourceSets {
-    gatling {
-        scala.srcDirs = ['src/test/gatling']
-        resources.srcDirs = ['src/test/gatling/user-files/simulations', 'src/test/gatling/user-files/data', 'src/test/gatling/user-files/body', 'src/test/gatling/conf']
-    }
-}
-
-gatling {
-    sourceRoot = 'src/test/gatling'
-    simulationsDir = 'user-files/simulations' <1>
-    dataDir = 'user-files/data' <2>
-    bodiesDir = 'user-files/bodies' <3>
-    confDir = 'conf' <4>
-}
-----
-<1> the plugin looks for simulations in `src/test/gatling/user-files/simulations`
-<2> data is located in `src/test/gatling/user-files/data`
-<3> request bodies are be placed in `src/test/gatling/user-files/bodies`
-<4> gatling configuration is located in `src/test/gatling/conf`
 
 === Examples
 
@@ -172,8 +118,8 @@ gatling {
 == Logging
 
 `Gatling` uses `logback` to customize its output.
-To change logging behaviour, put your `logback.xml` into configuration folder,
-i.e. `src/gatling/resources/conf` or `src/gatling/conf` depending on choosen project layout.
+To change logging behaviour, put your `logback.xml` into resources folder,
+`src/gatling/resources`.
 
 If no custom `logback.xml` provided,
 by default plugin will implicitly use following configuration.
@@ -195,7 +141,7 @@ by default plugin will implicitly use following configuration.
 ----
 <1> `logLevel` is configured via plugin extension, `WARN` by default.
 
-== Dependency Management
+== Dependency management
 
 This plugin defines three configurations `gatling`, `gatlingCompile` and `gatlingRuntime`.
 By default plugin adds `Gatling` libraries to `gatling` configuration.
@@ -203,6 +149,7 @@ Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all 
 
 Also project classes (`src/main`) and tests classes (`src/test`) are added to `gatlingCompile` and `gatlingRuntime` classpath,
 so you can reuse existing production and test code in your simulations.
+
 If you don't need such behaviour, you can use flags:
 
 Example::
@@ -235,7 +182,7 @@ dependencies {
 
 Plugin provides dedicated task `GatlingRunTask` that is responsible for execute gatling simulations.
 Customer may create instances of this task to execue particular simulations.
-Task extends Gradle's `JavaExec` task.
+Task extends `Gradle` 's `JavaExec` task.
 
 === Default tasks
 
