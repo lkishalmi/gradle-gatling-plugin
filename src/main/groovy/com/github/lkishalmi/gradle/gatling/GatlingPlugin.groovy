@@ -68,10 +68,8 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.sourceSets {
             gatling {
-                scala.srcDirs       = [gatlingExt.simulationsDir()]
-                resources.srcDirs   = [gatlingExt.dataDir(),
-                                       gatlingExt.bodiesDir(),
-                                       gatlingExt.confDir()]
+                scala.srcDirs = [gatlingExt.SIMULATIONS_DIR]
+                resources.srcDirs = [gatlingExt.RESOURCES_DIR]
             }
         }
 
@@ -89,7 +87,7 @@ class GatlingPlugin implements Plugin<Project> {
 
         project.afterEvaluate { Project p ->
             p.dependencies {
-                gatlingCompile "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion()}"
+                gatlingCompile "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion}"
                 gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.extensions.getByType(GatlingPluginExtension).toolVersion}"
             }
         }
