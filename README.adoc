@@ -212,7 +212,7 @@ gatling {
     // do not include classes and resources from src/main
     includeMainOutput = false
     // do not include classes and resources from src/test
-    includeMainOutput = false
+    includeTestOutput = false
 }
 ----
 
