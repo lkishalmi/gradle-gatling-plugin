@@ -73,6 +73,8 @@ The plugin defines the following extension properties in the `gatling` closure
 |toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
 |logLevel           |String         |'WARN'
 |The default Gatling console log level if no `logback.xml` present in the configutation folder
+|includeMainOutput  |Boolean        |true                                       |Include main source set output to gatlingCompile
+|includeTestOutput  |Boolean        |true                                       |Include test source set output to gatlingCompile
 |scalaVersion       |String         |'{scalaVersion}'                           |`scala` version that fits your `Gatling` tool version
 |jvmArgs
 |List<String>
@@ -201,6 +203,18 @@ Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all 
 
 Also project classes (`src/main`) and tests classes (`src/test`) are added to `gatlingCompile` and `gatlingRuntime` classpath,
 so you can reuse existing production and test code in your simulations.
+If you don't need such behaviour, you can use flags:
+
+Example::
+[source,groovy]
+----
+gatling {
+    // do not include classes and resources from src/main
+    includeMainOutput = false
+    // do not include classes and resources from src/test
+    includeMainOutput = false
+}
+----
 
 Additional dependencies can be added by plugin's users to any of configurations mentioned above.
 

@@ -43,7 +43,7 @@ class GatlingPlugin implements Plugin<Project> {
     void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
         def task = project.tasks.create(name: taskName,
                 dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
-                description: "Execute Gatling simulation", group: "Gatling",
+                description: "Execute Gatling simulation", group: "Gatling"
         ) as ConventionTask
 
         task.convention.plugins["gatling"] = gatlingExt
@@ -76,10 +76,12 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-
-
-            gatlingCompile project.sourceSets.main.output
-            gatlingCompile project.sourceSets.test.output
+            if (gatlingExt.includeMainOutput) {
+                gatlingCompile project.sourceSets.main.output
+            }
+            if (gatlingExt.includeTestOutput) {
+                gatlingCompile project.sourceSets.test.output
+            }
 
             gatlingRuntime project.sourceSets.gatling.output
             gatlingRuntime project.sourceSets.gatling.output
