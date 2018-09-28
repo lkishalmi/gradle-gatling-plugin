@@ -35,6 +35,9 @@ class GatlingPluginExtension {
     def bodiesDir = 'bodies'
     def confDir = 'conf'
 
+    def includeMainOutput = true
+    def includeTestOutput = true
+
     String logLevel = "WARN"
 
     private final boolean isGatlingLayout
