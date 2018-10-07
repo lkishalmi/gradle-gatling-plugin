@@ -1,5 +1,5 @@
 = Gatling Plugin for Gradle
-:gatlingToolVersion: 3.0.0-RC2
+:gatlingToolVersion: 3.0.0-RC4
 :scalaVersion: 2.12.3
 :toc: macro
 
@@ -15,14 +15,12 @@ toc::[]
 
 Follow the steps described at https://plugins.gradle.org/plugin/com.github.lkishalmi.gatling[Gradle Plugin Portal page].
 
-JDK 8::
-* JDK 8 is required for Gatling 2.2.0 and above, so this plugin is also require JDK8
-* Gatling 2.2.0 is supported only from `gradle-gatling-plugin` v0.3.0
-+
-For whatever reason you stuck with JDK 7, please keep using the 0.2.x series of this plugin.
-
+== Compatibility
+Since `Gatling` v3.0.0 this plugin's major version is going to follow `Gatling`'s
+major version for making things easier.
+  
 Source code layout::
-Since `Gatling` v3.0.0 and corresponding plugin version `v0.8.0`
+Since `Gatling` v3.0.0 and corresponding plugin version `v3.x.x`
 there were breaking changes introduced for source code layout.
 
 == Source files layout

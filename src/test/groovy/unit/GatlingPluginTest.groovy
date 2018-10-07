@@ -26,13 +26,12 @@ class GatlingPluginTest extends GatlingUnitSpec {
 
     def "should allow overriding gatling version via extension"() {
         when:
-        project.gatling { toolVersion = '1.1.1' }
+        project.gatling { toolVersion = '3.0.0-RC1' }
         and:
         project.evaluate()
-
         then:
         project.configurations.getByName("gatling").allDependencies.find {
-            it.name == "gatling-charts-highcharts" && it.version == "1.1.1"
+            it.name == "gatling-charts-highcharts" && it.version == "3.0.0-RC1"
         }
     }
 
