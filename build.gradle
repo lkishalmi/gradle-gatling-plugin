@@ -5,6 +5,10 @@ plugins {
     id 'maven-publish'
 }
 
+group = 'gradle.plugin.com.github.lkishalmi.gatling'
+description = 'Gatling Plugin for Gradle'
+
+
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
