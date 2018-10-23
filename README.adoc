@@ -16,12 +16,14 @@ toc::[]
 Follow the steps described at https://plugins.gradle.org/plugin/com.github.lkishalmi.gatling[Gradle Plugin Portal page].
 
 == Compatibility
-Since `Gatling` v3.0.0 this plugin's major version is going to follow `Gatling`'s
+
+Plugin versioning::
+Since `Gatling` v3.0.0 this plugin's major version is going to follow `Gatling` 's
 major version for making things easier.
   
 Source code layout::
 Since `Gatling` v3.0.0 and corresponding plugin version `v3.x.x`
-there were breaking changes introduced for source code layout.
+there were breaking changes introduced for source code layout. Check corresponding section for details.
 
 == Source files layout
 
