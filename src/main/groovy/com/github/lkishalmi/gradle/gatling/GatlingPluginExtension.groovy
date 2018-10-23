@@ -10,7 +10,7 @@ class GatlingPluginExtension {
 
     static final String RESOURCES_DIR = "src/gatling/resources"
 
-    def toolVersion = '3.0.0-RC2'
+    def toolVersion = '3.0.0-RC4'
 
     def scalaVersion = '2.12.3'
 

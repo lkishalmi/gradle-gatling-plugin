@@ -1,7 +1,10 @@
 package com.github.lkishalmi.gradle.gatling
 
+import org.gradle.util.VersionNumber
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.internal.ConventionTask
 import org.gradle.api.plugins.scala.ScalaPlugin
 
@@ -86,6 +89,14 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.afterEvaluate { Project p ->
+            if (p.gatling.toolVersion != null) {
+                VersionNumber ver = VersionNumber.parse(p.gatling.toolVersion.toString())
+                if (ver.major < 3) {
+                    def msg =  "Due to breaking changes in Gatling 3.x this plugin does not support: ${p.gatling.toolVersion}\n"
+                    msg += "Please try to use plugin version: '0.7.+' for Gatling 2.x or  '0.3.+' for Gatling 1.x support."
+                    throw new ProjectConfigurationException(msg, null)
+                }
+            }
             p.dependencies {
                 gatlingCompile "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion}"
                 gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.extensions.getByType(GatlingPluginExtension).toolVersion}"
