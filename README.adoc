@@ -18,12 +18,14 @@ Follow the steps described at https://plugins.gradle.org/plugin/com.github.lkish
 == Compatibility
 
 Plugin versioning::
-Since `Gatling` v3.0.0 this plugin's major version is going to follow `Gatling` 's
+Since `Gatling` v3.0.0 this plugin's major version follows `Gatling` 's
 major version for making things easier.
   
 Source code layout::
 Since `Gatling` v3.0.0 and corresponding plugin version `v3.x.x`
-there were breaking changes introduced for source code layout. Check corresponding section for details.
+there were breaking changes introduced for source code layout.
+Check corresponding section for details and original
+https://github.com/gatling/gatling/issues/3398[Gatling issue] explaining the scope of changes.
 
 == Source files layout
 
@@ -34,7 +36,7 @@ There're following directories available for putting corresponding files.
 |===
 |Directory                      |   Purpose
 |`src/gatling/simulations`      |   Simulation sources (Scala code)
-|`src/gatling/resources`        |   Resources (feeders, configuration)
+|`src/gatling/resources`        |   Resources (feeders, configuration, bodies, etc)
 |===
 
 == Plugin configuration
@@ -115,7 +117,14 @@ gatling {
 <1> all `Scala` files from plugin simulation dir subfolder `package1` ending with `Simu`.
 <2> all `Scala` files from plugin simulation dir subfolder `package2` ending with `Simulation`.
 
-== Logging
+== Gatling configuration
+
+=== Override gatling.conf
+
+To override https://github.com/gatling/gatling/blob/master/gatling-core/src/main/resources/gatling-defaults.conf[default parameters] of `Gatling`
+just put own version of `gatling.conf` into `src/gatling/resources`.
+
+=== Logging
 
 `Gatling` uses `logback` to customize its output.
 To change logging behaviour, put your `logback.xml` into resources folder,
