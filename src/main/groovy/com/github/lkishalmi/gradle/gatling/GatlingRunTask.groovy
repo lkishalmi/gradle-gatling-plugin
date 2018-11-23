@@ -47,9 +47,9 @@ class GatlingRunTask extends JavaExec {
             throw new IllegalArgumentException("`simulations` property neither Closure nor Iterable<String>")
         }
 
-        def exceptions = [:]
+        def failures = [:]
 
-        actualSimulations.each { def simu ->
+        actualSimulations.each { simu ->
             try {
                 project.javaexec {
                     main = self.getMain()
@@ -64,12 +64,12 @@ class GatlingRunTask extends JavaExec {
                     standardInput = self.getStandardInput()
                 }
             } catch (Exception e) {
-                exceptions << [simu: e]
+                failures << [(simu): e]
             }
         }
 
-        if (exceptions.size() > 0) {
-            throw new TaskExecutionException(this, new RuntimeException("Some simulations failed : ${exceptions.keySet().join(", ")}"))
+        if (failures.size() > 0) {
+            throw new TaskExecutionException(this, new RuntimeException("Some simulations failed : ${failures.keySet().join(", ")}"))
         }
     }
 }
