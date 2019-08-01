@@ -190,7 +190,7 @@ dependencies {
 == Tasks
 
 Plugin provides dedicated task `GatlingRunTask` that is responsible for execute gatling simulations.
-Customer may create instances of this task to execue particular simulations.
+Customer may create instances of this task to execute particular simulations.
 Task extends `Gradle` 's `JavaExec` task.
 
 === Default tasks
