@@ -3,11 +3,9 @@
 :scalaVersion: 2.12.3
 :toc: macro
 
-image:https://gatling.io/wp-content/uploads/2017/02/Gatling-logo.png[Gatling,link="http://gatling.io/"]
+image:https://gatling.io/wp-content/uploads/2017/02/Gatling-logo.png[Gatling^, link="http://gatling.io/", window="_blank"]
 
-image:https://api.travis-ci.org/lkishalmi/gradle-gatling-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin"]
-
-image:https://img.shields.io/gitter/room/nwjs/nw.js.svg["Gitter",link="https://gitter.im/gradle-gatling-plugin/Lobby"]
+image:https://img.shields.io/travis/lkishalmi/gradle-gatling-plugin/master?logo=travis&style=for-the-badge[Travis (.org) branch, window="_blank", link="https://travis-ci.org/lkishalmi/gradle-gatling-plugin/branches"] image:https://img.shields.io/gitter/room/lkishalmi/gradle-gatling-plugin?logo=gitter&style=for-the-badge[Gitter, window="_blank", link="https://gitter.im/gradle-gatling-plugin/Lobby"] image:https://img.shields.io/github/license/lkishalmi/gradle-gatling-plugin?logo=github&style=for-the-badge[GitHub, link="https://opensource.org/licenses/Apache-2.0", window="_blank"]
 
 toc::[]
 

@@ -11,5 +11,13 @@ before_cache:
 cache:
   directories:
     - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/     
+    - $HOME/.gradle/wrapper/
+
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: echo "Tag ${TRAVIS_TAG}"
+    on:
+      tags: true
+      repo: ${TRAVIS_REPO_SLUG}     
 
