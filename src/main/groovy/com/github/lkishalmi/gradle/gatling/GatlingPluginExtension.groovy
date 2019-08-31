@@ -10,9 +10,9 @@ class GatlingPluginExtension {
 
     static final String RESOURCES_DIR = "src/gatling/resources"
 
-    def toolVersion = '3.0.0'
+    def toolVersion = '3.2.1'
 
-    def scalaVersion = '2.12.3'
+    def scalaVersion = '2.12.8'
 
     def jvmArgs = [
             '-server',
