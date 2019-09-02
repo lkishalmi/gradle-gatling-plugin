@@ -30,6 +30,7 @@ test {
   systemProperty "com.github.lkishalmi.gatling.version", project.version
 }
 
+
 pluginBundle {
   website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
   vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'

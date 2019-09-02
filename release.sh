@@ -2,7 +2,7 @@
 
 case $1 in
     major|minor|patch)
-        NEXT_VER="v$(git semver --next-$1)"
+        NEXT_VER="$(git semver --next-$1)"
         git tag -a "$NEXT_VER" -m "Release $NEXT_VER"
         git push origin $NEXT_VER
     ;;
