@@ -9,6 +9,7 @@ case $1 in
 
     *)
         echo "Usage: ./release.sh PART, where PART is major, minor, patch"
+        echo "Current: $(git semver)"
         exit 1
     ;;
 esac
