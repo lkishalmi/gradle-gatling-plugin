@@ -2,6 +2,7 @@ package com.github.lkishalmi.gradle.gatling
 
 import org.gradle.api.Project
 
+import java.nio.file.Path
 import java.nio.file.Paths
 
 class GatlingPluginExtension {
@@ -15,19 +16,19 @@ class GatlingPluginExtension {
     def scalaVersion = '2.12.8'
 
     def jvmArgs = [
-            '-server',
-            '-Xmx1G',
-            '-XX:+UseG1GC',
-            '-XX:MaxGCPauseMillis=30',
-            '-XX:G1HeapRegionSize=16m',
-            '-XX:InitiatingHeapOccupancyPercent=75',
-            '-XX:+ParallelRefProcEnabled',
-            '-XX:+PerfDisableSharedMem',
-            '-XX:+AggressiveOpts',
-            '-XX:+OptimizeStringConcat',
-            '-XX:+HeapDumpOnOutOfMemoryError',
-            '-Djava.net.preferIPv4Stack=true',
-            '-Djava.net.preferIPv6Addresses=false'
+        '-server',
+        '-Xmx1G',
+        '-XX:+UseG1GC',
+        '-XX:MaxGCPauseMillis=30',
+        '-XX:G1HeapRegionSize=16m',
+        '-XX:InitiatingHeapOccupancyPercent=75',
+        '-XX:+ParallelRefProcEnabled',
+        '-XX:+PerfDisableSharedMem',
+        '-XX:+AggressiveOpts',
+        '-XX:+OptimizeStringConcat',
+        '-XX:+HeapDumpOnOutOfMemoryError',
+        '-Djava.net.preferIPv4Stack=true',
+        '-Djava.net.preferIPv6Addresses=false'
     ]
 
     def simulations = {
@@ -46,9 +47,11 @@ class GatlingPluginExtension {
     }
 
     Iterable<String> resolveSimulations(Closure simulationFilter = getSimulations()) {
-        def p = this.project
-        project.sourceSets.gatling.allScala.matching(simulationFilter).collect { File simu ->
-            Paths.get(p.file(SIMULATIONS_DIR).toURI()).relativize(Paths.get(simu.toURI())).join(".") - ".scala"
+        def scalaDirs = project.sourceSets.gatling.scala.srcDirs.collect { Paths.get(it.absolutePath) }
+        def scalaFiles = project.sourceSets.gatling.scala.matching(simulationFilter).collect { Paths.get(it.absolutePath) }
+
+        scalaFiles.collect { Path simu ->
+            scalaDirs.find { simu.startsWith(it) }.relativize(simu).join(".") - ".scala"
         }
     }
 }
