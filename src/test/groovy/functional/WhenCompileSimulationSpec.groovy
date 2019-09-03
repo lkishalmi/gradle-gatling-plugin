@@ -11,9 +11,11 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
 
     static def GATLING_CLASSES_TASK_NAME = "gatlingClasses"
 
-    def "should compile"() {
-        setup:
+    def setup() {
         prepareTest()
+    }
+
+    def "should compile"() {
         when:
         BuildResult result = executeGradle(GATLING_CLASSES_TASK_NAME)
         then: "compiled successfully"
@@ -36,8 +38,6 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
     @Unroll
     def "should not compile without #dir"() {
         setup:
-        prepareTest()
-        and:
         assert new File(testProjectDir.root, dir).deleteDir()
         when:
         executeGradle(GATLING_CLASSES_TASK_NAME)
@@ -49,8 +49,8 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
         'gradle' | 'src/test'
     }
 
-    def "should not compile without gatling dependencies"() {
-        given: "build script without gatling dependencies"
+    def "should not compile without required dependencies"() {
+        given:
         new File(testProjectDir.root, "build.gradle").text = """
 plugins {
     id 'com.github.lkishalmi.gatling'

@@ -13,7 +13,7 @@ class GradleCompatibilitySpec extends GatlingFuncSpec {
         setup:
         prepareTest()
         when:
-        BuildResult result = executeGradle('tasks',gradleVersion)
+        BuildResult result = executeGradle('tasks', gradleVersion)
         then:
         result.task(":tasks").outcome == SUCCESS
         !result.output.contains('Gradle now uses separate output directories for each JVM language, but this build assumes a single directory for all classes from a source set. This behaviour has been deprecated and is scheduled to be removed in Gradle 5.0')
