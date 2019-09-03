@@ -2,7 +2,6 @@ package helper
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import spock.lang.Shared
 
 abstract class GatlingFuncSpec extends GatlingSpec {
 
@@ -17,14 +16,16 @@ abstract class GatlingFuncSpec extends GatlingSpec {
         GradleRunner.create().forwardOutput()
             .withProjectDir(testProjectDir.getRoot())
             .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
+            .withPluginClasspath()
             .withDebug(true)
             .build()
     }
 
-    BuildResult executeGradle(String task,String gradleVersion) {
+    BuildResult executeGradle(String task, String gradleVersion) {
         GradleRunner.create().forwardOutput()
             .withProjectDir(testProjectDir.getRoot())
             .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
+            .withPluginClasspath()
             .withDebug(true)
             .withGradleVersion(gradleVersion)
             .forwardOutput()

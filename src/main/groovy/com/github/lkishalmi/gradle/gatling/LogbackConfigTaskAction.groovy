@@ -3,7 +3,7 @@ package com.github.lkishalmi.gradle.gatling
 import org.gradle.api.Action
 import org.gradle.api.Task
 
-public class LogbackConfigTaskAction implements Action<Task> {
+class LogbackConfigTaskAction implements Action<Task> {
     static def template(String logLevel) {
         """<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
