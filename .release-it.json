@@ -1,0 +1,22 @@
+{
+  "git": {
+    "requireCommits": true,
+    "commit": false,
+    "push": true,
+    "tag": true
+  },
+
+  "npm": {
+    "publish": false
+  },
+
+  "github": {
+    "release": true
+  },
+
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "angular"
+    }
+  }
+}
