@@ -1,70 +1,86 @@
 package com.github.lkishalmi.gradle.gatling
 
-import org.gradle.api.tasks.JavaExec
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.util.GradleVersion
 
-class GatlingRunTask extends JavaExec {
+import java.nio.file.Path
+import java.nio.file.Paths
 
-    private final String GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
+class GatlingRunTask extends DefaultTask {
+
+    def jvmArgs
+
+    def systemProperties
 
     def simulations
 
-    List<String> jvmArgs
-
-    public GatlingRunTask() {
-
-        main = GATLING_MAIN_CLASS
-        classpath = project.configurations.gatlingRuntime
+    List<String> createGatlingArgs() {
+        def retval = []
 
         if (GradleVersion.current() >= GradleVersion.version('4.0')) {
             File scalaClasses = project.sourceSets.gatling.output.classesDirs.filter {
                 it.parentFile.name == 'scala'
             }.singleFile
 
-            args '-bf', scalaClasses.absolutePath
+            retval += ['-bf', scalaClasses.absolutePath]
         } else {
-            args "-bf", "${project.sourceSets.gatling.output.classesDir}"
+            retval += ["-bf", "${project.sourceSets.gatling.output.classesDir}"]
         }
 
-        args "-rsf", "${project.sourceSets.gatling.output.resourcesDir}"
-        args "-rf", "${project.reportsDir}/gatling"
+        retval += ["-rsf", "${project.sourceSets.gatling.output.resourcesDir}"]
+        retval += ["-rf", "${project.reportsDir}/gatling"]
 
-        systemProperties = System.properties as Map
-        standardInput = System.in
+        retval
     }
 
-    @Override
-    void exec() {
-        def self = this
+    Iterable<String> resolveSimulations() {
+        Iterable<String> retval
 
-        Iterable<String> actualSimulations
-        if (getSimulations() instanceof Closure<Iterable<String>>) {
-            actualSimulations = project.extensions.getByType(GatlingPluginExtension).resolveSimulations(getSimulations())
-        } else if (getSimulations() instanceof Iterable<String>) {
-            actualSimulations = getSimulations()
+        def simulationFilter = this.simulations ?: project.gatling.simulations
+
+        if (simulationFilter != null && simulationFilter instanceof Closure<Iterable<String>>) {
+            def scalaDirs = project.sourceSets.gatling.scala.srcDirs.collect { Paths.get(it.absolutePath) }
+            def scalaFiles = project.sourceSets.gatling.scala.matching(simulationFilter).collect { Paths.get(it.absolutePath) }
+
+            retval = scalaFiles.collect { Path simu ->
+                scalaDirs.find { simu.startsWith(it) }.relativize(simu).join(".") - ".scala"
+            }
+        } else if (simulationFilter != null && simulationFilter instanceof Iterable<String>) {
+            retval = simulationFilter
         } else {
-            throw new IllegalArgumentException("`simulations` property neither Closure nor Iterable<String>")
+            throw new IllegalArgumentException("`simulations` property neither Closure nor Iterable<String>, simulations: $simulationFilter")
         }
+
+        retval
+    }
+
+    @TaskAction
+    void gatlingRun() {
+        def self = this
 
         def failures = [:]
 
-        actualSimulations.each { simu ->
+        resolveSimulations().each { String simuName ->
             try {
                 project.javaexec {
-                    main = self.getMain()
-                    classpath = self.getClasspath()
+                    main = GatlingPluginExtension.GATLING_MAIN_CLASS
+                    classpath = project.configurations.gatlingRuntime
 
-                    jvmArgs = self.getJvmArgs()
+                    jvmArgs self.jvmArgs ?: project.gatling.jvmArgs
 
-                    args self.getArgs()
-                    args "-s", simu
+                    args self.createGatlingArgs()
+                    args "-s", simuName
 
-                    systemProperties = self.getSystemProperties()
-                    standardInput = self.getStandardInput()
+                    systemProperties System.properties
+                    systemProperties self.systemProperties ?: project.gatling.systemProperties
+
+                    standardInput = System.in
                 }
             } catch (Exception e) {
-                failures << [(simu): e]
+                failures << [(simuName): e]
+                getLogger().error("Error executing $simuName", e)
             }
         }
 

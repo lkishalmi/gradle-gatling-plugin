@@ -52,12 +52,8 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
     def "should not compile without required dependencies"() {
         given:
         new File(testProjectDir.root, "build.gradle").text = """
-plugins {
-    id 'com.github.lkishalmi.gatling'
-}
-repositories {
-    jcenter()
-}
+plugins { id 'com.github.lkishalmi.gatling' }
+repositories { jcenter() }
 """
         when:
         executeGradle(GATLING_CLASSES_TASK_NAME)

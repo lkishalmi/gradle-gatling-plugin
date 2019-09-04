@@ -19,6 +19,7 @@ dependencies {
     exclude module: 'groovy-all'
   }
   testImplementation 'commons-io:commons-io:2.5'
+  testImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
 }
 
 test {

@@ -1,6 +1,6 @@
 package unit
 
-
+import com.github.lkishalmi.gradle.gatling.GatlingPluginExtension
 import helper.GatlingUnitSpec
 
 import static com.github.lkishalmi.gradle.gatling.GatlingPluginExtension.SIMULATIONS_DIR
@@ -9,11 +9,10 @@ import static org.apache.commons.io.FileUtils.moveFileToDirectory
 
 class GatlingRunTaskTest extends GatlingUnitSpec {
 
-    def "should resolve simulations using extension filter"() {
-        expect:
-        def gatlingRunSimulations = gatlingExt.resolveSimulations(gatlingRunTask.simulations)
-        gatlingRunSimulations == gatlingExt.resolveSimulations()
-        and:
+    def "should resolve simulations using default filter"() {
+        when:
+        def gatlingRunSimulations = gatlingRunTask.resolveSimulations()
+        then:
         gatlingRunSimulations.size() == 2
         and:
         "computerdatabase.advanced.AdvancedSimulationStep03" in gatlingRunSimulations
@@ -21,32 +20,64 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         "computerdatabase.BasicSimulation" in gatlingRunSimulations
     }
 
-    def "should override simulations filter via extension"() {
+    def "should resolve simulations using custom filter"() {
+        given:
+        project.gatling.simulations = { include "**/*AdvancedSimulation*" }
         when:
-        project.gatling {
-            simulations = {
-                include "**/*AdvancedSimulation*"
-            }
-        }
+        def gatlingRunSimulations = gatlingRunTask.resolveSimulations()
         then:
-        def gatlingRunSimulations = gatlingExt.resolveSimulations(gatlingRunTask.simulations)
-        gatlingRunSimulations == gatlingExt.resolveSimulations()
-        and:
         gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
     }
 
-    def "should override simulations filter via task properties"() {
+    def "should resolve simulations using custom static list"() {
+        given:
+        project.gatling.simulations = ["computerdatabase.advanced.AdvancedSimulationStep03"]
         when:
-        project.gatlingRun.simulations = {
-            include "**/*BasicSimulation*"
-        }
+        def gatlingRunSimulations = gatlingRunTask.resolveSimulations()
         then:
-        def gatlingRunSimulations = gatlingExt.resolveSimulations(gatlingRunTask.simulations)
-        gatlingRunSimulations != gatlingExt.resolveSimulations()
+        gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
+    }
+
+    def "should resolve simulations using gatlingRun filter"() {
+        given:
+        project.gatling.simulations = GatlingPluginExtension.DEFAULT_SIMULATIONS
         and:
-        gatlingRunSimulations.size() == 1
+        project.gatlingRun.simulations = { include "**/*AdvancedSimulation*" }
+        when:
+        def gatlingRunSimulations = gatlingRunTask.resolveSimulations()
+        then:
+        gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
+    }
+
+    def "should resolve simulations using gatlingRun static list"() {
+        given:
+        project.gatling.simulations = GatlingPluginExtension.DEFAULT_SIMULATIONS
         and:
-        gatlingRunSimulations == ["computerdatabase.BasicSimulation"]
+        project.gatlingRun.simulations = ["computerdatabase.advanced.AdvancedSimulationStep03"]
+        when:
+        def gatlingRunSimulations = gatlingRunTask.resolveSimulations()
+        then:
+        gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
+    }
+
+    def "should fail if extension filter neither closure nor iterable"() {
+        given:
+        project.gatling.simulations = "qwerty"
+        when:
+        gatlingRunTask.resolveSimulations()
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message.contains("qwerty")
+    }
+
+    def "should fail if gatlingRun filter neither closure nor iterable"() {
+        given:
+        project.gatlingRun.simulations = "qwerty"
+        when:
+        gatlingRunTask.resolveSimulations()
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message.contains("qwerty")
     }
 
     def "should override simulations dirs via sourceSet"() {
@@ -60,13 +91,13 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
             }
         }
         then:
-        gatlingExt.resolveSimulations().size() == 0
+        gatlingRunTask.resolveSimulations().size() == 0
 
         when:
         copyFileToDirectory(new File(testProjectDir.root, "${SIMULATIONS_DIR}/computerdatabase/BasicSimulation.scala"),
             new File(testProjectDir.root, "$overridenSrc/computerdatabase"))
         then:
-        gatlingExt.resolveSimulations() == ["computerdatabase.BasicSimulation"]
+        gatlingRunTask.resolveSimulations() == ["computerdatabase.BasicSimulation"]
     }
 
     def "should extend simulations dirs via sourceSet"() {
@@ -80,44 +111,25 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
             }
         }
         then:
-        gatlingExt.resolveSimulations().size() == 2
+        gatlingRunTask.resolveSimulations().size() == 2
 
         when: "temporary hide one simulation"
         moveFileToDirectory(new File(testProjectDir.root, "${SIMULATIONS_DIR}/computerdatabase/BasicSimulation.scala"),
             testProjectDir.root, true)
         then:
-        gatlingExt.resolveSimulations() == ["computerdatabase.advanced.AdvancedSimulationStep03"]
+        gatlingRunTask.resolveSimulations() == ["computerdatabase.advanced.AdvancedSimulationStep03"]
 
         when:
         moveFileToDirectory(new File(testProjectDir.root, "BasicSimulation.scala"), new File(testProjectDir.root, "$overridenSrc/computerdatabase"), true)
         then:
-        gatlingExt.resolveSimulations().size() == 2
+        gatlingRunTask.resolveSimulations().size() == 2
     }
 
-    def "should use jvmArgs from extension"() {
-        expect:
-        gatlingExt.jvmArgs == gatlingRunTask.getJvmArgs()
+    def "should fail if extension static list is not in sourceSet"() {
+
     }
 
-    def "should override jvmArgs via extension"() {
-        when:
-        project.gatling {
-            jvmArgs = ["-Dname=value"]
-        }
-        then:
-        gatlingRunTask.getJvmArgs() == gatlingExt.jvmArgs
-        and:
-        gatlingRunTask.getJvmArgs() == ["-Dname=value"]
-    }
+    def "should fail if gatlingRun static list is not in sourceSet"() {
 
-    def "should override jvmArgs via own properties"() {
-        when:
-        project.gatlingRun {
-            jvmArgs = ["-Dname2=value2"]
-        }
-        then:
-        gatlingRunTask.getJvmArgs() != gatlingExt.jvmArgs
-        and:
-        gatlingRunTask.getJvmArgs() == ["-Dname2=value2"]
     }
 }
