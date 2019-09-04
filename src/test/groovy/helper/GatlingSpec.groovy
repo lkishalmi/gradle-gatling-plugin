@@ -2,7 +2,6 @@ package helper
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Shared
 import spock.lang.Specification
 
 import static org.apache.commons.io.FileUtils.copyDirectory
@@ -13,9 +12,9 @@ abstract class GatlingSpec extends Specification {
 
     File testProjectBuildDir
 
-    def createBuildFolder(boolean copyFiles = true) {
-        if (copyFiles) {
-            copyDirectory(new File(this.class.getResource("/gradle-layout").file), testProjectDir.root)
+    def createBuildFolder(String fixtureDir) {
+        if (fixtureDir) {
+            copyDirectory(new File(this.class.getResource(fixtureDir).file), testProjectDir.root)
         }
         testProjectBuildDir = new File(testProjectDir.root, "build")
     }

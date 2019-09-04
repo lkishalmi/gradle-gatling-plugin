@@ -2,8 +2,6 @@ package functional
 
 import helper.GatlingFuncSpec
 import org.gradle.testkit.runner.BuildResult
-import spock.lang.Ignore
-import spock.lang.Unroll
 
 import static com.github.lkishalmi.gradle.gatling.GatlingPlugin.GATLING_RUN_TASK_NAME
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -63,7 +61,7 @@ gatling.charting.noReports = true
 
     def "should not fail when layout is incorrect"() {
         setup:
-        prepareTest(false)
+        prepareTest(null)
         when:
         BuildResult result = executeGradle(GATLING_RUN_TASK_NAME)
         then: "default tasks were executed successfully"
