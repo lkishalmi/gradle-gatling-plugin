@@ -12,6 +12,8 @@ abstract class GatlingSpec extends Specification {
 
     File testProjectBuildDir
 
+    File buildFile
+
     def createBuildFolder(String fixtureDir) {
         if (fixtureDir) {
             copyDirectory(new File(this.class.getResource(fixtureDir).file), testProjectDir.root)
@@ -20,7 +22,8 @@ abstract class GatlingSpec extends Specification {
     }
 
     def generateBuildScripts() {
-        testProjectDir.newFile("build.gradle") << """
+        buildFile = testProjectDir.newFile("build.gradle")
+        buildFile.text = """
 plugins {
     id 'com.github.lkishalmi.gatling'
 }

@@ -45,7 +45,7 @@ Using `Gradle` API file locations can be customized.
 ----
 sourceSets {
   gatling {
-    scala.srcDir "folde1" <1>
+    scala.srcDir "folder1" <1>
     scala.srcDirs = ["folder1"] <2>
 
     resources.srcDir "folder2" <3>
@@ -71,6 +71,7 @@ The plugin defines the following extension properties in the `gatling` closure
 |includeMainOutput  |Boolean        |true                                       |Include main source set output to gatlingCompile
 |includeTestOutput  |Boolean        |true                                       |Include test source set output to gatlingCompile
 |scalaVersion       |String         |'{scalaVersion}'                           |`scala` version that fits your `Gatling` tool version
+
 |jvmArgs
 |List<String>
 |[source,groovy]
@@ -83,11 +84,18 @@ The plugin defines the following extension properties in the `gatling` closure
 '-XX:+PerfDisableSharedMem',
 '-XX:+AggressiveOpts',
 '-XX:+OptimizeStringConcat',
-'-XX:+HeapDumpOnOutOfMemoryError',
-'-Djava.net.preferIPv4Stack=true',
-'-Djava.net.preferIPv6Addresses=false']
+'-XX:+HeapDumpOnOutOfMemoryError']
 ----
-| Additional arguments passed to JVM when executing `Gatling` simulations
+|Additional arguments passed to JVM when executing `Gatling` simulations
+
+|systemProperties
+|Map<String, Object>
+|[source,groovy]
+----
+['java.net.preferIPv4Stack': true,
+'java.net.preferIPv6Addresses': false]
+----
+|Additional systems properties passed to JVM together with caller JVM system properties
 
 |simulations
 |Closure or Iterable<String>
@@ -171,7 +179,7 @@ by default plugin will implicitly use following configuration.
 
 == Dependency management
 
-This plugin defines three configurations `gatling`, `gatlingCompile` and `gatlingRuntime`.
+This plugin defines three https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.Configuration.html[Gradle configurations] `gatling`, `gatlingCompile` and `gatlingRuntime`.
 By default plugin adds `Gatling` libraries to `gatling` configuration.
 Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all dependencies declared in `gatling` will be inherited.
 
@@ -208,17 +216,38 @@ dependencies {
 
 == Tasks
 
-Plugin provides dedicated task `GatlingRunTask` that is responsible for execute gatling simulations.
-Customer may create instances of this task to execute particular simulations.
-Task extends `Gradle` 's `JavaExec` task.
+Plugin provides `GatlingRunTask` that is responsible for executing `Gatling` simulations.
+Users may create own instances of this task to run particular simulations.
+
+Following configuration options are available. Those options are similar to global `gatling` configurations.
+Options are used in a fallback manner, i.e. if option is not set the value from `gatling` global config is taken.
+
+[cols="1,1,1,2", options="header"]
+|===
+|Property name      |Type           |Default value                              |Description
+
+|jvmArgs
+|List<String>
+|null
+|Additional arguments passed to JVM when executing `Gatling` simulations
+
+|systemProperties
+|Map<String, Object>
+|null
+|Additional systems properties passed to JVM together with caller JVM system properties
+
+|simulations
+|Closure or Iterable<String>
+|null
+|Simulations filter. +
+If closure then https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs] for details,
+otherwise an Iterable of simulations fully qualified names.
+|===
 
 === Default tasks
 
-Additionally plugin creates several default tasks
-
 [options="header"]
 |===
-
 |Task name |Type |Description
 
 |`gatlingClasses`

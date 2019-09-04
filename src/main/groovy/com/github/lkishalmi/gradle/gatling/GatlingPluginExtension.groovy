@@ -7,17 +7,20 @@ import java.nio.file.Paths
 
 class GatlingPluginExtension {
 
+    static final String GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
+
     static final String SIMULATIONS_DIR = "src/gatling/simulations"
 
     static final String RESOURCES_DIR = "src/gatling/resources"
 
-    def toolVersion = '3.2.1'
+    static final String GATLING_TOOL_VERSION = '3.2.1'
 
-    def scalaVersion = '2.12.8'
+    static final String SCALA_VERSION = '2.12.8'
 
-    def jvmArgs = [
+    static final List<String> DEFAULT_JVM_ARGS = [
         '-server',
         '-Xmx1G',
+        '-XX:+HeapDumpOnOutOfMemoryError',
         '-XX:+UseG1GC',
         '-XX:MaxGCPauseMillis=30',
         '-XX:G1HeapRegionSize=16m',
@@ -25,15 +28,24 @@ class GatlingPluginExtension {
         '-XX:+ParallelRefProcEnabled',
         '-XX:+PerfDisableSharedMem',
         '-XX:+AggressiveOpts',
-        '-XX:+OptimizeStringConcat',
-        '-XX:+HeapDumpOnOutOfMemoryError',
-        '-Djava.net.preferIPv4Stack=true',
-        '-Djava.net.preferIPv6Addresses=false'
+        '-XX:+OptimizeStringConcat'
     ]
 
-    def simulations = {
+    static final Map DEFAULT_SYSTEM_PROPS = ["java.net.preferIPv4Stack": true, "java.net.preferIPv6Addresses": false]
+
+    static final Closure DEFAULT_SIMULATIONS = {
         include "**/*Simulation*.scala"
     }
+
+    def toolVersion = GATLING_TOOL_VERSION
+
+    def scalaVersion = SCALA_VERSION
+
+    def jvmArgs = DEFAULT_JVM_ARGS
+
+    def systemProperties = DEFAULT_SYSTEM_PROPS
+
+    def simulations = DEFAULT_SIMULATIONS
 
     def includeMainOutput = true
     def includeTestOutput = true
@@ -46,7 +58,7 @@ class GatlingPluginExtension {
         this.project = project
     }
 
-    Iterable<String> resolveSimulations(Closure simulationFilter = getSimulations()) {
+    Iterable<String> resolveSimulations(Closure simulationFilter) {
         def scalaDirs = project.sourceSets.gatling.scala.srcDirs.collect { Paths.get(it.absolutePath) }
         def scalaFiles = project.sourceSets.gatling.scala.matching(simulationFilter).collect { Paths.get(it.absolutePath) }
 

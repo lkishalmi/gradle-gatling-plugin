@@ -5,7 +5,6 @@ import org.gradle.util.VersionNumber
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
-import org.gradle.api.internal.ConventionTask
 import org.gradle.api.plugins.scala.ScalaPlugin
 
 /**
@@ -31,40 +30,32 @@ class GatlingPlugin implements Plugin<Project> {
 
         createConfiguration(gatlingExt)
 
-        createGatlingTask(GATLING_RUN_TASK_NAME, gatlingExt)
+        createGatlingTask(GATLING_RUN_TASK_NAME, null)
 
         project.tasks.getByName("processGatlingResources").doLast(new LogbackConfigTaskAction())
 
         project.tasks.addRule("Pattern: $GATLING_RUN_TASK_NAME-<SimulationClass>: Executes single Gatling simulation.") {
             String taskName ->
                 if (taskName.startsWith(GATLING_TASK_NAME_PREFIX)) {
-                    createGatlingTask(taskName, gatlingExt, [(taskName - GATLING_TASK_NAME_PREFIX)])
+                    createGatlingTask(taskName, [(taskName - GATLING_TASK_NAME_PREFIX)])
                 }
         }
     }
 
-    void createGatlingTask(String taskName, GatlingPluginExtension gatlingExt, Iterable<String> predefinedSimulations = null) {
+    void createGatlingTask(String taskName, Iterable<String> predefinedSimulations) {
         def task = project.tasks.create(name: taskName,
-                dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
-                description: "Execute Gatling simulation", group: "Gatling"
-        ) as ConventionTask
-
-        task.convention.plugins["gatling"] = gatlingExt
-        task.conventionMapping["jvmArgs"] = { gatlingExt.jvmArgs }
+            dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
+            description: "Execute Gatling simulation", group: "Gatling")
 
         if (predefinedSimulations) {
             task.configure { simulations = predefinedSimulations }
-        } else {
-            task.conventionMapping["simulations"] = { gatlingExt.simulations }
         }
     }
 
     void createConfiguration(GatlingPluginExtension gatlingExt) {
         project.configurations {
             ['gatling', 'gatlingCompile', 'gatlingRuntime'].each() { confName ->
-                create(confName) {
-                    visible = false
-                }
+                create(confName) { visible = false }
             }
             gatlingCompile.extendsFrom(gatling)
         }
@@ -92,7 +83,7 @@ class GatlingPlugin implements Plugin<Project> {
             if (p.gatling.toolVersion != null) {
                 VersionNumber ver = VersionNumber.parse(p.gatling.toolVersion.toString())
                 if (ver.major < 3) {
-                    def msg =  "Due to breaking changes in Gatling 3.x this plugin does not support: ${p.gatling.toolVersion}\n"
+                    def msg = "Due to breaking changes in Gatling 3.x this plugin does not support: ${p.gatling.toolVersion}\n"
                     msg += "Please try to use plugin version: '0.7.+' for Gatling 2.x or  '0.3.+' for Gatling 1.x support."
                     throw new ProjectConfigurationException(msg, null)
                 }

@@ -14,13 +14,26 @@ class GatlingPluginTest extends GatlingUnitSpec {
         }
     }
 
-    def "should add gatling dependencies"() {
+    def "should create gatling extension for project "() {
+        expect:
+        with(gatlingExt) {
+            it instanceof GatlingPluginExtension
+            it.simulations == GatlingPluginExtension.DEFAULT_SIMULATIONS
+            it.jvmArgs == GatlingPluginExtension.DEFAULT_JVM_ARGS
+            it.systemProperties == GatlingPluginExtension.DEFAULT_SYSTEM_PROPS
+            it.logLevel == "WARN"
+        }
+    }
+
+    def "should add gatling dependencies with default version"() {
         when:
         project.evaluate()
         then:
-        def gatlingExt = project.extensions.findByType(GatlingPluginExtension)
         project.configurations.getByName("gatling").allDependencies.find {
-            it.name == "gatling-charts-highcharts" && it.version == gatlingExt.toolVersion
+            it.name == "gatling-charts-highcharts" && it.version ==GatlingPluginExtension.GATLING_TOOL_VERSION
+        }
+        project.configurations.getByName("gatlingCompile").allDependencies.find {
+            it.name == "scala-library" && it.version == GatlingPluginExtension.SCALA_VERSION
         }
     }
 
@@ -40,7 +53,6 @@ class GatlingPluginTest extends GatlingUnitSpec {
         project.gatling { scalaVersion = '2.11.3' }
         and:
         project.evaluate()
-
         then:
         project.configurations.getByName("gatlingCompile").allDependencies.find {
             it.name == "scala-library" && it.version == "2.11.3"
@@ -51,15 +63,17 @@ class GatlingPluginTest extends GatlingUnitSpec {
         expect:
         with(gatlingRunTask) {
             it instanceof GatlingRunTask
-            it.simulations == gatlingExt.simulations
-            it.jvmArgs == gatlingExt.jvmArgs
+            it.simulations == null
+            it.jvmArgs == null
+            it.systemProperties == null
         }
     }
 
     def "should create processGatlingResources task"() {
         expect:
-        project.tasks.getByName("processGatlingResources") != null
-        and:
-        project.tasks.getByName("processGatlingResources").actions.find { it.action instanceof LogbackConfigTaskAction }
+        with(project.tasks.getByName("processGatlingResources")) {
+            it != null
+            it.actions.find { it.action instanceof LogbackConfigTaskAction } != null
+        }
     }
 }
