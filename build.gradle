@@ -1,7 +1,7 @@
 plugins {
   id 'java-gradle-plugin'
   id 'groovy'
-  id 'com.gradle.plugin-publish' version '0.10.1'
+  id 'com.gradle.plugin-publish' version '0.9.8'
   id 'maven-publish'
 }
 
@@ -29,15 +29,6 @@ test {
   }
 }
 
-gradlePlugin {
-  plugins {
-    gatlingPlugin {
-      id = 'com.github.lkishalmi.gatling'
-      implementationClass = 'com.github.lkishalmi.gradle.gatling.GatlingPlugin'
-    }
-  }
-}
-
 pluginBundle {
   website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
   vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
@@ -47,6 +38,7 @@ pluginBundle {
   plugins {
     gatlingPlugin {
       displayName = 'Gatling Simulation Execution'
+      id = 'com.github.lkishalmi.gatling'
     }
   }
 }
