@@ -7,8 +7,8 @@ abstract class GatlingFuncSpec extends GatlingSpec {
 
     static def GATLING_HOST_NAME_SYS_PROP = "-Dgatling.hostName=HTTP://COMPUTER-DATABASE.GATLING.IO"
 
-    File prepareTest(boolean copyFiles = true) {
-        createBuildFolder(copyFiles)
+    File prepareTest(String fixtureDir = "/gradle-layout") {
+        createBuildFolder(fixtureDir)
         generateBuildScripts()
     }
 
