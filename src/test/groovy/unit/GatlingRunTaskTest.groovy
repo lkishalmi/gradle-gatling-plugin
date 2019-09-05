@@ -86,9 +86,7 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
 
         when: 'fake source dirs without simulations'
         project.sourceSets {
-            gatling {
-                scala.srcDirs = [overridenSrc]
-            }
+            gatling.scala.srcDirs = [overridenSrc]
         }
         then:
         gatlingRunTask.resolveSimulations().size() == 0
@@ -106,9 +104,7 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
 
         when: 'fake source dirs without simulations'
         project.sourceSets {
-            gatling {
-                scala.srcDir overridenSrc
-            }
+            gatling.scala.srcDir overridenSrc
         }
         then:
         gatlingRunTask.resolveSimulations().size() == 2
@@ -126,10 +122,22 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
     }
 
     def "should fail if extension static list is not in sourceSet"() {
-
+        when: 'fake source dirs without simulations and static list'
+        project.sourceSets {
+            gatling.scala.srcDirs = ["test/gatling/scala"]
+        }
+        project.gatling { simulations = ["computerdatabase.BasicSimulation"] }
+        then:
+        gatlingRunTask.resolveSimulations().size() == 0
     }
 
     def "should fail if gatlingRun static list is not in sourceSet"() {
-
+        when: 'fake source dirs without simulations and static list'
+        project.sourceSets {
+            gatling.scala.srcDirs = ["test/gatling/scala"]
+        }
+        project.gatlingRun { simulations = ["computerdatabase.BasicSimulation"] }
+        then:
+        gatlingRunTask.resolveSimulations().size() == 0
     }
 }
