@@ -1,7 +1,6 @@
 package computerdatabase.advanced
 
 import org.apache.commons.lang.StringUtils.lowerCase
-
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
