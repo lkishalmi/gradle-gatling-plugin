@@ -48,7 +48,11 @@ class GatlingRunTask extends DefaultTask {
                 scalaDirs.find { simu.startsWith(it) }.relativize(simu).join(".") - ".scala"
             }
         } else if (simulationFilter != null && simulationFilter instanceof Iterable<String>) {
-            retval = simulationFilter
+            def scalaDirs = project.sourceSets.gatling.scala.srcDirs
+            retval = simulationFilter.findAll { simuClz ->
+                def file = simuClz.replaceAll("\\.", "/")
+                scalaDirs.any { new File(it, "${file}.scala").exists() }
+            }
         } else {
             throw new IllegalArgumentException("`simulations` property neither Closure nor Iterable<String>, simulations: $simulationFilter")
         }
