@@ -33,5 +33,7 @@ class AdvancedSimulationStep03 extends Simulation {
 
   val users = scenario("Users").exec(Search.search)
 
-  setUp(users.inject(atOnceUsers(1))).protocols(httpConf)
+  setUp(users.inject(atOnceUsers(1))).protocols(httpConf).assertions(
+    global.successfulRequests.percent.gt(99)
+  )
 }

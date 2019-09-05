@@ -44,17 +44,21 @@ class WhenRunSimulationSpec extends GatlingFuncSpec {
         prepareTest()
         and: "override config by disabling reports"
         new File(new File(testProjectDir.root, "src/gatling/resources"), "gatling.conf") << """
-gatling {
-  data {
-    writers = []
-  }
-}"""
+gatling.charting.noReports = true
+"""
         when:
         BuildResult result = executeGradle(GATLING_RUN_TASK_NAME)
         then:
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         and: "no reports generated"
-        !new File(testProjectBuildDir, "reports/gatling").exists()
+        with(new File(testProjectBuildDir, "reports/gatling").listFiles()) { reports ->
+            reports.size() == 2
+            reports.find { it.name.startsWith("basicsimulation") } != null
+            reports.find { it.name.startsWith("basicsimulation") }.listFiles().collect { it.name } == ["simulation.log"]
+            reports.find { it.name.startsWith("advancedsimulationstep03") } != null
+            reports.find { it.name.startsWith("advancedsimulationstep03") }.listFiles().collect { it.name } == ["simulation.log"]
+
+        }
     }
 
     def "should not fail when layout is incorrect"() {
@@ -62,7 +66,7 @@ gatling {
         prepareTest(false)
         when:
         BuildResult result = executeGradle(GATLING_RUN_TASK_NAME)
-        then: "default tasks were executed succesfully"
+        then: "default tasks were executed successfully"
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == UP_TO_DATE
         and: "no simulations compiled"

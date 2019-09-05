@@ -31,8 +31,6 @@ class BasicSimulation extends Simulation {
     .acceptEncodingHeader("gzip, deflate")
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-  val headers_10 = Map("Content-Type" -> "application/x-www-form-urlencoded") // Note the headers specific to a given request
-
   val scn = scenario("Scenario Name") // A scenario is a chain of requests and pauses
     .exec(http("request_1").get("/"))
     .pause(1) // Note that Gatling has recorded real time pauses
@@ -40,5 +38,7 @@ class BasicSimulation extends Simulation {
     .pause(1)
     .exec(http("request_3").get("/computers/6"))
 
-  setUp(scn.inject(atOnceUsers(1)).protocols(httpConf))
+  setUp(scn.inject(atOnceUsers(1)).protocols(httpConf)).assertions(
+    global.successfulRequests.percent.gt(99)
+  )
 }
