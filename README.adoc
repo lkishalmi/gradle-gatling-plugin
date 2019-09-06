@@ -27,15 +27,36 @@ https://github.com/gatling/gatling/issues/3398[Gatling issue] explaining the sco
 
 == Source files layout
 
-The plugin uses `src/gatling` as its source root.
-There're following directories available for putting corresponding files.
+Plugin creates dedicated https://docs.gradle.org/current/dsl/org.gradle.api.tasks.SourceSet.html[Gradle sourceSet] named `gatling`.
+This source set is used for storing simulations and `Gatling` configs.
+Following directories are configured by default.
 
-[options="header"]
+[options="header", cols="1,2"]
 |===
 |Directory                      |   Purpose
 |`src/gatling/simulations`      |   Simulation sources (Scala code)
 |`src/gatling/resources`        |   Resources (feeders, configuration, bodies, etc)
 |===
+
+Using `Gradle` API file locations can be customized.
+
+[source]
+.builld.gradle
+----
+sourceSets {
+  gatling {
+    scala.srcDir "folde1" <1>
+    scala.srcDirs = ["folder1"] <2>
+
+    resources.srcDir "folder2" <3>
+    resources.srcDirs = ["folder2"] <4>
+  }
+}
+----
+<1> append folder1 as a extra folder for storing simulations
+<2> set folder1 as a single source of simulations
+<3> append folder2 as a extra folder for storing `Gatling` resources
+<4> append folder2 as a single source of `Gatling` resources
 
 == Plugin configuration
 
