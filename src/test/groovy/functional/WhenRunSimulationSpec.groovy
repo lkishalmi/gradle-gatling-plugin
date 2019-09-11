@@ -70,6 +70,38 @@ gatling.charting.noReports = true
         and: "no simulations compiled"
         !new File(testProjectBuildDir, "classes/gatling").exists()
         and: "no simulations run"
-        !new File(testProjectBuildDir, "reports/gatling").exists()
+        with(new File(testProjectBuildDir, "reports/gatling")) {
+            it.exists()
+            it.list().size() == 0
+        }
     }
+
+    def "should not run gatling if no changes to source code"() {
+        given:
+        prepareTest()
+        buildFile << """
+gatling { simulations = ['computerdatabase.BasicSimulation'] }
+"""
+        when: '1st time'
+        BuildResult result = executeGradle("$GATLING_RUN_TASK_NAME")
+        then:
+        result.task(":compileGatlingScala").outcome == SUCCESS
+        result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
+
+        when: '2nd time no changes'
+        result = executeGradle("$GATLING_RUN_TASK_NAME")
+        then:
+        result.task(":compileGatlingScala").outcome == UP_TO_DATE
+        result.task(":$GATLING_RUN_TASK_NAME").outcome == UP_TO_DATE
+
+        when: '3r time with changes'
+        new File(new File(testProjectSrcDir, "computerdatabase"), "BasicSimulation.scala") << """
+case class MyClz(str: String) // some fake code to change source file
+"""
+        result = executeGradle("$GATLING_RUN_TASK_NAME")
+        then:
+        result.task(":compileGatlingScala").outcome == SUCCESS
+        result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
+    }
+
 }

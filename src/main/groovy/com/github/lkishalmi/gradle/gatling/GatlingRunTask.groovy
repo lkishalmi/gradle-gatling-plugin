@@ -3,7 +3,8 @@ package com.github.lkishalmi.gradle.gatling
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
-import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.api.tasks.util.PatternFilterable
@@ -20,6 +21,24 @@ class GatlingRunTask extends DefaultTask {
 
     def simulations
 
+    @OutputDirectory
+    File gatlingReportDir = project.file("${project.reportsDir}/gatling")
+
+    @InputFiles
+    FileTree getSimulationSources() {
+        def simulationFilter = this.simulations ?: project.gatling.simulations
+
+        if (simulationFilter != null && simulationFilter instanceof Closure) {
+            return project.sourceSets.gatling.scala.matching(simulationFilter)
+        } else if (simulationFilter != null && simulationFilter instanceof Iterable<String>) {
+            return project.sourceSets.gatling.scala.matching {
+                include simulationFilter.collect { "${it.replaceAll("\\.", "/")}.scala" }
+            }
+        }
+
+        return null
+    }
+
     List<String> createGatlingArgs() {
         def retval = []
 
@@ -34,7 +53,7 @@ class GatlingRunTask extends DefaultTask {
         }
 
         retval += ["-rsf", "${project.sourceSets.gatling.output.resourcesDir}"]
-        retval += ["-rf", "${project.reportsDir}/gatling"]
+        retval += ["-rf", gatlingReportDir.absolutePath]
 
         retval
     }

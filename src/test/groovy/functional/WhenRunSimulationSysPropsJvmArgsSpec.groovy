@@ -38,7 +38,7 @@ gatling {
 }    
 """
         and:
-        result = executeGradle(GATLING_RUN_TASK_NAME)
+        result = executeGradle("--rerun-tasks", GATLING_RUN_TASK_NAME)
         then:
         with(new GatlingDebug(result)) {
             heap.min == 32 * 1024 * 1024
@@ -60,7 +60,7 @@ gatling {
 }
 """
         and:
-        result = executeGradle(GATLING_RUN_TASK_NAME)
+        result = executeGradle("--rerun-tasks", GATLING_RUN_TASK_NAME)
         then:
         with(new GatlingDebug(result)) {
             jvmArgs.sort() == ['-Xms32m', '-XX:+UseG1GC'].sort()
@@ -100,7 +100,7 @@ gatling {
 }
 """
         and:
-        result = executeGradle(GATLING_RUN_TASK_NAME)
+        result = executeGradle("--rerun-tasks", GATLING_RUN_TASK_NAME)
         then:
         with(new GatlingDebug(result)) {
             systemProperties.keySet().findAll { it.startsWith("gradle_gatling_") } == ['gradle_gatling_1', 'gradle_gatling_2'] as Set
