@@ -2,12 +2,15 @@ package unit
 
 import helper.GatlingUnitSpec
 import org.gradle.api.Task
+import org.gradle.language.jvm.tasks.ProcessResources
 
 class LogbackConfigTaskActionTest extends GatlingUnitSpec {
 
-    Task resourcesTask
+    ProcessResources resourcesTask
 
     File logbackConfig
+
+    XmlSlurper xml = new XmlSlurper()
 
     def setup() {
         resourcesTask = project.tasks['processGatlingResources']
@@ -20,7 +23,7 @@ class LogbackConfigTaskActionTest extends GatlingUnitSpec {
         then:
         logbackConfig.exists()
         and:
-        new XmlSlurper().parse(logbackConfig).root.@level == gatlingExt.logLevel
+        xml.parse(logbackConfig).root.@level == gatlingExt.logLevel
     }
 
     def "should override logLevel via extension"() {
@@ -31,7 +34,7 @@ class LogbackConfigTaskActionTest extends GatlingUnitSpec {
         then:
         logbackConfig.exists()
         and:
-        def xml = new XmlSlurper().parse(logbackConfig)
+        def xml = xml.parse(logbackConfig)
         xml.root.@level == gatlingExt.logLevel
         and:
         xml.root.@level == "QQQQ"
@@ -45,6 +48,6 @@ class LogbackConfigTaskActionTest extends GatlingUnitSpec {
         then:
         logbackConfig.exists()
         and:
-        new XmlSlurper().parse(logbackConfig).@attr == "value"
+        xml.parse(logbackConfig).@attr == "value"
     }
 }
