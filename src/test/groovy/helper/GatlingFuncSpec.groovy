@@ -12,22 +12,12 @@ abstract class GatlingFuncSpec extends GatlingSpec {
         generateBuildScripts()
     }
 
-    BuildResult executeGradle(String task) {
+    BuildResult executeGradle(String... gradleArgs) {
         GradleRunner.create().forwardOutput()
             .withProjectDir(testProjectDir.getRoot())
-            .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
+            .withArguments(["--stacktrace", GATLING_HOST_NAME_SYS_PROP] + (gradleArgs as List))
             .withPluginClasspath()
             .withDebug(true)
-            .build()
-    }
-
-    BuildResult executeGradle(String task, String gradleVersion) {
-        GradleRunner.create().forwardOutput()
-            .withProjectDir(testProjectDir.getRoot())
-            .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
-            .withPluginClasspath()
-            .withDebug(true)
-            .withGradleVersion(gradleVersion)
             .build()
     }
 }

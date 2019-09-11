@@ -10,6 +10,8 @@ abstract class GatlingSpec extends Specification {
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
 
+    File testProjectSrcDir
+
     File testProjectBuildDir
 
     File buildFile
@@ -18,6 +20,7 @@ abstract class GatlingSpec extends Specification {
         if (fixtureDir) {
             copyDirectory(new File(this.class.getResource(fixtureDir).file), testProjectDir.root)
         }
+        testProjectSrcDir = new File(testProjectDir.root, "src/gatling/simulations")
         testProjectBuildDir = new File(testProjectDir.root, "build")
     }
 
