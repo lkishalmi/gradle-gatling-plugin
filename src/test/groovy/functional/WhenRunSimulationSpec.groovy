@@ -104,4 +104,5 @@ case class MyClz(str: String) // some fake code to change source file
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
     }
 
+    //TODO spec to check simulations from different source folders
 }
