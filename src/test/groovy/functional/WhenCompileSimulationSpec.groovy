@@ -21,24 +21,24 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
         then: "compiled successfully"
         result.task(":$GATLING_CLASSES_TASK_NAME").outcome == SUCCESS
         and: "only layout specific simulations were compiled"
-        def classesDir = new File(testProjectBuildDir, "classes/scala/gatling")
+        def classesDir = new File(buildDir, "classes/scala/gatling")
         classesDir.exists()
         and: "only layout specific resources are copied"
-        def resourcesDir = new File(testProjectBuildDir, "resources/gatling")
+        def resourcesDir = new File(buildDir, "resources/gatling")
         resourcesDir.exists()
         new File(resourcesDir, "search.csv").exists()
         and: "main classes are compiled"
-        def mainDir = new File(testProjectBuildDir, "classes/java/main")
+        def mainDir = new File(buildDir, "classes/java/main")
         mainDir.exists()
         and: "test classes are compiled"
-        def testDir = new File(testProjectBuildDir, "classes/java/test")
+        def testDir = new File(buildDir, "classes/java/test")
         testDir.exists()
     }
 
     @Unroll
     def "should not compile without #dir"() {
         setup:
-        assert new File(testProjectDir.root, dir).deleteDir()
+        assert new File(projectDir.root, dir).deleteDir()
         when:
         executeGradle(GATLING_CLASSES_TASK_NAME)
         then:
@@ -51,7 +51,7 @@ class WhenCompileSimulationSpec extends GatlingFuncSpec {
 
     def "should not compile without required dependencies"() {
         given:
-        new File(testProjectDir.root, "build.gradle").text = """
+        buildFile.text = """
 plugins { id 'com.github.lkishalmi.gatling' }
 repositories { jcenter() }
 """

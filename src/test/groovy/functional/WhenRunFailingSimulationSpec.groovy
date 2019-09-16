@@ -1,11 +1,11 @@
 package functional
 
 import helper.GatlingFuncSpec
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 
 import static com.github.lkishalmi.gradle.gatling.GatlingPlugin.GATLING_RUN_TASK_NAME
-import static org.gradle.testkit.runner.TaskOutcome.*
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class WhenRunFailingSimulationSpec extends GatlingFuncSpec {
 
@@ -15,20 +15,20 @@ class WhenRunFailingSimulationSpec extends GatlingFuncSpec {
 
     def "should execute all simulations even if one fails because of gatling assertions"() {
         given:
-        new File(testProjectDir.root, "build.gradle") << """
+        buildFile << """
 gatling {
-    simulations = {
-        include 'computerdatabase/FailedSimulation.scala'
-        include 'computerdatabase/BasicSimulation.scala'
-    }
+  simulations = {
+    include 'computerdatabase/AFailedSimulation.scala'
+    include 'computerdatabase/BasicSimulation.scala'
+  }
 }
 """
         and: "add incorrect simulation"
-        new File(new File(testProjectDir.root, "src/gatling/simulations/computerdatabase"), "FailedSimulation.scala").text = """
+        new File(srcDir, "computerdatabase/AFailedSimulation.scala").text = """
 package computerdatabase
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-class FailedSimulation extends Simulation {
+class AFailedSimulation extends Simulation {
   val httpConf = http.baseUrl("http://qwe.asd.io")
   val scn = scenario("Scenario Name").exec(http("request_1").get("/"))
   setUp(scn.inject(atOnceUsers(1)).protocols(httpConf)).assertions(
@@ -42,30 +42,30 @@ class FailedSimulation extends Simulation {
         UnexpectedBuildFailure ex = thrown(UnexpectedBuildFailure)
         ex.buildResult.task(":$GATLING_RUN_TASK_NAME").outcome == FAILED
         and: "all simulations were run"
-        with(new File(testProjectBuildDir, "reports/gatling")) { reports ->
+        with(new File(buildDir, "reports/gatling")) { reports ->
             reports.exists() && reports.listFiles().size() == 2
             reports.listFiles().find { it.name.startsWith("basicsimulation") } != null
-            reports.listFiles().find { it.name.startsWith("failedsimulation") } != null
-            new File(reports.listFiles().find { it.name.startsWith("failedsimulation") }, "simulation.log").text.contains("UnknownHostException: qwe.asd.io")
+            reports.listFiles().find { it.name.startsWith("afailedsimulation") } != null
+            new File(reports.listFiles().find { it.name.startsWith("afailedsimulation") }, "simulation.log").text.contains("UnknownHostException: qwe.asd.io")
         }
     }
 
     def "should ignore if simulation without assertions fails with requests"() {
         given:
-        new File(testProjectDir.root, "build.gradle") << """
+        buildFile << """
 gatling {
-    simulations = {
-        include 'computerdatabase/FailedSimulation.scala'
-        include 'computerdatabase/BasicSimulation.scala'
-    }
+  simulations = {
+    include 'computerdatabase/AFailedSimulation.scala'
+    include 'computerdatabase/BasicSimulation.scala'
+  }
 }
 """
         and: "add incorrect simulation"
-        new File(new File(testProjectDir.root, "src/gatling/simulations/computerdatabase"), "FailedSimulation.scala").text = """
+        new File(srcDir, "computerdatabase/AFailedSimulation.scala").text = """
 package computerdatabase
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-class FailedSimulation extends Simulation {
+class AFailedSimulation extends Simulation {
   val httpConf = http.baseUrl("http://qwe.asd.io")
   val scn = scenario("Scenario Name").exec(http("request_1").get("/"))
   setUp(scn.inject(atOnceUsers(1)).protocols(httpConf))
@@ -76,31 +76,30 @@ class FailedSimulation extends Simulation {
         then:
         buildResult.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         and:
-        with(new File(testProjectBuildDir, "reports/gatling")) { reports ->
+        with(new File(buildDir, "reports/gatling")) { reports ->
             reports.exists() && reports.listFiles().size() == 2
             reports.listFiles().find { it.name.startsWith("basicsimulation") } != null
-            reports.listFiles().find { it.name.startsWith("failedsimulation") } != null
-            new File(reports.listFiles().find { it.name.startsWith("failedsimulation") }, "simulation.log").text.contains("UnknownHostException: qwe.asd.io")
+            reports.listFiles().find { it.name.startsWith("afailedsimulation") } != null
+            new File(reports.listFiles().find { it.name.startsWith("afailedsimulation") }, "simulation.log").text.contains("UnknownHostException: qwe.asd.io")
         }
     }
 
     def "should execute all simulations even if one fails because of gatling runtime"() {
         given:
-        new File(testProjectDir.root, "build.gradle") << """
+        buildFile << """
 gatling {
-    simulations = { 
-        include 'computerdatabase/FailedSimulation.scala' 
-        include 'computerdatabase/BasicSimulation.scala' 
-    }
+  simulations = { 
+    include 'computerdatabase/BasicSimulation.scala' 
+    include 'computerdatabase/AFailedSimulation.scala' 
+  }
 }
 """
         and: "add incorrect simulation"
-        new File(new File(testProjectDir.root, "src/gatling/simulations/computerdatabase"), "FailedSimulation.scala").text = """
+        new File(srcDir, "computerdatabase/AFailedSimulation.scala").text = """
 package computerdatabase
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-class FailedSimulation extends Simulation {
-}
+class AFailedSimulation extends Simulation {}
 """
         when:
         executeGradle(GATLING_RUN_TASK_NAME)
@@ -108,7 +107,7 @@ class FailedSimulation extends Simulation {
         UnexpectedBuildFailure ex = thrown(UnexpectedBuildFailure)
         ex.buildResult.task(":$GATLING_RUN_TASK_NAME").outcome == FAILED
         and:
-        with(new File(testProjectBuildDir, "reports/gatling")) { reports ->
+        with(new File(buildDir, "reports/gatling")) { reports ->
             reports.exists() && reports.listFiles().size() == 1
             reports.listFiles().find { it.name.startsWith("basicsimulation") } != null
         }

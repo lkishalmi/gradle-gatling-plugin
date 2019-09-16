@@ -36,9 +36,9 @@ class GatlingPluginExtension {
 
     def scalaVersion = SCALA_VERSION
 
-    def jvmArgs = DEFAULT_JVM_ARGS
+    List<String> jvmArgs = DEFAULT_JVM_ARGS
 
-    def systemProperties = DEFAULT_SYSTEM_PROPS
+    Map systemProperties = DEFAULT_SYSTEM_PROPS
 
     Closure simulations = DEFAULT_SIMULATIONS
 

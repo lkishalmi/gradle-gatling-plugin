@@ -100,8 +100,8 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         gatlingRunTask.simulationFilesToFQN().size() == 0
 
         when: 'put simulations into overridden source dir'
-        copyFileToDirectory(new File(testProjectDir.root, "${SIMULATIONS_DIR}/computerdatabase/BasicSimulation.scala"),
-            new File(testProjectDir.root, "$overridenSrc/computerdatabase"))
+        copyFileToDirectory(new File(projectDir.root, "${SIMULATIONS_DIR}/computerdatabase/BasicSimulation.scala"),
+            new File(projectDir.root, "$overridenSrc/computerdatabase"))
         then:
         gatlingRunTask.simulationFilesToFQN() == ["computerdatabase.BasicSimulation"]
     }
@@ -118,13 +118,13 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         gatlingRunTask.simulationFilesToFQN().size() == 2
 
         when: "hide one simulation"
-        moveFileToDirectory(new File(testProjectDir.root, "${SIMULATIONS_DIR}/computerdatabase/BasicSimulation.scala"),
-            testProjectDir.root, true)
+        moveFileToDirectory(new File(projectDir.root, "${SIMULATIONS_DIR}/computerdatabase/BasicSimulation.scala"),
+            projectDir.root, true)
         then:
         gatlingRunTask.simulationFilesToFQN() == ["computerdatabase.advanced.AdvancedSimulationStep03"]
 
         when: 'move simulation back to overridden source dir'
-        moveFileToDirectory(new File(testProjectDir.root, "BasicSimulation.scala"), new File(testProjectDir.root, "$overridenSrc/computerdatabase"), true)
+        moveFileToDirectory(new File(projectDir.root, "BasicSimulation.scala"), new File(projectDir.root, "$overridenSrc/computerdatabase"), true)
         then:
         gatlingRunTask.simulationFilesToFQN().size() == 2
     }

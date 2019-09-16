@@ -20,7 +20,7 @@ class WhenRunSimulationSysPropsJvmArgsSpec extends GatlingFuncSpec {
 
     def setup() {
         prepareTest("/gatling-debug")
-        new File(new File(testProjectDir.root, "src/gatling/resources"), "gatling.conf").text = "gatling.data.writers = []"
+        new File(new File(projectDir.root, "src/gatling/resources"), "gatling.conf").text = "gatling.data.writers = []"
     }
 
     def "should set memory limits from jvmArgs of gatling extension"() {

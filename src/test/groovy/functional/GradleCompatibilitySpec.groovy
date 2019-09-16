@@ -11,7 +11,7 @@ class GradleCompatibilitySpec extends GatlingFuncSpec {
 
     BuildResult executeGradleTaskWithVersion(String task, String gradleVersion) {
         GradleRunner.create().forwardOutput()
-            .withProjectDir(testProjectDir.getRoot())
+            .withProjectDir(projectDir.getRoot())
             .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
             .withPluginClasspath()
             .withDebug(true)

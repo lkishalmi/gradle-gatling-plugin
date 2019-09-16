@@ -1,7 +1,6 @@
 package unit
 
 import helper.GatlingUnitSpec
-import org.gradle.api.Task
 import org.gradle.language.jvm.tasks.ProcessResources
 
 class LogbackConfigTaskActionTest extends GatlingUnitSpec {
@@ -14,7 +13,7 @@ class LogbackConfigTaskActionTest extends GatlingUnitSpec {
 
     def setup() {
         resourcesTask = project.tasks['processGatlingResources']
-        logbackConfig = new File(testProjectBuildDir, "resources/gatling/logback.xml")
+        logbackConfig = new File(buildDir, "resources/gatling/logback.xml")
     }
 
     def "should create sample logback using logLevel from extension"() {
@@ -42,7 +41,7 @@ class LogbackConfigTaskActionTest extends GatlingUnitSpec {
 
     def "should not create sample logback.xml when it exists"() {
         given: ""
-        new File(testProjectDir.root, "src/gatling/resources/logback.xml") << """<fakeLogback attr="value"/>"""
+        new File(projectDir.root, "src/gatling/resources/logback.xml") << """<fakeLogback attr="value"/>"""
         when:
         resourcesTask.execute()
         then:

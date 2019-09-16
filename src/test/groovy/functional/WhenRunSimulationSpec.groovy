@@ -18,7 +18,7 @@ class WhenRunSimulationSpec extends GatlingFuncSpec {
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == SUCCESS
         and: "all simulations were run"
-        def reports = new File(testProjectBuildDir, "reports/gatling")
+        def reports = new File(buildDir, "reports/gatling")
         reports.exists() && reports.listFiles().size() == 2
         and: "logs doesn't contain INFO"
         !result.output.split().any { it.contains("INFO") }
@@ -32,7 +32,7 @@ class WhenRunSimulationSpec extends GatlingFuncSpec {
         then: "custom task was run successfully"
         result.task(":$GATLING_RUN_TASK_NAME-computerdatabase.BasicSimulation").outcome == SUCCESS
         and: "only one simulation was executed"
-        new File(testProjectBuildDir, "reports/gatling").listFiles().size() == 1
+        new File(buildDir, "reports/gatling").listFiles().size() == 1
         and: "logs doesn't contain INFO"
         !result.output.split().any { it.contains("INFO") }
     }
@@ -41,7 +41,7 @@ class WhenRunSimulationSpec extends GatlingFuncSpec {
         given:
         prepareTest()
         and: "override config by disabling reports"
-        new File(new File(testProjectDir.root, "src/gatling/resources"), "gatling.conf") << """
+        new File(new File(projectDir.root, "src/gatling/resources"), "gatling.conf") << """
 gatling.charting.noReports = true
 """
         when:
@@ -49,7 +49,7 @@ gatling.charting.noReports = true
         then:
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         and: "no reports generated"
-        with(new File(testProjectBuildDir, "reports/gatling").listFiles()) { reports ->
+        with(new File(buildDir, "reports/gatling").listFiles()) { reports ->
             reports.size() == 2
             reports.find { it.name.startsWith("basicsimulation") } != null
             reports.find { it.name.startsWith("basicsimulation") }.listFiles().collect { it.name } == ["simulation.log"]
@@ -68,9 +68,9 @@ gatling.charting.noReports = true
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == UP_TO_DATE
         and: "no simulations compiled"
-        !new File(testProjectBuildDir, "classes/gatling").exists()
+        !new File(buildDir, "classes/gatling").exists()
         and: "no simulations run"
-        with(new File(testProjectBuildDir, "reports/gatling")) {
+        with(new File(buildDir, "reports/gatling")) {
             it.exists()
             it.list().size() == 0
         }
@@ -95,7 +95,7 @@ gatling { simulations = { include 'computerdatabase/BasicSimulation.scala' } }
         result.task(":$GATLING_RUN_TASK_NAME").outcome == UP_TO_DATE
 
         when: '3r time with changes'
-        new File(new File(testProjectSrcDir, "computerdatabase"), "BasicSimulation.scala") << """
+        new File(new File(srcDir, "computerdatabase"), "BasicSimulation.scala") << """
 case class MyClz(str: String) // some fake code to change source file
 """
         result = executeGradle("$GATLING_RUN_TASK_NAME")
@@ -103,6 +103,4 @@ case class MyClz(str: String) // some fake code to change source file
         result.task(":compileGatlingScala").outcome == SUCCESS
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
     }
-
-    //TODO spec to check simulations from different source folders
 }

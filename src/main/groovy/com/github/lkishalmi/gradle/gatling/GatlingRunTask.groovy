@@ -1,11 +1,14 @@
 package com.github.lkishalmi.gradle.gatling
 
+import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
+import org.gradle.process.ExecResult
+import org.gradle.process.JavaExecSpec
 import org.gradle.util.GradleVersion
 
 import java.nio.file.Path
@@ -13,9 +16,9 @@ import java.nio.file.Paths
 
 class GatlingRunTask extends DefaultTask {
 
-    def jvmArgs
+    List<String> jvmArgs
 
-    def systemProperties
+    Map systemProperties
 
     Closure simulations
 
@@ -59,34 +62,29 @@ class GatlingRunTask extends DefaultTask {
 
     @TaskAction
     void gatlingRun() {
-        def self = this
+        def gatlingExt = project.extensions.getByType(GatlingPluginExtension)
 
-        def failures = [:]
+        Map<String, ExecResult> results = simulationFilesToFQN().collectEntries { String simulationClzName ->
+            [(simulationClzName): project.javaexec({ JavaExecSpec exec ->
+                exec.main = GatlingPluginExtension.GATLING_MAIN_CLASS
+                exec.classpath = project.configurations.gatlingRuntime
 
-        simulationFilesToFQN().each { String simuName ->
-            try {
-                project.javaexec {
-                    main = GatlingPluginExtension.GATLING_MAIN_CLASS
-                    classpath = project.configurations.gatlingRuntime
+                exec.jvmArgs this.jvmArgs ?: gatlingExt.jvmArgs
+                exec.systemProperties System.properties
+                exec.systemProperties this.systemProperties ?: gatlingExt.systemProperties
 
-                    jvmArgs self.jvmArgs ?: project.gatling.jvmArgs
+                exec.args this.createGatlingArgs()
+                exec.args "-s", simulationClzName
 
-                    args self.createGatlingArgs()
-                    args "-s", simuName
+                exec.standardInput = System.in
 
-                    systemProperties System.properties
-                    systemProperties self.systemProperties ?: project.gatling.systemProperties
-
-                    standardInput = System.in
-                }
-            } catch (Exception e) {
-                failures << [(simuName): e]
-                getLogger().error("Error executing $simuName", e)
-            }
+                exec.ignoreExitValue = true
+            } as Action<JavaExecSpec>)]
         }
 
-        if (failures.size() > 0) {
-            throw new TaskExecutionException(this, new RuntimeException("Some simulations failed : ${failures.keySet().join(", ")}"))
+        if (results.findAll { it.value.exitValue != 0 }.size() > 0) {
+            throw new TaskExecutionException(this, new RuntimeException("There're failed simulations: ${results.keySet().join(", ")}"))
         }
+
     }
 }

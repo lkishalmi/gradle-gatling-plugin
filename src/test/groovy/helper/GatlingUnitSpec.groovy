@@ -17,7 +17,7 @@ abstract class GatlingUnitSpec extends GatlingSpec {
     def setup() {
         createBuildFolder("/gradle-layout")
 
-        project = ProjectBuilder.builder().withProjectDir(testProjectDir.root).build()
+        project = ProjectBuilder.builder().withProjectDir(projectDir.root).build()
         project.pluginManager.apply 'com.github.lkishalmi.gatling'
 
         gatlingExt = project.extensions.getByType(GatlingPluginExtension)

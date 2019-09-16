@@ -14,7 +14,7 @@ abstract class GatlingFuncSpec extends GatlingSpec {
 
     BuildResult executeGradle(String... gradleArgs) {
         GradleRunner.create().forwardOutput()
-            .withProjectDir(testProjectDir.getRoot())
+            .withProjectDir(projectDir.getRoot())
             .withArguments(["--stacktrace", GATLING_HOST_NAME_SYS_PROP] + (gradleArgs as List))
             .withPluginClasspath()
             .withDebug(true)
