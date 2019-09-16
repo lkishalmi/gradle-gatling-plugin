@@ -1,5 +1,6 @@
 package com.github.lkishalmi.gradle.gatling
 
+import org.gradle.util.GradleVersion
 import org.gradle.util.VersionNumber
 
 import org.gradle.api.Plugin
@@ -23,6 +24,10 @@ class GatlingPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         this.project = project
+
+        if (VersionNumber.parse(GradleVersion.current().version).major < 3) {
+            throw new ProjectConfigurationException("This version of plugin doesn't support ${}", null)
+        }
 
         project.pluginManager.apply ScalaPlugin
 
@@ -88,7 +93,7 @@ class GatlingPlugin implements Plugin<Project> {
                 VersionNumber ver = VersionNumber.parse(p.gatling.toolVersion.toString())
                 if (ver.major < 3) {
                     def msg = "Due to breaking changes in Gatling 3.x this plugin does not support: ${p.gatling.toolVersion}\n"
-                    msg += "Please try to use plugin version: '0.7.+' for Gatling 2.x or  '0.3.+' for Gatling 1.x support."
+                    msg += "Please try to use plugin version: '0.7.+' for Gatling 2.x or '0.3.+' for Gatling 1.x support."
                     throw new ProjectConfigurationException(msg, null)
                 }
             }

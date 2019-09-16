@@ -3,6 +3,8 @@ package functional
 import helper.GatlingFuncSpec
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.gradle.testkit.runner.UnsupportedFeatureException
 import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -11,7 +13,7 @@ class GradleCompatibilitySpec extends GatlingFuncSpec {
 
     BuildResult executeGradleTaskWithVersion(String task, String gradleVersion) {
         GradleRunner.create().forwardOutput()
-            .withProjectDir(projectDir.getRoot())
+            .withProjectDir(projectDir.root)
             .withArguments("--stacktrace", GATLING_HOST_NAME_SYS_PROP, task)
             .withPluginClasspath()
             .withDebug(true)
@@ -21,7 +23,7 @@ class GradleCompatibilitySpec extends GatlingFuncSpec {
 
     @Unroll
     void 'use #dirType for Gradle version #gradleVersion'() {
-        setup:
+        given:
         prepareTest()
         when:
         BuildResult result = executeGradleTaskWithVersion('tasks', gradleVersion)
@@ -33,6 +35,19 @@ class GradleCompatibilitySpec extends GatlingFuncSpec {
         '3.5'         | 'classesDir'
         '4.0'         | 'classesDirs'
         '4.3'         | 'classesDirs'
+    }
 
+    @Unroll
+    void 'should fail for gradle less than 3.0, #gradleVersion'() {
+        given:
+        prepareTest()
+        when:
+        executeGradleTaskWithVersion('tasks', gradleVersion)
+        then:
+        thrown(ex)
+        where:
+        gradleVersion || ex
+        "2.14"         | UnexpectedBuildFailure
+        "1.11"         | UnsupportedFeatureException
     }
 }
