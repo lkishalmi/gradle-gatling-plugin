@@ -2,9 +2,6 @@ package com.github.lkishalmi.gradle.gatling
 
 import org.gradle.api.Project
 
-import java.nio.file.Path
-import java.nio.file.Paths
-
 class GatlingPluginExtension {
 
     static final String GATLING_MAIN_CLASS = 'io.gatling.app.Gatling'
@@ -33,9 +30,7 @@ class GatlingPluginExtension {
 
     static final Map DEFAULT_SYSTEM_PROPS = ["java.net.preferIPv4Stack": true, "java.net.preferIPv6Addresses": false]
 
-    static final Closure DEFAULT_SIMULATIONS = {
-        include "**/*Simulation*.scala"
-    }
+    static final def DEFAULT_SIMULATIONS = { include("**/*Simulation*.scala") }
 
     def toolVersion = GATLING_TOOL_VERSION
 
@@ -45,7 +40,7 @@ class GatlingPluginExtension {
 
     def systemProperties = DEFAULT_SYSTEM_PROPS
 
-    def simulations = DEFAULT_SIMULATIONS
+    Closure simulations = DEFAULT_SIMULATIONS
 
     def includeMainOutput = true
     def includeTestOutput = true
@@ -56,14 +51,5 @@ class GatlingPluginExtension {
 
     GatlingPluginExtension(Project project) {
         this.project = project
-    }
-
-    Iterable<String> resolveSimulations(Closure simulationFilter) {
-        def scalaDirs = project.sourceSets.gatling.scala.srcDirs.collect { Paths.get(it.absolutePath) }
-        def scalaFiles = project.sourceSets.gatling.scala.matching(simulationFilter).collect { Paths.get(it.absolutePath) }
-
-        scalaFiles.collect { Path simu ->
-            scalaDirs.find { simu.startsWith(it) }.relativize(simu).join(".") - ".scala"
-        }
     }
 }

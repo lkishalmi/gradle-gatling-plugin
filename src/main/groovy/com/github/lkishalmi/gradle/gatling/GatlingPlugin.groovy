@@ -37,18 +37,22 @@ class GatlingPlugin implements Plugin<Project> {
         project.tasks.addRule("Pattern: $GATLING_RUN_TASK_NAME-<SimulationClass>: Executes single Gatling simulation.") {
             String taskName ->
                 if (taskName.startsWith(GATLING_TASK_NAME_PREFIX)) {
-                    createGatlingTask(taskName, [(taskName - GATLING_TASK_NAME_PREFIX)])
+                    createGatlingTask(taskName, (taskName - GATLING_TASK_NAME_PREFIX))
                 }
         }
     }
 
-    void createGatlingTask(String taskName, Iterable<String> predefinedSimulations) {
+    void createGatlingTask(String taskName, String simulationFQN = null) {
         def task = project.tasks.create(name: taskName,
             dependsOn: project.tasks.gatlingClasses, type: GatlingRunTask,
             description: "Execute Gatling simulation", group: "Gatling")
 
-        if (predefinedSimulations) {
-            task.configure { simulations = predefinedSimulations }
+        if (simulationFQN) {
+            task.configure {
+                simulations = {
+                    include "${simulationFQN.replace('.', '/')}.scala"
+                }
+            }
         }
     }
 

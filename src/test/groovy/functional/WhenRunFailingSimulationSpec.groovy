@@ -17,7 +17,10 @@ class WhenRunFailingSimulationSpec extends GatlingFuncSpec {
         given:
         new File(testProjectDir.root, "build.gradle") << """
 gatling {
-    simulations = ['computerdatabase.FailedSimulation', 'computerdatabase.BasicSimulation']
+    simulations = {
+        include 'computerdatabase/FailedSimulation.scala'
+        include 'computerdatabase/BasicSimulation.scala'
+    }
 }
 """
         and: "add incorrect simulation"
@@ -51,7 +54,10 @@ class FailedSimulation extends Simulation {
         given:
         new File(testProjectDir.root, "build.gradle") << """
 gatling {
-    simulations = ['computerdatabase.FailedSimulation', 'computerdatabase.BasicSimulation']
+    simulations = {
+        include 'computerdatabase/FailedSimulation.scala'
+        include 'computerdatabase/BasicSimulation.scala'
+    }
 }
 """
         and: "add incorrect simulation"
@@ -82,7 +88,10 @@ class FailedSimulation extends Simulation {
         given:
         new File(testProjectDir.root, "build.gradle") << """
 gatling {
-    simulations = ['computerdatabase.FailedSimulation', 'computerdatabase.BasicSimulation']
+    simulations = { 
+        include 'computerdatabase/FailedSimulation.scala' 
+        include 'computerdatabase/BasicSimulation.scala' 
+    }
 }
 """
         and: "add incorrect simulation"

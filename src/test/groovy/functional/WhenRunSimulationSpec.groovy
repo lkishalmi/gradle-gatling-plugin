@@ -14,7 +14,7 @@ class WhenRunSimulationSpec extends GatlingFuncSpec {
         prepareTest()
         when:
         BuildResult result = executeGradle(GATLING_RUN_TASK_NAME)
-        then: "default tasks were executed succesfully"
+        then: "default tasks were executed successfully"
         result.task(":$GATLING_RUN_TASK_NAME").outcome == SUCCESS
         result.task(":gatlingClasses").outcome == SUCCESS
         and: "all simulations were run"
@@ -80,7 +80,7 @@ gatling.charting.noReports = true
         given:
         prepareTest()
         buildFile << """
-gatling { simulations = ['computerdatabase.BasicSimulation'] }
+gatling { simulations = { include 'computerdatabase/BasicSimulation.scala' } }
 """
         when: '1st time'
         BuildResult result = executeGradle("$GATLING_RUN_TASK_NAME")

@@ -1,6 +1,5 @@
 package com.github.lkishalmi.gradle.gatling
 
-
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.InputFiles
@@ -18,7 +17,7 @@ class GatlingRunTask extends DefaultTask {
 
     def systemProperties
 
-    def simulations
+    Closure simulations
 
     @OutputDirectory
     File gatlingReportDir = project.file("${project.reportsDir}/gatling")
@@ -26,16 +25,7 @@ class GatlingRunTask extends DefaultTask {
     @InputFiles
     FileTree getSimulationSources() {
         def simulationFilter = this.simulations ?: project.gatling.simulations
-
-        if (simulationFilter != null && simulationFilter instanceof Closure) {
-            return project.sourceSets.gatling.scala.matching(simulationFilter)
-        } else if (simulationFilter != null && simulationFilter instanceof Iterable<String>) {
-            return project.sourceSets.gatling.scala.matching {
-                include simulationFilter.collect { "${it.replaceAll("\\.", "/")}.scala" }
-            }
-        }
-
-        throw new IllegalArgumentException("`simulations` property neither Closure nor Iterable<String>, simulations: $simulationFilter")
+        return project.sourceSets.gatling.scala.matching(simulationFilter)
     }
 
     List<String> createGatlingArgs() {
@@ -62,8 +52,8 @@ class GatlingRunTask extends DefaultTask {
         def scalaSrcDirs = project.sourceSets.gatling.scala.srcDirs.collect { Paths.get(it.absolutePath) }
         def scalaFiles = getSimulationSources().collect { Paths.get(it.absolutePath) }
 
-        return scalaFiles.collect { Path s ->
-            scalaSrcDirs.find { s.startsWith(it) }.relativize(s).join(".") - ".scala"
+        return scalaFiles.collect { Path srcFile ->
+            scalaSrcDirs.find { srcFile.startsWith(it) }.relativize(srcFile).join(".") - ".scala"
         }
     }
 

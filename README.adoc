@@ -46,17 +46,19 @@ Using `Gradle` API file locations can be customized.
 sourceSets {
   gatling {
     scala.srcDir "folder1" <1>
+    // or
     scala.srcDirs = ["folder1"] <2>
 
     resources.srcDir "folder2" <3>
+    // or
     resources.srcDirs = ["folder2"] <4>
   }
 }
 ----
-<1> append folder1 as a extra folder for storing simulations
-<2> set folder1 as a single source of simulations
-<3> append folder2 as a extra folder for storing `Gatling` resources
-<4> append folder2 as a single source of `Gatling` resources
+<1> append `folder1` as an extra simulations folder.
+<2> use `folder1` as a single source of simulations.
+<3> append `folder2` as an extra `Gatling` resources folder.
+<4> use `folder2` as a single source of `Gatling` resources.
 
 == Plugin configuration
 
@@ -98,47 +100,36 @@ The plugin defines the following extension properties in the `gatling` closure
 |Additional systems properties passed to JVM together with caller JVM system properties
 
 |simulations
-|Closure or Iterable<String>
+|Closure
 |[source,groovy]
 ----
 { include "**/*Simulation*.scala" }
 ----
-| Simulations filter. +
-If closure then https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs] for details,
-otherwise an Iterable of simulations fully qualified names.
+| Simulations filter. https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/util/PatternFilterable.html[See Gradle docs] for details.
 |===
 
 === Examples
 
-Overriding Gatling version and JVM arguments::
+Overriding Gatling version, JVM arguments and system properties::
 +
 [source,groovy,subs="attributes"]
 ----
 gatling {
-    toolVersion = '{gatlingToolVersion}'
-    jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
+  toolVersion = '{gatlingToolVersion}'
+  jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
+  systemProperties = ['file.encoding': 'UTF-8']
 }
 ----
 
-Filtering simulations using FQN list::
+Filtering simulations::
 +
 [source,groovy]
 ----
 gatling {
-    simulations = [ 'com.package1.MySimu', 'com.package2.advanced.MySimulation' ] <1>
-}
-----
-<1> only execute `com.package1.MySimu` and `com.package2.advanced.MySimulation` simulations.
-
-Filtering simulations using Groovy closure::
-+
-[source,groovy]
-----
-gatling {
-    simulations = {
-        include "**/package1/*Simu.scala"    <1>
-        include "**/package2/*Simulation.scala"  <2>
-    }
+  simulations = {
+    include "**/package1/*Simu.scala"    <1>
+    include "**/package2/*Simulation.scala"  <2>
+  }
 }
 ----
 <1> all `Scala` files from plugin simulation dir subfolder `package1` ending with `Simu`.
@@ -192,10 +183,10 @@ Example::
 [source,groovy]
 ----
 gatling {
-    // do not include classes and resources from src/main
-    includeMainOutput = false
-    // do not include classes and resources from src/test
-    includeTestOutput = false
+  // do not include classes and resources from src/main
+  includeMainOutput = false
+  // do not include classes and resources from src/test
+  includeTestOutput = false
 }
 ----
 
@@ -205,9 +196,9 @@ Example::
 [source,groovy]
 ----
 dependencies {
-    gatling 'com.google.code.gson:gson:2.8.0' <1>
-    gatlingCompile 'org.apache.commons:commons-lang3:3.4' <2>
-    gatlingRuntime 'cglib:cglib-nodep:3.2.0' <3>
+  gatling 'com.google.code.gson:gson:2.8.0' <1>
+  gatlingCompile 'org.apache.commons:commons-lang3:3.4' <2>
+  gatlingRuntime 'cglib:cglib-nodep:3.2.0' <3>
 }
 ----
 <1> adding `gson` library, available both in compile and runtime classpath.
@@ -237,11 +228,9 @@ Options are used in a fallback manner, i.e. if option is not set the value from 
 |Additional systems properties passed to JVM together with caller JVM system properties
 
 |simulations
-|Closure or Iterable<String>
+|Closure
 |null
-|Simulations filter. +
-If closure then https://docs.gradle.org/current/userguide/working_with_files.html[See Gradle docs] for details,
-otherwise an Iterable of simulations fully qualified names.
+|Simulations filter. https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/util/PatternFilterable.html[See Gradle docs] for details.
 |===
 
 === Default tasks
