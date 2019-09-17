@@ -4,6 +4,7 @@ import com.github.lkishalmi.gradle.gatling.GatlingPluginExtension
 import com.github.lkishalmi.gradle.gatling.GatlingRunTask
 import com.github.lkishalmi.gradle.gatling.LogbackConfigTaskAction
 import helper.GatlingUnitSpec
+import org.gradle.language.jvm.tasks.ProcessResources
 
 class GatlingPluginTest extends GatlingUnitSpec {
 
@@ -72,6 +73,7 @@ class GatlingPluginTest extends GatlingUnitSpec {
     def "should create processGatlingResources task"() {
         expect:
         with(project.tasks.getByName("processGatlingResources")) {
+            it instanceof ProcessResources
             it != null
             it.actions.find { it.action instanceof LogbackConfigTaskAction } != null
         }
