@@ -31,35 +31,11 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
     }
 
-    def "should resolve simulations using custom static list"() {
-        given:
-        project.gatling.simulations = {
-            include "computerdatabase/advanced/AdvancedSimulationStep03.scala"
-        }
-        when:
-        def gatlingRunSimulations = gatlingRunTask.simulationFilesToFQN()
-        then:
-        gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
-    }
-
     def "should resolve simulations using gatlingRun filter"() {
         given:
         project.gatling.simulations = GatlingPluginExtension.DEFAULT_SIMULATIONS
         and:
         project.gatlingRun.simulations = { include "**/*AdvancedSimulation*" }
-        when:
-        def gatlingRunSimulations = gatlingRunTask.simulationFilesToFQN()
-        then:
-        gatlingRunSimulations == ["computerdatabase.advanced.AdvancedSimulationStep03"]
-    }
-
-    def "should resolve simulations using gatlingRun static list"() {
-        given:
-        project.gatling.simulations = GatlingPluginExtension.DEFAULT_SIMULATIONS
-        and:
-        project.gatlingRun.simulations = {
-            include "computerdatabase/advanced/AdvancedSimulationStep03.scala"
-        }
         when:
         def gatlingRunSimulations = gatlingRunTask.simulationFilesToFQN()
         then:
@@ -129,8 +105,8 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         gatlingRunTask.simulationFilesToFQN().size() == 2
     }
 
-    def "should not find missing simulations configured via extension static list"() {
-        when: 'static list with with missing simulations'
+    def "should not find missing simulations via gatling extension"() {
+        when: 'default src layout'
         project.gatling.simulations = {
             include "computerdatabase/BasicSimulation.scala"
             include "some.missing.file"
@@ -138,19 +114,16 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         then:
         gatlingRunTask.simulationFilesToFQN() == ["computerdatabase.BasicSimulation"]
 
-        when: 'fake source dirs without simulations and static list'
+        when: 'custom src layout'
         project.sourceSets {
             gatling.scala.srcDirs = ["missing/gatling"]
-        }
-        project.gatling.simulations = {
-            include "computerdatabase/BasicSimulation.scala"
         }
         then:
         gatlingRunTask.simulationFilesToFQN().size() == 0
     }
 
-    def "should not find missing simulations configured via gatlingRun static list"() {
-        when: 'static list with missing simulations'
+    def "should not find missing simulations via gatlingRun"() {
+        when: 'default src layout'
         project.gatlingRun.simulations = {
             include "computerdatabase/BasicSimulation.scala"
             include "some.missing.file"
@@ -158,12 +131,9 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         then:
         gatlingRunTask.simulationFilesToFQN() == ["computerdatabase.BasicSimulation"]
 
-        when: 'fake source dirs without simulations and static list'
+        when: 'custom src layout'
         project.sourceSets {
             gatling.scala.srcDirs = ["missing/gatling"]
-        }
-        project.gatlingRun.simulations = {
-            include "computerdatabase/BasicSimulation.scala"
         }
         then:
         gatlingRunTask.simulationFilesToFQN().size() == 0

@@ -18,9 +18,9 @@ class GatlingPluginTest extends GatlingUnitSpec {
         expect:
         with(gatlingExt) {
             it instanceof GatlingPluginExtension
-            it.simulations == GatlingPluginExtension.DEFAULT_SIMULATIONS
-            it.jvmArgs == GatlingPluginExtension.DEFAULT_JVM_ARGS
-            it.systemProperties == GatlingPluginExtension.DEFAULT_SYSTEM_PROPS
+            it.simulations == DEFAULT_SIMULATIONS
+            it.jvmArgs == DEFAULT_JVM_ARGS
+            it.systemProperties == DEFAULT_SYSTEM_PROPS
             it.logLevel == "WARN"
         }
     }
@@ -30,7 +30,7 @@ class GatlingPluginTest extends GatlingUnitSpec {
         project.evaluate()
         then:
         project.configurations.getByName("gatling").allDependencies.find {
-            it.name == "gatling-charts-highcharts" && it.version ==GatlingPluginExtension.GATLING_TOOL_VERSION
+            it.name == "gatling-charts-highcharts" && it.version == GatlingPluginExtension.GATLING_TOOL_VERSION
         }
         project.configurations.getByName("gatlingCompile").allDependencies.find {
             it.name == "scala-library" && it.version == GatlingPluginExtension.SCALA_VERSION

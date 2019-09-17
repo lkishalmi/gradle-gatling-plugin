@@ -30,7 +30,7 @@ class GatlingPluginExtension {
 
     static final Map DEFAULT_SYSTEM_PROPS = ["java.net.preferIPv4Stack": true, "java.net.preferIPv6Addresses": false]
 
-    static final def DEFAULT_SIMULATIONS = { include("**/*Simulation*.scala") }
+    static final Closure DEFAULT_SIMULATIONS = { include("**/*Simulation*.scala") }
 
     def toolVersion = GATLING_TOOL_VERSION
 
