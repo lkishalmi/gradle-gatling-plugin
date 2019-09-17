@@ -50,7 +50,7 @@ class AFailedSimulation extends Simulation {
         }
     }
 
-    def "should ignore if simulation without assertions fails with requests"() {
+    def "should ignore if simulation without assertions fails with HTTP requests"() {
         given:
         buildFile << """
 gatling {
