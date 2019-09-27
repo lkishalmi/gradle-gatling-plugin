@@ -14,11 +14,7 @@ import org.gradle.util.GradleVersion
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class GatlingRunTask extends DefaultTask {
-
-    List<String> jvmArgs
-
-    Map systemProperties
+class GatlingRunTask extends DefaultTask implements JvmConfigurable {
 
     Closure simulations
 
