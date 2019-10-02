@@ -65,9 +65,9 @@ class GatlingRunTask extends DefaultTask implements JvmConfigurable {
                 exec.main = GatlingPluginExtension.GATLING_MAIN_CLASS
                 exec.classpath = project.configurations.gatlingRuntime
 
-                exec.jvmArgs this.jvmArgs ?: gatlingExt.jvmArgs
+                exec.jvmArgs this.getJvmArgs() ?: gatlingExt.getJvmArgs()
                 exec.systemProperties System.properties
-                exec.systemProperties this.systemProperties ?: gatlingExt.systemProperties
+                exec.systemProperties this.getSystemProperties() ?: gatlingExt.getSystemProperties()
 
                 exec.args this.createGatlingArgs()
                 exec.args "-s", simulationClzName

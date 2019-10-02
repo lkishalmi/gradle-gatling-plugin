@@ -2,24 +2,51 @@ package com.github.lkishalmi.gradle.gatling
 
 trait JvmConfigurable {
 
-    static final List<String> DEFAULT_JVM_ARGS = [
-        '-server',
-        '-Xmx1G',
-        '-XX:+HeapDumpOnOutOfMemoryError',
-        '-XX:+UseG1GC',
-        '-XX:MaxGCPauseMillis=30',
-        '-XX:G1HeapRegionSize=16m',
-        '-XX:InitiatingHeapOccupancyPercent=75',
-        '-XX:+ParallelRefProcEnabled',
-        '-XX:+PerfDisableSharedMem',
-        '-XX:+AggressiveOpts',
-        '-XX:+OptimizeStringConcat'
-    ]
+    private Set<String> jvmArgs
 
-    static final Map DEFAULT_SYSTEM_PROPS = ["java.net.preferIPv4Stack": true, "java.net.preferIPv6Addresses": false]
+    private Map<String, Object> systemProperties
 
-    List<String> jvmArgs
+    private Map<String, String> environment = System.getenv()
 
-    Map systemProperties
+    Set<String> getJvmArgs() {
+        return jvmArgs
+    }
 
+    void setJvmArgs(Set<String> jvmArgs) {
+        this.jvmArgs = jvmArgs
+    }
+
+    void jvmArgs(String... jvmArgs) {
+        def v = new HashSet<String>(this.jvmArgs)
+        v.addAll(jvmArgs)
+        setJvmArgs(v)
+    }
+
+    Map<String, Object> getSystemProperties() {
+        return systemProperties
+    }
+
+    void setSystemProperties(Map<String, Object> systemProperties) {
+        this.systemProperties = systemProperties
+    }
+
+    void systemProperties(Map<String, Object> sysProps) {
+        Map<String, Object> m = new HashMap(getSystemProperties())
+        m.putAll(sysProps)
+        setSystemProperties(m)
+    }
+
+    Map<String, String> getEnvironment() {
+        return environment
+    }
+
+    void setEnvironment(Map<String, String> environment) {
+        this.environment = environment
+    }
+
+    void environment(Map<String, Object> env) {
+        Map<String, Object> m = new HashMap(getEnvironment())
+        m.putAll(env)
+        setEnvironment(m)
+    }
 }

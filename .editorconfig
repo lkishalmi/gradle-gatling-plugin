@@ -6,11 +6,12 @@ insert_final_newline = true
 charset = utf-8
 trim_trailing_whitespace = true
 indent_style = space
+max_line_length=120
 
 [*.groovy]
 indent_size = 4
 max_line_length=180
 
-[*.{yml,yaml,conf,json,avsc,gradle}]
+[*.{yml,yaml,json,gradle}]
 indent_size = 2
 

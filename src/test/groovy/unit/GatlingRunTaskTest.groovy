@@ -138,6 +138,4 @@ class GatlingRunTaskTest extends GatlingUnitSpec {
         then:
         gatlingRunTask.simulationFilesToFQN().size() == 0
     }
-
-
 }
