@@ -63,7 +63,7 @@ class GatlingRunTask extends DefaultTask implements JvmConfigurable {
         Map<String, ExecResult> results = simulationFilesToFQN().collectEntries { String simulationClzName ->
             [(simulationClzName): project.javaexec({ JavaExecSpec exec ->
                 exec.main = GatlingPluginExtension.GATLING_MAIN_CLASS
-                exec.classpath = project.configurations.gatlingRuntime
+                exec.classpath = project.configurations.gatlingRuntimeClasspath
 
                 exec.jvmArgs this.jvmArgs ?: gatlingExt.jvmArgs
                 exec.systemProperties System.properties

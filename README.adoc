@@ -69,8 +69,8 @@ The plugin defines the following extension properties in the `gatling` closure
 |toolVersion        |String         |'{gatlingToolVersion}'                     |`Gatling` version
 |logLevel           |String         |'WARN'
 |The default Gatling console log level if no `logback.xml` present in the configutation folder
-|includeMainOutput  |Boolean        |true                                       |Include main source set output to gatlingCompile
-|includeTestOutput  |Boolean        |true                                       |Include test source set output to gatlingCompile
+|includeMainOutput  |Boolean        |true                                       |Include main source set output to gatlingImplementation
+|includeTestOutput  |Boolean        |true                                       |Include test source set output to gatlingImplementation
 |scalaVersion       |String         |'{scalaVersion}'                           |`scala` version that fits your `Gatling` tool version
 
 |jvmArgs
@@ -169,11 +169,11 @@ by default plugin will implicitly use following configuration.
 
 == Dependency management
 
-This plugin defines three https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.Configuration.html[Gradle configurations] `gatling`, `gatlingCompile` and `gatlingRuntime`.
+This plugin defines three https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.Configuration.html[Gradle configurations] `gatling`, `gatlingImplementation` and `gatlingRuntimeOnly`.
 By default plugin adds `Gatling` libraries to `gatling` configuration.
-Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all dependencies declared in `gatling` will be inherited.  Dependencies added to configurations other than these 'gatling' configurations will not be available within Gatling simulations.
+Configurations `gatlingImplementation` and `gatlingRuntimeOnly` extend `gatling`, i.e. all dependencies declared in `gatling` will be inherited.  Dependencies added to configurations other than these 'gatling' configurations will not be available within Gatling simulations.
 
-Also project classes (`src/main`) and tests classes (`src/test`) are added to `gatlingCompile` and `gatlingRuntime` classpath,
+Also project classes (`src/main`) and tests classes (`src/test`) are added to `gatlingImplementation` and `gatlingRuntimeOnly` classpath,
 so you can reuse existing production and test code in your simulations.
 
 If you don't need such behaviour, you can use flags:
@@ -196,8 +196,8 @@ Example::
 ----
 dependencies {
   gatling 'com.google.code.gson:gson:2.8.0' <1>
-  gatlingCompile 'org.apache.commons:commons-lang3:3.4' <2>
-  gatlingRuntime 'cglib:cglib-nodep:3.2.0' <3>
+  gatlingImplementation 'org.apache.commons:commons-lang3:3.4' <2>
+  gatlingRuntimeOnly 'cglib:cglib-nodep:3.2.0' <3>
 }
 ----
 <1> adding `gson` library, available both in compile and runtime classpath.

@@ -10,7 +10,7 @@ class GatlingPluginTest extends GatlingUnitSpec {
 
     def "should create gatling configurations"() {
         expect:
-        ['gatling', 'gatlingCompile', 'gatlingRuntime'].every {
+        ['gatling', 'gatlingCompile', 'gatlingRuntime', 'gatlingImplementation', 'gatlingRuntimeOnly'].every {
             project.configurations.getByName(it) != null
         }
     }
@@ -33,7 +33,7 @@ class GatlingPluginTest extends GatlingUnitSpec {
         project.configurations.getByName("gatling").allDependencies.find {
             it.name == "gatling-charts-highcharts" && it.version == GatlingPluginExtension.GATLING_TOOL_VERSION
         }
-        project.configurations.getByName("gatlingCompile").allDependencies.find {
+        project.configurations.getByName("gatlingImplementation").allDependencies.find {
             it.name == "scala-library" && it.version == GatlingPluginExtension.SCALA_VERSION
         }
     }
@@ -55,7 +55,7 @@ class GatlingPluginTest extends GatlingUnitSpec {
         and:
         project.evaluate()
         then:
-        project.configurations.getByName("gatlingCompile").allDependencies.find {
+        project.configurations.getByName("gatlingImplementation").allDependencies.find {
             it.name == "scala-library" && it.version == "2.11.3"
         }
     }
