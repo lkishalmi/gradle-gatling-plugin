@@ -62,13 +62,6 @@ class GatlingPlugin implements Plugin<Project> {
     }
 
     void createConfiguration(GatlingPluginExtension gatlingExt) {
-        project.configurations {
-            ['gatling', 'gatlingCompile', 'gatlingRuntime'].each() { confName ->
-                create(confName) { visible = false }
-            }
-            gatlingCompile.extendsFrom(gatling)
-        }
-
         project.sourceSets {
             gatling {
                 scala.srcDirs = [gatlingExt.SIMULATIONS_DIR]
@@ -76,16 +69,21 @@ class GatlingPlugin implements Plugin<Project> {
             }
         }
 
+        project.configurations {
+            gatling { visible = false }
+            gatlingImplementation.extendsFrom(gatling)
+        }
+
         project.dependencies {
             if (gatlingExt.includeMainOutput) {
-                gatlingCompile project.sourceSets.main.output
+                gatlingImplementation project.sourceSets.main.output
             }
             if (gatlingExt.includeTestOutput) {
-                gatlingCompile project.sourceSets.test.output
+                gatlingImplementation project.sourceSets.test.output
             }
 
-            gatlingRuntime project.sourceSets.gatling.output
-            gatlingRuntime project.sourceSets.gatling.output
+            gatlingRuntimeOnly project.sourceSets.gatling.output
+            gatlingRuntimeOnly project.sourceSets.gatling.output
         }
 
         project.afterEvaluate { Project p ->
@@ -98,7 +96,7 @@ class GatlingPlugin implements Plugin<Project> {
                 }
             }
             p.dependencies {
-                gatlingCompile "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion}"
+                gatlingImplementation "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion}"
                 gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.extensions.getByType(GatlingPluginExtension).toolVersion}"
             }
         }
