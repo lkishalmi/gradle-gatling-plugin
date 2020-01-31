@@ -172,7 +172,7 @@ by default plugin will implicitly use following configuration.
 
 This plugin defines three https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.Configuration.html[Gradle configurations] `gatling`, `gatlingCompile` and `gatlingRuntime`.
 By default plugin adds `Gatling` libraries to `gatling` configuration.
-Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all dependencies declared in `gatling` will be inherited.
+Configurations `gatlingCompile` and `gatlingRuntime` extend `gatling`, i.e. all dependencies declared in `gatling` will be inherited.  Dependencies added to configurations other than these 'gatling' configurations will not be available within Gatling simulations.
 
 Also project classes (`src/main`) and tests classes (`src/test`) are added to `gatlingCompile` and `gatlingRuntime` classpath,
 so you can reuse existing production and test code in your simulations.
