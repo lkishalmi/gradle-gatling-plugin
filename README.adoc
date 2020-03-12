@@ -16,8 +16,7 @@ Follow the steps described at https://plugins.gradle.org/plugin/com.github.lkish
 == Compatibility
 
 Plugin versioning::
-Since `Gatling` v3.0.0 this plugin's major version follows `Gatling` 's
-major version for making things easier.
+Since `Gatling` v3.0.0 this plugin's major and minor versions follow `Gatling` 's major and minor version.
 
 Source code layout::
 Since `Gatling` v3.0.0 and corresponding plugin version `v3.x.x`
