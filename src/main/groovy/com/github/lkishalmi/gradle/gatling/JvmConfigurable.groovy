@@ -3,7 +3,6 @@ package com.github.lkishalmi.gradle.gatling
 trait JvmConfigurable {
 
     static final List<String> DEFAULT_JVM_ARGS = [
-        '-server',
         '-Xmx1G',
         '-XX:+HeapDumpOnOutOfMemoryError',
         '-XX:+UseG1GC',
@@ -12,7 +11,6 @@ trait JvmConfigurable {
         '-XX:InitiatingHeapOccupancyPercent=75',
         '-XX:+ParallelRefProcEnabled',
         '-XX:+PerfDisableSharedMem',
-        '-XX:+AggressiveOpts',
         '-XX:+OptimizeStringConcat'
     ]
 
