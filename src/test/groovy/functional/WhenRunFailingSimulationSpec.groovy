@@ -41,6 +41,10 @@ class AFailedSimulation extends Simulation {
         then:
         UnexpectedBuildFailure ex = thrown(UnexpectedBuildFailure)
         ex.buildResult.task(":$GATLING_RUN_TASK_NAME").outcome == FAILED
+        and: "only single simulation reported as failed"
+        ex.buildResult.output.readLines().any {
+            it.endsWith("There're failed simulations: computerdatabase.AFailedSimulation")
+        }
         and: "all simulations were run"
         with(new File(buildDir, "reports/gatling")) { reports ->
             reports.exists() && reports.listFiles().size() == 2
@@ -88,9 +92,9 @@ class AFailedSimulation extends Simulation {
         given:
         buildFile << """
 gatling {
-  simulations = { 
-    include 'computerdatabase/BasicSimulation.scala' 
-    include 'computerdatabase/AFailedSimulation.scala' 
+  simulations = {
+    include 'computerdatabase/BasicSimulation.scala'
+    include 'computerdatabase/AFailedSimulation.scala'
   }
 }
 """
@@ -106,6 +110,10 @@ class AFailedSimulation extends Simulation {}
         then:
         UnexpectedBuildFailure ex = thrown(UnexpectedBuildFailure)
         ex.buildResult.task(":$GATLING_RUN_TASK_NAME").outcome == FAILED
+        and: "only single simulation reported as failed"
+        ex.buildResult.output.readLines().any {
+            it.endsWith("There're failed simulations: computerdatabase.AFailedSimulation")
+        }
         and:
         with(new File(buildDir, "reports/gatling")) { reports ->
             reports.exists() && reports.listFiles().size() == 1

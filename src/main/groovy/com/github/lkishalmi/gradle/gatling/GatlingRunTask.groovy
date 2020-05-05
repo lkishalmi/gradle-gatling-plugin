@@ -33,8 +33,8 @@ class GatlingRunTask extends DefaultTask implements JvmConfigurable {
         }.singleFile
 
         return ['-bf', scalaClasses.absolutePath,
-         "-rsf", "${project.sourceSets.gatling.output.resourcesDir}",
-         "-rf", gatlingReportDir.absolutePath]
+                "-rsf", "${project.sourceSets.gatling.output.resourcesDir}",
+                "-rf", gatlingReportDir.absolutePath]
     }
 
     Iterable<String> simulationFilesToFQN() {
@@ -69,8 +69,10 @@ class GatlingRunTask extends DefaultTask implements JvmConfigurable {
             } as Action<JavaExecSpec>)]
         }
 
-        if (results.findAll { it.value.exitValue != 0 }.size() > 0) {
-            throw new TaskExecutionException(this, new RuntimeException("There're failed simulations: ${results.keySet().join(", ")}"))
+        Map<String, ExecResult> failed = results.findAll { it.value.exitValue != 0 }
+
+        if (!failed.isEmpty()) {
+            throw new TaskExecutionException(this, new RuntimeException("There're failed simulations: ${failed.keySet().sort().join(", ")}"))
         }
 
     }
