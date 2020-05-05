@@ -9,7 +9,6 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.process.ExecResult
 import org.gradle.process.JavaExecSpec
-import org.gradle.util.GradleVersion
 
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -28,22 +27,14 @@ class GatlingRunTask extends DefaultTask implements JvmConfigurable {
     }
 
     List<String> createGatlingArgs() {
-        def retval = []
 
-        if (GradleVersion.current() >= GradleVersion.version('4.0')) {
-            File scalaClasses = project.sourceSets.gatling.output.classesDirs.filter {
-                it.parentFile.name == 'scala'
-            }.singleFile
+        File scalaClasses = project.sourceSets.gatling.output.classesDirs.filter {
+            it.parentFile.name == 'scala'
+        }.singleFile
 
-            retval += ['-bf', scalaClasses.absolutePath]
-        } else {
-            retval += ["-bf", "${project.sourceSets.gatling.output.classesDir}"]
-        }
-
-        retval += ["-rsf", "${project.sourceSets.gatling.output.resourcesDir}"]
-        retval += ["-rf", gatlingReportDir.absolutePath]
-
-        retval
+        return ['-bf', scalaClasses.absolutePath,
+         "-rsf", "${project.sourceSets.gatling.output.resourcesDir}",
+         "-rf", gatlingReportDir.absolutePath]
     }
 
     Iterable<String> simulationFilesToFQN() {
