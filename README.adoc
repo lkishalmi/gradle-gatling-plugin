@@ -2,6 +2,15 @@
 :gatlingToolVersion: 3.3.1
 :scalaVersion: 2.12.8
 :toc: macro
+:icons: font
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
 
 image:https://gatling.io/wp-content/uploads/2017/02/Gatling-logo.png[Gatling^, link="https://gatling.io/open-source", window="_blank"]
 
@@ -9,20 +18,49 @@ image:https://img.shields.io/travis/lkishalmi/gradle-gatling-plugin/master?logo=
 
 toc::[]
 
-== Installation
+== Compatibility notes
 
-Follow the steps described at https://plugins.gradle.org/plugin/com.github.lkishalmi.gatling[Gradle Plugin Portal page].
+Plugin versioning scheme::
+Since version 3.0.0 the plugin strictly follows `Gatling` versioning,
+where the major and minor versions of the plugin are always identical to `Gatling` 's major and minor version.
 
-== Compatibility
+Gradle version::
+Minimal supported `Gradle` version is 4.0.
 
-Plugin versioning::
-Since `Gatling` v3.0.0 this plugin's major and minor versions follow `Gatling` 's major and minor version.
+Scala version::
+`Gatling` uses Scala version 2.12 since version 3.0.0, so the plugin does.
 
 Source code layout::
-Since `Gatling` v3.0.0 and corresponding plugin version `v3.x.x`
-there were breaking changes introduced for source code layout.
-Check corresponding section for details and original
+Since `Gatling` 3.0.0 and corresponding plugin version 3.x.x there were breaking changes for source code layout.
+Check corresponding section of this README for details and original
 https://github.com/gatling/gatling/issues/3398[Gatling issue] explaining the scope of changes.
+
+== Quickstart
+
+[TIP]
+====
+For those who are familiar with `Gradle` and `Gatling`, and probably having few already developed simulations -
+the recommended way is to jump right to <<Installation>> section
+and follow configuration guide to create `build.gradle`, organize source code and run performance tests.
+====
+
+The plugin provides bootstrap script that creates sample project with:
+
+* minimal `build.gradle` leveraging `Gradle wrapper`
+* proper source file layout
+* single `Gatling` simulation class, demonstrating suffcient`Gatling` functionality
+
+.Generate sample Gradle project and run Gatling simulation
+[source, bash]
+----
+curl -sL https://raw.githubusercontent.com/lkishalmi/gradle-gatling-plugin/master/bootstrap.sh | \
+    bash -s ~/sample-gradle-gatling && \
+    cd ~/sample-gradle-gatling && ./gradlew gatlingRun
+----
+
+== Installation
+
+Follow https://plugins.gradle.org/plugin/com.github.lkishalmi.gatling[Gradle Plugin Portal page] instructions.
 
 == Source files layout
 
