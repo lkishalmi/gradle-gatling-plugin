@@ -50,6 +50,8 @@ The plugin provides bootstrap script that creates sample project with:
 * proper source file layout
 * single `Gatling` simulation class, demonstrating suffcient`Gatling` functionality
 
+`git` and `curl` must be available in `$PATH`
+
 .Generate sample Gradle project and run Gatling simulation
 [source, bash]
 ----
