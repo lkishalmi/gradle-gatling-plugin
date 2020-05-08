@@ -43,3 +43,5 @@ pluginBundle {
     }
   }
 }
+
+validatePlugins.failOnWarning = false
