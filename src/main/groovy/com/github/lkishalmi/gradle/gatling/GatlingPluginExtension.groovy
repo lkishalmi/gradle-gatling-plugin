@@ -22,8 +22,8 @@ class GatlingPluginExtension implements JvmConfigurable {
 
     Closure simulations = DEFAULT_SIMULATIONS
 
-    def includeMainOutput = true
-    def includeTestOutput = true
+    Boolean includeMainOutput = true
+    Boolean includeTestOutput = true
 
     String logLevel = "WARN"
 

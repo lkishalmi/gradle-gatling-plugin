@@ -74,14 +74,6 @@ class GatlingPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            if (gatlingExt.includeMainOutput) {
-                gatlingImplementation project.sourceSets.main.output
-            }
-            if (gatlingExt.includeTestOutput) {
-                gatlingImplementation project.sourceSets.test.output
-            }
-
-            gatlingRuntimeOnly project.sourceSets.gatling.output
             gatlingRuntimeOnly project.sourceSets.gatling.output
         }
 
@@ -90,6 +82,13 @@ class GatlingPlugin implements Plugin<Project> {
                 implementation "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion}"
                 gatlingImplementation "org.scala-lang:scala-library:${p.extensions.getByType(GatlingPluginExtension).scalaVersion}"
                 gatling "io.gatling.highcharts:gatling-charts-highcharts:${p.extensions.getByType(GatlingPluginExtension).toolVersion}"
+
+                if (gatlingExt.includeMainOutput) {
+                    gatlingImplementation project.sourceSets.main.output
+                }
+                if (gatlingExt.includeTestOutput) {
+                    gatlingImplementation project.sourceSets.test.output
+                }
             }
         }
     }
