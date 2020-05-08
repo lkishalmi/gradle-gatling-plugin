@@ -36,6 +36,9 @@ class GatlingPluginTest extends GatlingUnitSpec {
         project.configurations.getByName("gatlingImplementation").allDependencies.find {
             it.name == "scala-library" && it.version == GatlingPluginExtension.SCALA_VERSION
         }
+        project.configurations.getByName("implementation").allDependencies.find {
+            it.name == "scala-library" && it.version == GatlingPluginExtension.SCALA_VERSION
+        }
     }
 
     def "should allow overriding gatling version via extension"() {
@@ -56,6 +59,9 @@ class GatlingPluginTest extends GatlingUnitSpec {
         project.evaluate()
         then:
         project.configurations.getByName("gatlingImplementation").allDependencies.find {
+            it.name == "scala-library" && it.version == "2.11.3"
+        }
+        project.configurations.getByName("implementation").allDependencies.find {
             it.name == "scala-library" && it.version == "2.11.3"
         }
     }
