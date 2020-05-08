@@ -48,7 +48,7 @@ The plugin provides bootstrap script that creates sample project with:
 
 * minimal `build.gradle` leveraging `Gradle wrapper`
 * proper source file layout
-* single `Gatling` simulation class, demonstrating suffcient`Gatling` functionality
+* single `Gatling` simulation class, demonstrating sufficient `Gatling` functionality
 
 `git` and `curl` must be available in `$PATH`
 
