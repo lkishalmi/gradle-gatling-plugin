@@ -61,7 +61,8 @@ curl -sL https://git.io/Jf2Uk | bash -s ~/sample-gradle-gatling
 .Navigate to new project folder and run all simulations
 [source, bash]
 ----
-cd ~/sample-gradle-gatling && ./gradlew gatlingRun
+cd ~/sample-gradle-gatling
+./gradlew gatlingRun
 ----
 
 == Installation
