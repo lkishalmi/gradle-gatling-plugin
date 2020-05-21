@@ -55,9 +55,13 @@ The plugin provides bootstrap script that creates sample project with:
 .Generate sample Gradle project and run Gatling simulation
 [source, bash]
 ----
-curl -sL https://raw.githubusercontent.com/lkishalmi/gradle-gatling-plugin/master/bootstrap.sh | \
-    bash -s ~/sample-gradle-gatling && \
-    cd ~/sample-gradle-gatling && ./gradlew gatlingRun
+curl -sL https://git.io/Jf2Uk | bash -s ~/sample-gradle-gatling
+----
+
+.Navigate to new project folder and run all simulations
+[source, bash]
+----
+cd ~/sample-gradle-gatling && ./gradlew gatlingRun
 ----
 
 == Installation
