@@ -1,4 +1,4 @@
-= Gatling Plugin for Gradle
+= Deprecated: Gatling Plugin for Gradle
 :gatlingToolVersion: 3.3.1
 :scalaVersion: 2.12.8
 :toc: macro
