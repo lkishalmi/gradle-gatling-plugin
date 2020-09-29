@@ -10,5 +10,6 @@
 [WARNING]
 ====
 Gatling officially supports https://github.com/gatling/gatling-gradle-plugin[Gradle].
+
 This plugin is deprecated and unsupported.
 ====
